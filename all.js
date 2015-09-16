@@ -82,7 +82,7 @@ exports.APIWrapper = function (data, endpt, token, listener, component, file) {
     }
 };
 
-},{"./utils":5}],2:[function(require,module,exports){
+},{"./utils":6}],2:[function(require,module,exports){
 (function (global){
 /* The functions that handle the code view part of the interface: taking the input and
    representing it as an HTTP request or code to generate that request.
@@ -263,7 +263,31 @@ exports.render = function (cv, endpt, token, paramVals, file) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./utils":5}],3:[function(require,module,exports){
+},{"./utils":6}],3:[function(require,module,exports){
+/* The files contains helper functions to interact with cookie storage. This will be
+   used a fallback when session/local storage is not allowed (safari private browsing
+   mode etc.)
+ */
+exports.setItem = function (key, item) {
+    document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(item);
+};
+exports.getItem = function (key) {
+    var dict = exports.getAll();
+    return dict[key];
+};
+exports.getAll = function () {
+    var dict = {};
+    var cookies = document.cookie.split('; ');
+    cookies.forEach(function (value) {
+        if (value.length > 0) {
+            var items = value.split('=');
+            dict[decodeURIComponent(items[0])] = decodeURIComponent(items[1]);
+        }
+    });
+    return dict;
+};
+
+},{}],4:[function(require,module,exports){
 // Automatically generated code; do not edit
 var utils = require('./utils');
 var get_metadata_endpt = new utils.Endpoint("files", "get_metadata", utils.EndpointKind.RPCLike, new utils.TextParam("path", false));
@@ -309,7 +333,7 @@ exports.endpointList = [get_metadata_endpt,
     get_current_account_endpt,
     get_space_usage_endpt];
 
-},{"./utils":5}],4:[function(require,module,exports){
+},{"./utils":6}],5:[function(require,module,exports){
 (function (global){
 /* The main file, which contains the definitions of the React components for the API Explorer, as
    well as a little bit of code that runs at startup.
@@ -340,7 +364,7 @@ var TokenInput = (function (_super) {
         };
         // This function handles the initial part of the OAuth2 token flow for the user.
         this.retrieveAuth = function () {
-            var state = utils.getHashDict()['__ept__'] + '!' + utils.generateCsrfToken();
+            var state = utils.getHashDict()['__ept__'] + '!' + utils.createCsrfToken();
             var params = {
                 response_type: 'token',
                 client_id: 'cg750anjts67v15',
@@ -349,7 +373,7 @@ var TokenInput = (function (_super) {
             };
             var urlWithParams = 'https://www.dropbox.com/1/oauth2/authorize?';
             for (var key in params) {
-                urlWithParams += encodeURI(key) + '=' + encodeURI(params[key]) + '&';
+                urlWithParams += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
             }
             window.location.assign(urlWithParams);
         };
@@ -580,7 +604,7 @@ var APIExplorer = (function (_super) {
             downloadURL: '',
             responseText: ''
         }); };
-        this.eptChanged = function (ept) { return window.location.hash = '#' + ept.name; };
+        this.eptChanged = function (ept) { return window.location.hash = '#' + encodeURIComponent(ept.name); };
         this.APICaller = function (paramsData, endpt, token, responseFn, file) {
             return apicalls.APIWrapper(paramsData, endpt, token, responseFn, _this, file);
         };
@@ -656,6 +680,17 @@ var renderGivenHash = function (hash) {
         }
     }
 };
+var checkCsrf = function (state) {
+    if (state === null)
+        return null;
+    var div = state.indexOf('!');
+    if (div < 0)
+        return null;
+    var csrfToken = state.substring(div + 1);
+    if (!utils.checkCsrfToken(csrfToken))
+        return null;
+    return state.substring(0, div); // The part before the CSRF token.
+};
 /* Things that need to be initialized at the start.
     1. Set up the listener for hash changes.
     2. Process the initial hash. This only occurs when the user goes through token flow, which
@@ -666,13 +701,13 @@ var main = function () {
     window.onhashchange = function (e) { return renderGivenHash(e.newURL.split('#')[1]); };
     var hashes = utils.getHashDict();
     if ('state' in hashes) {
-        var stateResult = utils.testState(hashes['state']);
-        if (stateResult === null) {
+        var state = checkCsrf(hashes['state']);
+        if (state === null) {
             window.location.hash = '#auth_error!';
         }
         else {
             utils.putToken(hashes['access_token']);
-            window.location.href = utils.currentURL() + '#' + stateResult;
+            window.location.href = utils.currentURL() + '#' + state;
         }
     }
     else if ('__ept__' in hashes) {
@@ -686,7 +721,7 @@ main();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./apicalls":1,"./codeview":2,"./endpoints":3,"./utils":5}],5:[function(require,module,exports){
+},{"./apicalls":1,"./codeview":2,"./endpoints":4,"./utils":6}],6:[function(require,module,exports){
 (function (global){
 /* This file contains utility functions needed by the other modules. These can be grouped into the
    following broad categories:
@@ -707,6 +742,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 var hljs = (typeof window !== "undefined" ? window['hljs'] : typeof global !== "undefined" ? global['hljs'] : null);
+var cookie = require('./cookie');
 var ce = react.createElement;
 var d = react.DOM;
 // This class mostly exists to help Typescript type-check my programs.
@@ -728,6 +764,43 @@ var Dict = (function () {
     return Dict;
 })();
 exports.Dict = Dict;
+/* Helper class which deal with local storage. If session storage is allowed, items
+   will be written to session storage. If session storage is disabled (e.g. safari
+   private browsing mode), cookie storage will be used as fallback.
+ */
+var LocalStorage = (function () {
+    function LocalStorage() {
+    }
+    LocalStorage._is_session_storage_allowed = function () {
+        var test = 'test';
+        try {
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    };
+    LocalStorage.setItem = function (key, data) {
+        if (LocalStorage._is_session_storage_allowed()) {
+            sessionStorage.setItem(key, data);
+        }
+        else {
+            cookie.setItem(key, data);
+        }
+    };
+    LocalStorage.getItem = function (key) {
+        if (LocalStorage._is_session_storage_allowed()) {
+            return sessionStorage.getItem(key);
+        }
+        else {
+            return cookie.getItem(key);
+        }
+    };
+    return LocalStorage;
+})();
+exports.LocalStorage = LocalStorage;
 /* There are three kinds of endpoints, and a lot of the program logic depends on what kind of
    endpoint is currently being shown.
     - An RPC-like endpoint involves no uploading or downloading of data; it sends a request
@@ -921,10 +994,10 @@ var StructParam = (function (_super) {
 })(Parameter);
 exports.StructParam = StructParam;
 // Utilities for token flow
-var stateStorageName = 'Dropbox_API_state';
+var csrfTokenStorageName = 'Dropbox_API_state';
 var tokenStorageName = 'Dropbox_API_explorer_token';
-exports.generateCsrfToken = function () {
-    var randomBytes = new Uint8Array(16);
+exports.createCsrfToken = function () {
+    var randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
     // If available, use the cryptographically secure generator, otherwise use Math.random.
     var crypto = window.crypto || window.msCrypto;
     if (crypto && crypto.getRandomValues && false) {
@@ -936,18 +1009,14 @@ exports.generateCsrfToken = function () {
         }
     }
     var token = btoa(String.fromCharCode.apply(null, randomBytes)); // base64-encode
+    LocalStorage.setItem(csrfTokenStorageName, token);
     return token;
 };
-/* Tests the state against the copy in local storage; if the two differ, it raises an error,
-   and if not, it returns the preamble.
- */
-exports.testState = function (state) {
-    if (state !== sessionStorage.getItem(stateStorageName)) {
-        return null; // signals an error
-    }
-    else {
-        return state.split('!')[0];
-    }
+exports.checkCsrfToken = function (givenCsrfToken) {
+    var expectedCsrfToken = LocalStorage.getItem(csrfTokenStorageName);
+    if (expectedCsrfToken === null)
+        return false;
+    return givenCsrfToken === expectedCsrfToken; // TODO: timing attack in string comparison?
 };
 // A utility to read the URL's hash and parse it into a dict.
 exports.getHashDict = function () {
@@ -955,25 +1024,25 @@ exports.getHashDict = function () {
     var index = window.location.href.indexOf('#');
     if (index === -1)
         return toReturn;
-    var hash = decodeURIComponent(window.location.href.substr(index + 1));
+    var hash = window.location.href.substr(index + 1);
     var hashes = hash.split('#');
     hashes.forEach(function (s) {
         if (s.indexOf('&') == -1)
-            toReturn['__ept__'] = s;
+            toReturn['__ept__'] = decodeURIComponent(s);
         else {
-            hash.split('&').forEach(function (pair) {
+            s.split('&').forEach(function (pair) {
                 var splitPair = pair.split('=');
-                toReturn[splitPair[0]] = splitPair[1];
+                toReturn[decodeURIComponent(splitPair[0])] = decodeURIComponent(splitPair[1]);
             });
         }
     });
     return toReturn;
 };
-// Reading and writing the token, which is preserved in sessionStorage.
+// Reading and writing the token, which is preserved in LocalStorage.
 exports.putToken = function (token) {
-    return sessionStorage.setItem(tokenStorageName, token);
+    return LocalStorage.setItem(tokenStorageName, token);
 };
-exports.getToken = function () { return sessionStorage.getItem(tokenStorageName); };
+exports.getToken = function () { return LocalStorage.getItem(tokenStorageName); };
 // Some utilities that help with processing user input
 // Returns an endpoint given its name, or null if there was none
 exports.getEndpoint = function (epts, name) {
@@ -1092,9 +1161,9 @@ exports.getHeaders = function (ept, token, args) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],6:[function(require,module,exports){
+},{"./cookie":3}],7:[function(require,module,exports){
 
-},{}]},{},[4,6])
+},{}]},{},[5,7])
 
 
 //# sourceMappingURL=all.js.map
