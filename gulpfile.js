@@ -5,18 +5,18 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var tsify = require('tsify');
 var connect = require('gulp-connect');
+var sourcemaps = require('gulp-sourcemaps');
+var buffer = require('vinyl-buffer');
 
 var tsPath = '+(src|typings)/**/*.ts';
 var staticPath = 'src/**/*.+(html|css|jpeg)';
 
 gulp.task('build-ts', function() {
-  var b = browserify()
+  var b = browserify({debug: true})
     .add('src/main.ts')
     .add('typings/tsd.d.ts')
     .plugin('tsify', {
       sortOutput: true,
-      target: 'ES3',
-      noImplicitAny: true,
       noEmitOnError: true
     })
     .bundle()
@@ -24,6 +24,9 @@ gulp.task('build-ts', function() {
 
   return b
     .pipe(source('all.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('build'))
     .pipe(connect.reload());
 });

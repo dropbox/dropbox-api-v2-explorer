@@ -5,12 +5,12 @@
    the property types of the class, and then we declare the class itself.
  */
 
-import React = require('react');
+import react = require('react');
 
-import Endpoints = require('./endpoints');
-import Utils = require('./utils');
-import APICalls = require('./apicalls');
-import CodeView = require('./codeview');
+import endpoints = require('./endpoints');
+import utils = require('./utils');
+import apicalls = require('./apicalls');
+import codeview = require('./codeview');
 
 // A few definitions to make code less verbose
 type ValueHandler = (key: string, value: any) => void;
@@ -18,9 +18,9 @@ interface FileElement extends HTMLElement {
     files: File[]
 }
 
-const ce = React.createElement;
-const  d = React.DOM;
-const pt = React.PropTypes;
+const ce = react.createElement;
+const  d = react.DOM;
+const pt = react.PropTypes;
 
 /* The TokenInput area governs the authentication token used to issue requests. The user can enter
    a token or click to get a one, and can click another button to toggle showing/hiding the token.
@@ -29,23 +29,24 @@ interface TokenInputProps {
     showToken:    boolean;
     toggleShow:   () => void
 }
-class TokenInput extends React.Component<TokenInputProps, void> {
+class TokenInput extends react.Component<TokenInputProps, void> {
     constructor(props: TokenInputProps) { super(props); }
 
-    handleEdit = (event: React.FormEvent): void =>
-        Utils.putToken((<HTMLInputElement>event.target).value);
+    handleEdit = (event: react.FormEvent): void =>
+        utils.putToken((<HTMLInputElement>event.target).value);
 
     // This function handles the initial part of the OAuth2 token flow for the user.
     retrieveAuth = () => {
-        const params: Utils.Dict = {
+        const state = utils.getHashDict()['__ept__'] + '!' + utils.createCsrfToken();
+        const params: utils.Dict = {
             response_type: 'token',
             client_id:     'cg750anjts67v15',
-            redirect_uri:  Utils.currentURL(),
-            state:         Utils.createState(Utils.getHashDict()['__ept__'])
+            redirect_uri:  utils.currentURL(),
+            state:         state,
         }
         let urlWithParams = 'https://www.dropbox.com/1/oauth2/authorize?';
         for (let key in params) {
-            urlWithParams += encodeURI(key) + '=' + encodeURI(params[key]) + '&';
+            urlWithParams += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
         }
         window.location.assign(urlWithParams);
     }
@@ -57,7 +58,7 @@ class TokenInput extends React.Component<TokenInputProps, void> {
                 type:         this.props.showToken? 'text' : 'password',
                 id:           'auth',
                 size:         75,
-                defaultValue: Utils.getToken(),
+                defaultValue: utils.getToken(),
                 onChange:     this.handleEdit
             }),
             ' ',
@@ -74,9 +75,9 @@ class TokenInput extends React.Component<TokenInputProps, void> {
 interface ParamInputProps {
     key:      string;
     onChange: ValueHandler;
-    param:    Utils.Parameter
+    param:    utils.Parameter
 }
-class ParamInput extends React.Component<ParamInputProps, any> {
+class ParamInput extends react.Component<ParamInputProps, any> {
     constructor(props: ParamInputProps) {
         super(props);
         this.state = {text: ''};
@@ -101,7 +102,7 @@ class ParamInput extends React.Component<ParamInputProps, any> {
         this.props.onChange(this.props.param.name, valueToReturn);
     }
 
-    shouldComponentUpdate = (_: ParamInputProps, newState: Utils.Dict) =>
+    shouldComponentUpdate = (_: ParamInputProps, newState: utils.Dict) =>
         this.state.text !== newState['text'];
 
     /* Since different kinds of parameters have to render differently, this render method is a
@@ -119,24 +120,24 @@ class ParamInput extends React.Component<ParamInputProps, any> {
 interface StructInputProps {
     key:             string;
     onChange:        ValueHandler;
-    param:           Utils.StructParam;
+    param:           utils.StructParam;
     componentEdited: ValueHandler
 }
-class StructParamInput extends React.Component<StructInputProps, any> {
+class StructParamInput extends react.Component<StructInputProps, any> {
     constructor(props: StructInputProps) {
         super(props);
         this.state = {fields: this.props.param.defaultValue()};
     }
     // Updates the whole struct
     componentEdited = (name: string, value: any) => {
-        let newFields: Utils.Dict = this.state.fields;
+        let newFields: utils.Dict = this.state.fields;
         if (value === null) delete newFields[name];
         else newFields[name] = value;
         this.setState({fields: newFields});
         this.props.onChange(this.props.param.name, newFields);
     }
     // Updates a specific field
-    fieldEdited = (param: Utils.Parameter, event: Event) => {
+    fieldEdited = (param: utils.Parameter, event: Event) => {
         const target: HTMLInputElement = <HTMLInputElement>event.target;
         // If valueToReturn is null, it signifies that the value should be removed from the list
         const valueToReturn: any = (target.value !== '' || !param.optional)?
@@ -145,7 +146,7 @@ class StructParamInput extends React.Component<StructInputProps, any> {
     }
     public render() {
         return d.span(null,
-            Utils.Dict.map(this.props.param.fields, (name: string, value: Utils.Parameter) =>
+            utils.Dict.map(this.props.param.fields, (name: string, value: utils.Parameter) =>
                 ce(ParamInput, {
                     key:      this.props.param.name + '_' + name,
                     onChange: this.componentEdited,
@@ -157,32 +158,32 @@ class StructParamInput extends React.Component<StructInputProps, any> {
 }
 
 // Picks the correct React class for a parameter, depending on whether it's a struct.
-const paramClassChooser = (param: Utils.Parameter) => param.isStructParam?
+const paramClassChooser = (param: utils.Parameter) => param.isStructParam?
     StructParamInput : ParamInput;
 
 /* The code view section of the API Explorer. This component manages a selector which chooses what
    format to display the code in, as well as the div that contains the code view itself.
  */
 interface CodeAreaProps {
-    ept:       Utils.Endpoint;
-    paramVals: Utils.Dict;
+    ept:       utils.Endpoint;
+    paramVals: utils.Dict;
     __file__:  File,
     token:     string
 }
-class CodeArea extends React.Component<CodeAreaProps, any> {
+class CodeArea extends react.Component<CodeAreaProps, any> {
     constructor(props: CodeAreaProps) {
         super(props);
-        this.state = {formatter: CodeView.formats['curl']};
+        this.state = {formatter: codeview.formats['curl']};
     }
-    changeFormat = (event: React.FormEvent) => {
+    changeFormat = (event: react.FormEvent) => {
         const newFormat = (<HTMLInputElement>event.target).value;
-        this.setState({formatter: CodeView.formats[newFormat]});
+        this.setState({formatter: codeview.formats[newFormat]});
     }
 
     public render() {
         return d.span({id: 'codearea'},
-            d.p(null, 'View request as ', CodeView.getSelector(this.changeFormat)),
-            d.span(null, CodeView.render(this.state.formatter, this.props.ept, this.props.token,
+            d.p(null, 'View request as ', codeview.getSelector(this.changeFormat)),
+            d.span(null, codeview.render(this.state.formatter, this.props.ept, this.props.token,
                                          this.props.paramVals, this.props.__file__))
         );
     }
@@ -193,15 +194,15 @@ class CodeArea extends React.Component<CodeAreaProps, any> {
    submitted; and any error messages.
  */
 interface RequestAreaProps {
-    currEpt:   Utils.Endpoint;
-    APICaller: (paramsData: string, ept: Utils.Endpoint, token: string,
-               responseFn: APICalls.Callback, file: File) => void;
+    currEpt:   utils.Endpoint;
+    APICaller: (paramsData: string, ept: utils.Endpoint, token: string,
+               responseFn: apicalls.Callback, file: File) => void;
 }
-class RequestArea extends React.Component<RequestAreaProps, any> {
+class RequestArea extends react.Component<RequestAreaProps, any> {
     constructor(props: RequestAreaProps) {
         super(props);
         this.state = {
-            paramVals:   Utils.initialValues(this.props.currEpt),
+            paramVals:   utils.initialValues(this.props.currEpt),
             __file__:    null, // a signal that no file has been chosen
             errMsg:      d.span(null),
             showToken:   false
@@ -211,7 +212,7 @@ class RequestArea extends React.Component<RequestAreaProps, any> {
         if (key === '__file__') {
             this.setState({__file__: value});
         } else {
-            let newVals: Utils.Dict = this.state.paramVals;
+            let newVals: utils.Dict = this.state.paramVals;
             // null is used as a signal to delete the value
             if (value === null) delete newVals[key];
             else newVals[key] = value;
@@ -224,7 +225,7 @@ class RequestArea extends React.Component<RequestAreaProps, any> {
      */
     componentWillReceiveProps = (newProps: RequestAreaProps) => {
         if (newProps.currEpt !== this.props.currEpt) {
-            this.setState({paramVals: Utils.initialValues(newProps.currEpt)});
+            this.setState({paramVals: utils.initialValues(newProps.currEpt)});
         }
         this.setState({__file__: null, errMsg: d.span(null)});
     }
@@ -233,15 +234,15 @@ class RequestArea extends React.Component<RequestAreaProps, any> {
        request.
      */
     submit = () => {
-        const token = Utils.getToken();
+        const token = utils.getToken();
         if (token === '') {
             this.setState({errMsg: d.span({style: {color: 'red'}},
                 'Error: missing token. Please enter a token above or click the "Get Token" button.'
             )});
         } else {
             this.setState({errMsg: d.span(null)});
-            const responseFn = APICalls.chooseCallback(this.props.currEpt.kind,
-                Utils.getDownloadName(this.props.currEpt, this.state.paramVals));
+            const responseFn = apicalls.chooseCallback(this.props.currEpt.kind,
+                utils.getDownloadName(this.props.currEpt, this.state.paramVals));
             this.props.APICaller(JSON.stringify(this.state.paramVals), this.props.currEpt,
                                 token, responseFn, this.state.__file__);
         }
@@ -263,7 +264,7 @@ class RequestArea extends React.Component<RequestAreaProps, any> {
                         'API Endpoint: ',
                         d.b(null, this.props.currEpt.name)
                     ),
-                    d.div(null, this.props.currEpt.params.map((param: Utils.Parameter) =>
+                    d.div(null, this.props.currEpt.params.map((param: utils.Parameter) =>
                         ce(paramClassChooser(param), {
                             key:      this.props.currEpt.name + param.name,
                             onChange: this.updateParamValues,
@@ -275,7 +276,7 @@ class RequestArea extends React.Component<RequestAreaProps, any> {
                     ept:       this.props.currEpt,
                     paramVals: this.state.paramVals,
                     __file__:  this.state.__file__,
-                    token:     this.state.showToken? Utils.getToken() : '<access-token>'
+                    token:     this.state.showToken? utils.getToken() : '<access-token>'
                 })
             ),
             d.p(null, d.button({onClick: this.submit}, 'Submit Call')),
@@ -289,11 +290,11 @@ class RequestArea extends React.Component<RequestAreaProps, any> {
  */
 interface EndpointChoiceProps {
     key:         string;
-    ept:         Utils.Endpoint;
-    handleClick: (ept: Utils.Endpoint) => void;
+    ept:         utils.Endpoint;
+    handleClick: (ept: utils.Endpoint) => void;
     isSelected:  boolean
 }
-class EndpointChoice extends React.Component<EndpointChoiceProps, void> {
+class EndpointChoice extends react.Component<EndpointChoiceProps, void> {
     constructor(props: EndpointChoiceProps) { super(props); }
     onClick = () => this.props.handleClick(this.props.ept);
 
@@ -309,10 +310,10 @@ class EndpointChoice extends React.Component<EndpointChoiceProps, void> {
    information of which one is currently selected.
  */
 interface EndpointSelectorProps {
-    eptChanged: (ept: Utils.Endpoint) => void;
+    eptChanged: (ept: utils.Endpoint) => void;
     currEpt:    string
 }
-class EndpointSelector extends React.Component<EndpointSelectorProps, void> {
+class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
     constructor(props: EndpointSelectorProps) { super(props); }
 
     // Renders the logo and the list of endpoints
@@ -328,7 +329,7 @@ class EndpointSelector extends React.Component<EndpointSelectorProps, void> {
                 )
             ),
             d.div({style: {marginLeft: '25px'}},
-              Endpoints.endpointList.map((ept: Utils.Endpoint) =>
+              endpoints.endpointList.map((ept: utils.Endpoint) =>
                 ce(EndpointChoice, {
                     key:         ept.name,
                     ept:         ept,
@@ -344,9 +345,9 @@ class EndpointSelector extends React.Component<EndpointSelectorProps, void> {
    page and the error pages).
  */
 interface APIExplorerProps {
-    initEpt:   Utils.Endpoint
+    initEpt:   utils.Endpoint
 }
-class APIExplorer extends React.Component<APIExplorerProps, any> {
+class APIExplorer extends react.Component<APIExplorerProps, any> {
     constructor(props: APIExplorerProps) {
         super(props);
         this.state = {
@@ -361,15 +362,15 @@ class APIExplorer extends React.Component<APIExplorerProps, any> {
         responseText: ''
     });
 
-    eptChanged = (ept: Utils.Endpoint) => window.location.hash = '#' + ept.name;
+    eptChanged = (ept: utils.Endpoint) => window.location.hash = '#' + encodeURIComponent(ept.name);
 
-    APICaller = (paramsData: string, endpt: Utils.Endpoint, token: string,
-                 responseFn: APICalls.Callback, file: File) =>
-        APICalls.APIWrapper(paramsData, endpt, token, responseFn, this, file);
+    APICaller = (paramsData: string, endpt: utils.Endpoint, token: string,
+                 responseFn: apicalls.Callback, file: File) =>
+        apicalls.APIWrapper(paramsData, endpt, token, responseFn, this, file);
 
     public render() {
         // This button pops up only on download
-        const downloadButton: React.HTMLElement = (this.state.downloadURL !== '')?
+        const downloadButton: react.HTMLElement = (this.state.downloadURL !== '')?
             d.a({
                 href: this.state.downloadURL,
                 download: this.state.downloadFilename
@@ -379,7 +380,7 @@ class APIExplorer extends React.Component<APIExplorerProps, any> {
         return d.span(null,
             ce(EndpointSelector, {
                 eptChanged: this.eptChanged,
-                currEpt:    (<Utils.Endpoint>this.state.ept).name // type hint to compiler
+                currEpt:    (<utils.Endpoint>this.state.ept).name // type hint to compiler
             }),
             ce(RequestArea, {
                 currEpt:   this.state.ept,
@@ -387,7 +388,7 @@ class APIExplorer extends React.Component<APIExplorerProps, any> {
             }),
             d.div({id: 'response'},
                 d.h4(null, 'Response'),
-                ce(Utils.Highlight, {className: 'json'}, this.state.responseText),
+                ce(utils.Highlight, {className: 'json'}, this.state.responseText),
                 downloadButton
             )
         );
@@ -398,15 +399,15 @@ class APIExplorer extends React.Component<APIExplorerProps, any> {
    instance of TextPage.
  */
 interface TextPageProps {
-    message: React.HTMLElement
+    message: react.HTMLElement
 }
-class TextPage extends React.Component<TextPageProps, void> {
+class TextPage extends react.Component<TextPageProps, void> {
     constructor(props: TextPageProps) { super(props); }
 
     public render() {
         return d.span(null,
             ce(EndpointSelector, {
-                eptChanged: (endpt: Utils.Endpoint) => window.location.hash = '#' + endpt.name,
+                eptChanged: (endpt: utils.Endpoint) => window.location.hash = '#' + endpt.name,
                 currEpt:    '' // no endpoint should be highlighted in this case
             }),
             d.span({style: {float: 'left', width: '80%'}},
@@ -418,7 +419,7 @@ class TextPage extends React.Component<TextPageProps, void> {
 }
 
 // Introductory page, which people see when they first open the webpage
-const introPage: React.ReactElement<TextPageProps> = ce(TextPage, {message:
+const introPage: react.ReactElement<TextPageProps> = ce(TextPage, {message:
     d.span(null,
         d.p(null, 'Welcome to the Dropbox API Explorer!'),
         d.p(null,
@@ -440,7 +441,7 @@ const introPage: React.ReactElement<TextPageProps> = ce(TextPage, {message:
    now, this can only happen if the user edits the URL hash.
    React sanitizes its inputs, so displaying the hash below is safe.
  */
-const endpointNotFound: React.ReactElement<TextPageProps> = ce(TextPage, {message:
+const endpointNotFound: react.ReactElement<TextPageProps> = ce(TextPage, {message:
     d.span(null,
         d.p(null, 'Welcome to the Dropbox API Explorer!'),
         d.p(null,
@@ -455,7 +456,7 @@ const endpointNotFound: React.ReactElement<TextPageProps> = ce(TextPage, {messag
 /* Error when the state parameter of the hash isn't what was expected, which could be due to an
    XSRF attack.
  */
-const stateError: React.ReactElement<TextPageProps> = ce(TextPage, {message:
+const stateError: react.ReactElement<TextPageProps> = ce(TextPage, {message:
     d.span(null,
         d.p(null, ''),
         d.p(null,
@@ -472,19 +473,28 @@ const stateError: React.ReactElement<TextPageProps> = ce(TextPage, {message:
  */
 const renderGivenHash = (hash: string): void => {
     if (hash === '' || hash === undefined) {
-        React.render(introPage, document.body);
+        react.render(introPage, document.body);
     } else if (hash === 'xkcd') {
         window.location.href = 'https://xkcd.com/1481/';
     } else if (hash === 'auth_error!') {
-        React.render(stateError, document.body);
+        react.render(stateError, document.body);
     } else {
-        const currEpt = Utils.getEndpoint(Endpoints.endpointList, decodeURIComponent(hash));
+        const currEpt = utils.getEndpoint(endpoints.endpointList, decodeURIComponent(hash));
         if (currEpt === null) {
-            React.render(endpointNotFound, document.body);
+            react.render(endpointNotFound, document.body);
         } else {
-            React.render(ce(APIExplorer, {initEpt: currEpt}), document.body);
+            react.render(ce(APIExplorer, {initEpt: currEpt}), document.body);
         }
     }
+}
+
+const checkCsrf = (state: string): string => {
+    if (state === null) return null;
+    const div = state.indexOf('!')
+    if (div < 0) return null;
+    const csrfToken = state.substring(div+1);
+    if (!utils.checkCsrfToken(csrfToken)) return null;
+    return state.substring(0, div);  // The part before the CSRF token.
 }
 
 /* Things that need to be initialized at the start.
@@ -496,19 +506,19 @@ const renderGivenHash = (hash: string): void => {
 const main = (): void => {
     window.onhashchange = (e: any) => renderGivenHash(e.newURL.split('#')[1]);
 
-    const hashes = Utils.getHashDict();
+    const hashes = utils.getHashDict();
     if ('state' in hashes) { // completing token flow, and checking the state is OK
-        const stateResult = Utils.testState(hashes['state']);
-        if (stateResult === null) {
+        const state = checkCsrf(hashes['state'])
+        if (state === null) {
             window.location.hash = '#auth_error!';
         } else {
-            Utils.putToken(hashes['access_token']);
-            window.location.href = Utils.currentURL() + '#' + stateResult;
+            utils.putToken(hashes['access_token']);
+            window.location.href = utils.currentURL() + '#' + state;
         }
     } else if ('__ept__' in hashes) { // no token, but an endpoint selected
         renderGivenHash(hashes['__ept__']);
     } else { // no endpoint selected: render the intro page
-        React.render(introPage, document.body);
+        react.render(introPage, document.body);
     }
 }
 
