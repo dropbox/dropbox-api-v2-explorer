@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es3",
+        "noImplicitAny": true,
+        "noEmitOnError": true,
+        "noEmit": true
+    },
+    "files": [
+        "src/main.ts",
+        "typings/tsd.d.ts"
+    ]
+}

@@ -59,20 +59,37 @@ const initRequest = (endpt: utils.Endpoint, headers: utils.Dict,
     return request;
 }
 
+const beginRequest = (component: any) => {
+    component.setState({inProgress: true});
+    component.setState({hideResponse: true});
+}
+
+const endRequest = (component: any) => {
+    component.setState({inProgress: false});
+    component.setState({hideResponse: false});
+}
+
 /* This function actually makes the API call. There are three different paths, based on whether
    the endpoint is upload-like, download-like, or RPC-like.
    The file parameter will be null unless the user specified a file on an upload-like endpoint.
  */
 export const APIWrapper = (data: string, endpt: utils.Endpoint, token: string,
                            listener: Callback, component: any, file: File): void => {
+    beginRequest(component);
+
+    const listener_wrapper: Callback = (component: any, resp: XMLHttpRequest) => {
+        endRequest(component);
+        listener(component, resp);
+    };
+
     switch (endpt.kind) {
         case utils.EndpointKind.RPCLike:
-            var request = initRequest(endpt, utils.RPCLikeHeaders(token), listener, component);
+            var request = initRequest(endpt, utils.RPCLikeHeaders(token), listener_wrapper, component);
             request.send(data);
             break;
         case utils.EndpointKind.Upload:
             var request = initRequest(endpt, utils.uploadLikeHeaders(token, data),
-                                      listener, component);
+                listener_wrapper, component);
             if (file !== null) {
                 let reader = new FileReader();
                 reader.onload = () => request.send(reader.result);
@@ -83,7 +100,7 @@ export const APIWrapper = (data: string, endpt: utils.Endpoint, token: string,
             break;
         case utils.EndpointKind.Download:
             var request = initRequest(endpt, utils.downloadLikeHeaders(token, data),
-                                      listener, component);
+                listener_wrapper, component);
             // Binary files shouldn't be accessed as strings
             request.responseType = 'arraybuffer';
             request.send();

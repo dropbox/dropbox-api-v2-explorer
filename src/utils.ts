@@ -130,9 +130,12 @@ export class Parameter {
         const nameArgs: Dict = this.optional? {'style': {'color': '#999'}} : {};
         let displayName: string = (this.name !== '__file__')? this.name : 'File to upload';
         if (this.optional) displayName += ' (optional)';
-        return d.p(null,
-            d.span(nameArgs, displayName + ': '),
-            this.innerReact(props));
+        return d.tr(null,
+            d.td(nameArgs, displayName),
+            d.td(null,
+                this.innerReact(props)
+            )
+        );
     }
 
     /* Each subclass will implement these abstract methods differently.
@@ -147,16 +150,21 @@ export class Parameter {
     innerReact = (props: Dict): any => null;
 }
 
+export const parameterInput = (props: Dict) => {
+    props['className'] = 'parameter-input'
+    return d.input(props)
+}
+
 // A parameter whose value is a string.
 export class TextParam extends Parameter {
     constructor(name: string, optional: boolean) {super(name, optional); }
-    innerReact = (props: Dict): react.HTMLElement => d.input(props);
+    innerReact = (props: Dict): react.HTMLElement => parameterInput(props);
 }
 
 // A parameter whose value is an integer.
 export class IntParam extends Parameter {
     constructor(name: string, optional: boolean) { super(name, optional);}
-    innerReact = (props: Dict): react.HTMLElement => d.input(props);
+    innerReact = (props: Dict): react.HTMLElement => parameterInput(props);
     getValue = (s: string): number => (s === '')? this.defaultValue() : parseInt(s, 10);
     defaultValue = (): number => 0;
 }
@@ -166,7 +174,7 @@ export class IntParam extends Parameter {
  */
 export class FloatParam extends Parameter {
     constructor(name: string, optional: boolean) { super(name, optional); }
-    innerReact = (props: Dict): react.HTMLElement => d.input(props);
+    innerReact = (props: Dict): react.HTMLElement => parameterInput(props);
     getValue = (s: string): number => (s === '')? this.defaultValue() : parseFloat(s);
     defaultValue = (): number => 0;
 }
@@ -220,7 +228,7 @@ export class FileParam extends Parameter {
 
     innerReact = (props: Dict): react.HTMLElement => {
         props['type'] = 'file';
-        return d.input(props);
+        return parameterInput(props);
     }
 }
 
@@ -403,7 +411,7 @@ export class Highlight extends react.Component<HltProps, {}> {
     )
 
     public render() {
-        return d.pre(null,
+        return d.pre({className: this.props.className},
             d.code({className: this.props.className},
             this.props.children)
         );

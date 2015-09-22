@@ -11,6 +11,8 @@ import endpoints = require('./endpoints');
 import utils = require('./utils');
 import apicalls = require('./apicalls');
 import codeview = require('./codeview');
+import ReactElement = __React.ReactElement;
+import HTMLAttributes = __React.HTMLAttributes;
 
 // A few definitions to make code less verbose
 type ValueHandler = (key: string, value: any) => void;
@@ -20,7 +22,14 @@ interface FileElement extends HTMLElement {
 
 const ce = react.createElement;
 const  d = react.DOM;
-const pt = react.PropTypes;
+
+/* Element for text field in page table.
+ */
+const tableText = (text: string): HTMLAttributes => {
+    return d.td({className: 'label'},
+        d.div({className: 'text'}, text)
+    );
+}
 
 /* The TokenInput area governs the authentication token used to issue requests. The user can enter
    a token or click to get a one, and can click another button to toggle showing/hiding the token.
@@ -51,21 +60,22 @@ class TokenInput extends react.Component<TokenInputProps, void> {
         window.location.assign(urlWithParams);
     }
     public render() {
-        return d.p(null,
-            "Please paste your access token here. If you don't have an access token, click the ",
-            '"Get Token" button to obtain one.', d.br(null),
-            d.input({
-                type:         this.props.showToken? 'text' : 'password',
-                id:           'auth',
-                size:         75,
-                defaultValue: utils.getToken(),
-                onChange:     this.handleEdit
-            }),
-            ' ',
-            d.button({onClick: this.retrieveAuth}, 'Get Token'),
-            ' ',
-            d.button({onClick: this.props.toggleShow},
-                this.props.showToken? 'Hide Token' : 'Show Token'
+        return d.tr(null,
+            tableText('Access Token'),
+            d.td(null,
+                d.input({
+                    type:         this.props.showToken? 'text' : 'password',
+                    id:           'token-input',
+                    defaultValue: utils.getToken(),
+                    onChange:     this.handleEdit,
+                    placeholder: 'If you don\'t have an access token, click the "Get Token" button to obtain one.'
+                }),
+                d.div({className: 'align-right'},
+                    d.button({onClick: this.retrieveAuth}, 'Get Token'),
+                    d.button({onClick: this.props.toggleShow},
+                        this.props.showToken? 'Hide Token' : 'Show Token'
+                    )
+                )
             )
         );
     }
@@ -145,7 +155,7 @@ class StructParamInput extends react.Component<StructInputProps, any> {
         this.props.componentEdited(param.name, valueToReturn);
     }
     public render() {
-        return d.span(null,
+        return d.tbody(null,
             utils.Dict.map(this.props.param.fields, (name: string, value: utils.Parameter) =>
                 ce(ParamInput, {
                     key:      this.props.param.name + '_' + name,
@@ -181,22 +191,24 @@ class CodeArea extends react.Component<CodeAreaProps, any> {
     }
 
     public render() {
-        return d.span({id: 'codearea'},
+        return d.span({id: 'code-area'},
             d.p(null, 'View request as ', codeview.getSelector(this.changeFormat)),
             d.span(null, codeview.render(this.state.formatter, this.props.ept, this.props.token,
                                          this.props.paramVals, this.props.__file__))
         );
     }
 }
+
 /* A component handling all the main user-input areas of the document: the token area, the
    parameter areas, and the code view. Because of this, it holds a lot of state: the token and
    whether to show or hide it; the paramVals and file that are passed to the code viewer or
    submitted; and any error messages.
  */
 interface RequestAreaProps {
-    currEpt:   utils.Endpoint;
-    APICaller: (paramsData: string, ept: utils.Endpoint, token: string,
-               responseFn: apicalls.Callback, file: File) => void;
+    currEpt:    utils.Endpoint;
+    APICaller:  (paramsData: string, ept: utils.Endpoint, token: string,
+                 responseFn: apicalls.Callback, file: File) => void;
+    inProgress: boolean
 }
 class RequestArea extends react.Component<RequestAreaProps, any> {
     constructor(props: RequestAreaProps) {
@@ -204,8 +216,9 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
         this.state = {
             paramVals:   utils.initialValues(this.props.currEpt),
             __file__:    null, // a signal that no file has been chosen
-            errMsg:      d.span(null),
-            showToken:   false
+            errMsg:      null,
+            showToken:   false,
+            showCode: false
         };
     }
     updateParamValues = (key: string, value: any) => {
@@ -227,7 +240,7 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
         if (newProps.currEpt !== this.props.currEpt) {
             this.setState({paramVals: utils.initialValues(newProps.currEpt)});
         }
-        this.setState({__file__: null, errMsg: d.span(null)});
+        this.setState({__file__: null, errMsg:null});
     }
     /* Submits a call to the API. This function handles the display logic (e.g. whether or not to
        display an error message for a missing token), and the APICaller prop actually sends the
@@ -235,12 +248,12 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
      */
     submit = () => {
         const token = utils.getToken();
-        if (token === '') {
-            this.setState({errMsg: d.span({style: {color: 'red'}},
-                'Error: missing token. Please enter a token above or click the "Get Token" button.'
-            )});
+        if (token == null || token === '') {
+            this.setState({
+                    errMsg: 'Error: missing token. Please enter a token above or click the "Get Token" button.'
+            });
         } else {
-            this.setState({errMsg: d.span(null)});
+            this.setState({errMsg: null});
             const responseFn = apicalls.chooseCallback(this.props.currEpt.kind,
                 utils.getDownloadName(this.props.currEpt, this.state.paramVals));
             this.props.APICaller(JSON.stringify(this.state.paramVals), this.props.currEpt,
@@ -250,37 +263,59 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
     // Toggles whether the token is hidden, or visible on the screen.
     showOrHide = () => this.setState({showToken: !this.state.showToken});
 
+    // Toggles whether code block is visiable.
+    showOrHideCode = () => this.setState({showCode: !this.state.showCode});
+
     public render() {
-        return d.span({className: 'request'},
-            d.h1(null, 'Dropbox API Explorer'),
-            ce(TokenInput, {
-                toggleShow:   this.showOrHide,
-                showToken:    this.state.showToken
-            }),
-            d.div({id: 'container'},
-                d.div({id: 'request'},
-                    d.h4(null, 'Request'),
-                    d.p(null,
-                        'API Endpoint: ',
-                        d.b(null, this.props.currEpt.name)
-                    ),
-                    d.div(null, this.props.currEpt.params.map((param: utils.Parameter) =>
-                        ce(paramClassChooser(param), {
-                            key:      this.props.currEpt.name + param.name,
-                            onChange: this.updateParamValues,
-                            param:    param
-                       }))
+        let errMsg: any = [];
+
+        if (this.state.errMsg != null) {
+            errMsg = [d.span({style: {color: 'red'}}, this.state.errMsg)];
+        }
+
+        return d.span({id: 'request-area'},
+            d.table({className: 'page-table'},
+                ce(TokenInput, {
+                    toggleShow:   this.showOrHide,
+                    showToken:    this.state.showToken
+                }),
+                d.tr(null,
+                    tableText('Request'),
+                    d.td(null,
+                        d.table({id: 'parameter-list'},
+                            this.props.currEpt.params.map((param: utils.Parameter) =>
+                                ce(paramClassChooser(param), {
+                                    key:      this.props.currEpt.name + param.name,
+                                    onChange: this.updateParamValues,
+                                    param:    param
+                                }))
+                        ),
+                        d.div(null,
+                            d.button({onClick: this.showOrHideCode}, this.state.showCode ? 'Hide Code' : 'Show Code'),
+                            d.button({onClick: this.submit, disabled: this.props.inProgress}, 'Submit Call'),
+                            d.img({
+                                src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
+                                hidden: !this.props.inProgress,
+                                style: {position: 'relative', top: '2px', left: '10px'}
+                            }),
+                            errMsg
+                        )
                     )
                 ),
-                ce(CodeArea, {
-                    ept:       this.props.currEpt,
-                    paramVals: this.state.paramVals,
-                    __file__:  this.state.__file__,
-                    token:     this.state.showToken? utils.getToken() : '<access-token>'
-                })
-            ),
-            d.p(null, d.button({onClick: this.submit}, 'Submit Call')),
-            d.p(null, this.state.errMsg)
+                d.tr({hidden: !this.state.showCode},
+                    tableText('Code'),
+                    d.td(null,
+                        d.div({id: 'request-container'},
+                            ce(CodeArea, {
+                                ept:       this.props.currEpt,
+                                paramVals: this.state.paramVals,
+                                __file__:  this.state.__file__,
+                                token:     this.state.showToken? utils.getToken() : '<access-token>'
+                            })
+                        )
+                    )
+                )
+            )
         )
     }
 }
@@ -300,8 +335,8 @@ class EndpointChoice extends react.Component<EndpointChoiceProps, void> {
 
     public render() {
         return (this.props.isSelected)?
-            d.span(null, d.b(null, this.props.ept.name), d.br(null)) :
-            d.span(null, d.a({onClick: this.onClick}, this.props.ept.name), d.br(null)
+            d.li(null, d.b(null, this.props.ept.name), d.br(null)) :
+            d.li(null, d.a({onClick: this.onClick}, this.props.ept.name), d.br(null)
         );
     }
 }
@@ -322,13 +357,13 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
             d.p({style: {marginLeft: '35px', marginTop: '12px'}},
                 d.a({onClick: () => window.location.hash = ''},
                     d.img({
-                        src:       'logo.jpeg',
-                        width:     70,
+                        src:       'https://cf.dropboxstatic.com/static/images/icons/blue_dropbox_glyph-vflJ8-C5d.png',
+                        width:     36,
                         className: 'home-icon'
                     })
                 )
             ),
-            d.div({style: {marginLeft: '25px'}},
+            d.div({id: 'endpoint-list'},
               endpoints.endpointList.map((ept: utils.Endpoint) =>
                 ce(EndpointChoice, {
                     key:         ept.name,
@@ -338,6 +373,35 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
                 }))
             )
         );
+    }
+}
+
+/* The React component for resposne area).
+ */
+interface ResponseAreaProps {
+    hide: boolean;
+    responseText: string;
+    downloadButton: react.HTMLElement;
+}
+class ResponseArea extends react.Component<ResponseAreaProps, any> {
+    constructor(props: ResponseAreaProps) {
+        super(props);
+    }
+
+    public render() {
+        return d.span({id: 'response-area'},
+            d.table({className: 'page-table', hidden: this.props.hide},
+                d.tr(null,
+                    tableText('Response'),
+                    d.td(null,
+                        d.div({id: 'response-container'},
+                            ce(utils.Highlight, {className: 'json'}, this.props.responseText)
+                        ),
+                        d.div(null, this.props.downloadButton)
+                    )
+                )
+            )
+        )
     }
 }
 
@@ -353,7 +417,8 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
         this.state = {
             ept:          this.props.initEpt,
             downloadURL:  '',
-            responseText: ''
+            responseText: '',
+            inProgress:   false
         };
     }
     componentWillReceiveProps = (newProps: APIExplorerProps) => this.setState({
@@ -362,34 +427,66 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
         responseText: ''
     });
 
-    eptChanged = (ept: utils.Endpoint) => window.location.hash = '#' + encodeURIComponent(ept.name);
-
     APICaller = (paramsData: string, endpt: utils.Endpoint, token: string,
-                 responseFn: apicalls.Callback, file: File) =>
-        apicalls.APIWrapper(paramsData, endpt, token, responseFn, this, file);
+                 responseFn: apicalls.Callback, file: File) => {
+        this.setState({inProgress: true});
+
+        const responseFn_wrapper: apicalls.Callback = (component: any, resp: XMLHttpRequest) => {
+            this.setState({inProgress: false});
+            responseFn(component, resp);
+        };
+
+        apicalls.APIWrapper(paramsData, endpt, token, responseFn_wrapper, this, file);
+    }
 
     public render() {
         // This button pops up only on download
         const downloadButton: react.HTMLElement = (this.state.downloadURL !== '')?
             d.a({
-                href: this.state.downloadURL,
+                href:     this.state.downloadURL,
                 download: this.state.downloadFilename
             }, d.button(null, 'Download ' + this.state.downloadFilename)) :
             null;
 
+        return ce(MainPage, {
+            currEpt: this.state.ept,
+            headerText: 'Dropbox API Explorer • ' + this.state.ept.name,
+            messages: [
+                ce(RequestArea, {
+                    currEpt:    this.state.ept,
+                    APICaller:  this.APICaller,
+                    inProgress: this.state.inProgress
+                }),
+                ce(ResponseArea, {
+                    hide: this.state.inProgress || this.state.responseText == '',
+                    responseText: this.state.responseText,
+                    downloadButton: downloadButton
+                })
+            ].map(t => <react.ReactNode>t)
+        });
+    }
+}
+
+/* This class renders the main page which contains endpoint selector
+   sidebar and main content page.
+ */
+interface MainPageProps {
+    currEpt: utils.Endpoint;
+    headerText: string;
+    messages: react.ReactNode[];
+}
+class MainPage extends react.Component<MainPageProps, void> {
+    constructor(props: MainPageProps) { super(props); }
+
+    public render() {
         return d.span(null,
             ce(EndpointSelector, {
-                eptChanged: this.eptChanged,
-                currEpt:    (<utils.Endpoint>this.state.ept).name // type hint to compiler
+                eptChanged: (endpt: utils.Endpoint) => window.location.hash = '#' + endpt.name,
+                currEpt:    this.props.currEpt.name
             }),
-            ce(RequestArea, {
-                currEpt:   this.state.ept,
-                APICaller: this.APICaller
-            }),
-            d.div({id: 'response'},
-                d.h4(null, 'Response'),
-                ce(utils.Highlight, {className: 'json'}, this.state.responseText),
-                downloadButton
+            d.h1({id: 'header'}, this.props.headerText),
+            d.div({id: 'page-content'},
+                this.props.messages
             )
         );
     }
@@ -399,72 +496,70 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
    instance of TextPage.
  */
 interface TextPageProps {
-    message: react.HTMLElement
+    message: react.HTMLElement;
 }
 class TextPage extends react.Component<TextPageProps, void> {
     constructor(props: TextPageProps) { super(props); }
 
     public render() {
-        return d.span(null,
-            ce(EndpointSelector, {
-                eptChanged: (endpt: utils.Endpoint) => window.location.hash = '#' + endpt.name,
-                currEpt:    '' // no endpoint should be highlighted in this case
-            }),
-            d.span({style: {float: 'left', width: '80%'}},
-                d.h1(null, 'Dropbox API Explorer'),
-                this.props.message
-            )
-        );
+        return ce(MainPage, {
+            currEpt:  new utils.Endpoint('', '', null),
+            headerText: 'Dropbox API Explorer',
+            messages: [this.props.message]
+        })
     }
 }
 
 // Introductory page, which people see when they first open the webpage
-const introPage: react.ReactElement<TextPageProps> = ce(TextPage, {message:
-    d.span(null,
-        d.p(null, 'Welcome to the Dropbox API Explorer!'),
-        d.p(null,
-            'This API Explorer is a tool to help you learn about the ',
-            d.a({href: 'https://www.dropbox.com/developers-preview'}, 'Dropbox API v2'),
-            " and test your own examples. For each endpoint, you'll be able to submit an API call ",
-            'with your own parameters and see the code for that call, as well as the API response.'
-        ),
-        d.p(null,
-            'Click on an endpoint on your left to get started, or check out ',
-            d.a({href: 'https://www.dropbox.com/developers-preview/documentation'},
-                'the documentation'),
-            ' for more information on the API.'
-        )
-    )}
+const introPage: react.ReactElement<TextPageProps> = ce(TextPage, {
+        message:
+            d.span(null,
+                d.p(null, 'Welcome to the Dropbox API Explorer!'),
+                d.p(null,
+                    'This API Explorer is a tool to help you learn about the ',
+                    d.a({href: 'https://www.dropbox.com/developers-preview'}, 'Dropbox API v2'),
+                    " and test your own examples. For each endpoint, you'll be able to submit an API call ",
+                    'with your own parameters and see the code for that call, as well as the API response.'
+                ),
+                d.p(null,
+                    'Click on an endpoint on your left to get started, or check out ',
+                    d.a({href: 'https://www.dropbox.com/developers-preview/documentation'},
+                        'the documentation'),
+                    ' for more information on the API.'
+                )
+            )}
 );
 
 /* The endpoint name (supplied via the URL's hash) doesn't correspond to any actual endpoint. Right
    now, this can only happen if the user edits the URL hash.
    React sanitizes its inputs, so displaying the hash below is safe.
  */
-const endpointNotFound: react.ReactElement<TextPageProps> = ce(TextPage, {message:
-    d.span(null,
-        d.p(null, 'Welcome to the Dropbox API Explorer!'),
-        d.p(null,
-            "Unfortunately, there doesn't seem to be an endpoint called ",
-            d.b(null, window.location.hash.substr(1)),
-            '. Try clicking on an endpoint on the left instead.'
-        ),
-        d.p(null, 'If you think you received this message in error, please get in contact with us.')
-    )}
+const endpointNotFound: react.ReactElement<TextPageProps> = ce(TextPage, {
+        message:
+            d.span(null,
+                d.p(null, 'Welcome to the Dropbox API Explorer!'),
+                d.p(null,
+                    "Unfortunately, there doesn't seem to be an endpoint called ",
+                    d.b(null, window.location.hash.substr(1)),
+                    '. Try clicking on an endpoint on the left instead.'
+                ),
+                d.p(null, 'If you think you received this message in error, please get in contact with us.')
+            )}
 );
 
 /* Error when the state parameter of the hash isn't what was expected, which could be due to an
    XSRF attack.
  */
-const stateError: react.ReactElement<TextPageProps> = ce(TextPage, {message:
-    d.span(null,
-        d.p(null, ''),
-        d.p(null,
-            'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ',
-            'If this error persists, you may be using an insecure network.'
-        ),
-        d.p(null, 'If you think you received this message in error, please get in contact with us.')
-    )}
+const stateError: react.ReactElement<TextPageProps> = ce(TextPage, {
+        message:
+            d.span(null,
+                d.p(null, ''),
+                d.p(null,
+                    'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ',
+                    'If this error persists, you may be using an insecure network.'
+                ),
+                d.p(null, 'If you think you received this message in error, please get in contact with us.')
+            )}
 );
 
 /* The hash of the URL determines which page to render; no hash renders the intro page, and
