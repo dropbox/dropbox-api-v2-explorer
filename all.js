@@ -52,18 +52,31 @@ var initRequest = function (endpt, headers, listener, component) {
     }
     return request;
 };
+var beginRequest = function (component) {
+    component.setState({ inProgress: true });
+    component.setState({ hideResponse: true });
+};
+var endRequest = function (component) {
+    component.setState({ inProgress: false });
+    component.setState({ hideResponse: false });
+};
 /* This function actually makes the API call. There are three different paths, based on whether
    the endpoint is upload-like, download-like, or RPC-like.
    The file parameter will be null unless the user specified a file on an upload-like endpoint.
  */
 exports.APIWrapper = function (data, endpt, token, listener, component, file) {
+    beginRequest(component);
+    var listener_wrapper = function (component, resp) {
+        endRequest(component);
+        listener(component, resp);
+    };
     switch (endpt.kind) {
         case utils.EndpointKind.RPCLike:
-            var request = initRequest(endpt, utils.RPCLikeHeaders(token), listener, component);
+            var request = initRequest(endpt, utils.RPCLikeHeaders(token), listener_wrapper, component);
             request.send(data);
             break;
         case utils.EndpointKind.Upload:
-            var request = initRequest(endpt, utils.uploadLikeHeaders(token, data), listener, component);
+            var request = initRequest(endpt, utils.uploadLikeHeaders(token, data), listener_wrapper, component);
             if (file !== null) {
                 var reader = new FileReader();
                 reader.onload = function () { return request.send(reader.result); };
@@ -74,7 +87,7 @@ exports.APIWrapper = function (data, endpt, token, listener, component, file) {
             }
             break;
         case utils.EndpointKind.Download:
-            var request = initRequest(endpt, utils.downloadLikeHeaders(token, data), listener, component);
+            var request = initRequest(endpt, utils.downloadLikeHeaders(token, data), listener_wrapper, component);
             // Binary files shouldn't be accessed as strings
             request.responseType = 'arraybuffer';
             request.send();
@@ -354,7 +367,11 @@ var apicalls = require('./apicalls');
 var codeview = require('./codeview');
 var ce = react.createElement;
 var d = react.DOM;
-var pt = react.PropTypes;
+/* Element for text field in page table.
+ */
+var tableText = function (text) {
+    return d.td({ className: 'label' }, d.div({ className: 'text' }, text));
+};
 var TokenInput = (function (_super) {
     __extends(TokenInput, _super);
     function TokenInput(props) {
@@ -379,13 +396,13 @@ var TokenInput = (function (_super) {
         };
     }
     TokenInput.prototype.render = function () {
-        return d.p(null, "Please paste your access token here. If you don't have an access token, click the ", '"Get Token" button to obtain one.', d.br(null), d.input({
+        return d.tr(null, tableText('Access Token'), d.td(null, d.input({
             type: this.props.showToken ? 'text' : 'password',
-            id: 'auth',
-            size: 75,
+            id: 'token-input',
             defaultValue: utils.getToken(),
-            onChange: this.handleEdit
-        }), ' ', d.button({ onClick: this.retrieveAuth }, 'Get Token'), ' ', d.button({ onClick: this.props.toggleShow }, this.props.showToken ? 'Hide Token' : 'Show Token'));
+            onChange: this.handleEdit,
+            placeholder: 'If you don\'t have an access token, click the "Get Token" button to obtain one.'
+        }), d.div({ className: 'align-right' }, d.button({ onClick: this.retrieveAuth }, 'Get Token'), d.button({ onClick: this.props.toggleShow }, this.props.showToken ? 'Hide Token' : 'Show Token'))));
     };
     return TokenInput;
 })(react.Component);
@@ -455,7 +472,7 @@ var StructParamInput = (function (_super) {
     }
     StructParamInput.prototype.render = function () {
         var _this = this;
-        return d.span(null, utils.Dict.map(this.props.param.fields, function (name, value) {
+        return d.tbody(null, utils.Dict.map(this.props.param.fields, function (name, value) {
             return ce(ParamInput, {
                 key: _this.props.param.name + '_' + name,
                 onChange: _this.componentEdited,
@@ -480,7 +497,7 @@ var CodeArea = (function (_super) {
         this.state = { formatter: codeview.formats['curl'] };
     }
     CodeArea.prototype.render = function () {
-        return d.span({ id: 'codearea' }, d.p(null, 'View request as ', codeview.getSelector(this.changeFormat)), d.span(null, codeview.render(this.state.formatter, this.props.ept, this.props.token, this.props.paramVals, this.props.__file__)));
+        return d.span({ id: 'code-area' }, d.p(null, 'View request as ', codeview.getSelector(this.changeFormat)), d.span(null, codeview.render(this.state.formatter, this.props.ept, this.props.token, this.props.paramVals, this.props.__file__)));
     };
     return CodeArea;
 })(react.Component);
@@ -511,7 +528,7 @@ var RequestArea = (function (_super) {
             if (newProps.currEpt !== _this.props.currEpt) {
                 _this.setState({ paramVals: utils.initialValues(newProps.currEpt) });
             }
-            _this.setState({ __file__: null, errMsg: d.span(null) });
+            _this.setState({ __file__: null, errMsg: null });
         };
         /* Submits a call to the API. This function handles the display logic (e.g. whether or not to
            display an error message for a missing token), and the APICaller prop actually sends the
@@ -519,41 +536,54 @@ var RequestArea = (function (_super) {
          */
         this.submit = function () {
             var token = utils.getToken();
-            if (token === '') {
-                _this.setState({ errMsg: d.span({ style: { color: 'red' } }, 'Error: missing token. Please enter a token above or click the "Get Token" button.') });
+            if (token == null || token === '') {
+                _this.setState({
+                    errMsg: 'Error: missing token. Please enter a token above or click the "Get Token" button.'
+                });
             }
             else {
-                _this.setState({ errMsg: d.span(null) });
+                _this.setState({ errMsg: null });
                 var responseFn = apicalls.chooseCallback(_this.props.currEpt.kind, utils.getDownloadName(_this.props.currEpt, _this.state.paramVals));
                 _this.props.APICaller(JSON.stringify(_this.state.paramVals), _this.props.currEpt, token, responseFn, _this.state.__file__);
             }
         };
         // Toggles whether the token is hidden, or visible on the screen.
         this.showOrHide = function () { return _this.setState({ showToken: !_this.state.showToken }); };
+        // Toggles whether code block is visiable.
+        this.showOrHideCode = function () { return _this.setState({ showCode: !_this.state.showCode }); };
         this.state = {
             paramVals: utils.initialValues(this.props.currEpt),
             __file__: null,
-            errMsg: d.span(null),
-            showToken: false
+            errMsg: null,
+            showToken: false,
+            showCode: false
         };
     }
     RequestArea.prototype.render = function () {
         var _this = this;
-        return d.span({ className: 'request' }, d.h1(null, 'Dropbox API Explorer'), ce(TokenInput, {
+        var errMsg = [];
+        if (this.state.errMsg != null) {
+            errMsg = [d.span({ style: { color: 'red' } }, this.state.errMsg)];
+        }
+        return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
-        }), d.div({ id: 'container' }, d.div({ id: 'request' }, d.h4(null, 'Request'), d.p(null, 'API Endpoint: ', d.b(null, this.props.currEpt.name)), d.div(null, this.props.currEpt.params.map(function (param) {
+        }), d.tr(null, tableText('Request'), d.td(null, d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
             return ce(paramClassChooser(param), {
                 key: _this.props.currEpt.name + param.name,
                 onChange: _this.updateParamValues,
                 param: param
             });
-        }))), ce(CodeArea, {
+        })), d.div(null, d.button({ onClick: this.showOrHideCode }, this.state.showCode ? 'Hide Code' : 'Show Code'), d.button({ onClick: this.submit, disabled: this.props.inProgress }, 'Submit Call'), d.img({
+            src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
+            hidden: !this.props.inProgress,
+            style: { position: 'relative', top: '2px', left: '10px' }
+        }), errMsg))), d.tr({ hidden: !this.state.showCode }, tableText('Code'), d.td(null, d.div({ id: 'request-container' }, ce(CodeArea, {
             ept: this.props.currEpt,
             paramVals: this.state.paramVals,
             __file__: this.state.__file__,
             token: this.state.showToken ? utils.getToken() : '<access-token>'
-        })), d.p(null, d.button({ onClick: this.submit }, 'Submit Call')), d.p(null, this.state.errMsg));
+        }))))));
     };
     return RequestArea;
 })(react.Component);
@@ -566,8 +596,8 @@ var EndpointChoice = (function (_super) {
     }
     EndpointChoice.prototype.render = function () {
         return (this.props.isSelected) ?
-            d.span(null, d.b(null, this.props.ept.name), d.br(null)) :
-            d.span(null, d.a({ onClick: this.onClick }, this.props.ept.name), d.br(null));
+            d.li(null, d.b(null, this.props.ept.name), d.br(null)) :
+            d.li(null, d.a({ onClick: this.onClick }, this.props.ept.name), d.br(null));
     };
     return EndpointChoice;
 })(react.Component);
@@ -580,10 +610,10 @@ var EndpointSelector = (function (_super) {
     EndpointSelector.prototype.render = function () {
         var _this = this;
         return d.div({ 'id': 'sidebar' }, d.p({ style: { marginLeft: '35px', marginTop: '12px' } }, d.a({ onClick: function () { return window.location.hash = ''; } }, d.img({
-            src: 'logo.jpeg',
-            width: 70,
+            src: 'https://cf.dropboxstatic.com/static/images/icons/blue_dropbox_glyph-vflJ8-C5d.png',
+            width: 36,
             className: 'home-icon'
-        }))), d.div({ style: { marginLeft: '25px' } }, endpoints.endpointList.map(function (ept) {
+        }))), d.div({ id: 'endpoint-list' }, endpoints.endpointList.map(function (ept) {
             return ce(EndpointChoice, {
                 key: ept.name,
                 ept: ept,
@@ -593,6 +623,16 @@ var EndpointSelector = (function (_super) {
         })));
     };
     return EndpointSelector;
+})(react.Component);
+var ResponseArea = (function (_super) {
+    __extends(ResponseArea, _super);
+    function ResponseArea(props) {
+        _super.call(this, props);
+    }
+    ResponseArea.prototype.render = function () {
+        return d.span({ id: 'response-area' }, d.table({ className: 'page-table', hidden: this.props.hide }, d.tr(null, tableText('Response'), d.td(null, d.div({ id: 'response-container' }, ce(utils.Highlight, { className: 'json' }, this.props.responseText)), d.div(null, this.props.downloadButton)))));
+    };
+    return ResponseArea;
 })(react.Component);
 var APIExplorer = (function (_super) {
     __extends(APIExplorer, _super);
@@ -604,14 +644,19 @@ var APIExplorer = (function (_super) {
             downloadURL: '',
             responseText: ''
         }); };
-        this.eptChanged = function (ept) { return window.location.hash = '#' + encodeURIComponent(ept.name); };
         this.APICaller = function (paramsData, endpt, token, responseFn, file) {
-            return apicalls.APIWrapper(paramsData, endpt, token, responseFn, _this, file);
+            _this.setState({ inProgress: true });
+            var responseFn_wrapper = function (component, resp) {
+                _this.setState({ inProgress: false });
+                responseFn(component, resp);
+            };
+            apicalls.APIWrapper(paramsData, endpt, token, responseFn_wrapper, _this, file);
         };
         this.state = {
             ept: this.props.initEpt,
             downloadURL: '',
-            responseText: ''
+            responseText: '',
+            inProgress: false
         };
     }
     APIExplorer.prototype.render = function () {
@@ -622,15 +667,37 @@ var APIExplorer = (function (_super) {
                 download: this.state.downloadFilename
             }, d.button(null, 'Download ' + this.state.downloadFilename)) :
             null;
-        return d.span(null, ce(EndpointSelector, {
-            eptChanged: this.eptChanged,
-            currEpt: this.state.ept.name // type hint to compiler
-        }), ce(RequestArea, {
+        return ce(MainPage, {
             currEpt: this.state.ept,
-            APICaller: this.APICaller
-        }), d.div({ id: 'response' }, d.h4(null, 'Response'), ce(utils.Highlight, { className: 'json' }, this.state.responseText), downloadButton));
+            headerText: 'Dropbox API Explorer • ' + this.state.ept.name,
+            messages: [
+                ce(RequestArea, {
+                    currEpt: this.state.ept,
+                    APICaller: this.APICaller,
+                    inProgress: this.state.inProgress
+                }),
+                ce(ResponseArea, {
+                    hide: this.state.inProgress || this.state.responseText == '',
+                    responseText: this.state.responseText,
+                    downloadButton: downloadButton
+                })
+            ].map(function (t) { return t; })
+        });
     };
     return APIExplorer;
+})(react.Component);
+var MainPage = (function (_super) {
+    __extends(MainPage, _super);
+    function MainPage(props) {
+        _super.call(this, props);
+    }
+    MainPage.prototype.render = function () {
+        return d.span(null, ce(EndpointSelector, {
+            eptChanged: function (endpt) { return window.location.hash = '#' + endpt.name; },
+            currEpt: this.props.currEpt.name
+        }), d.h1({ id: 'header' }, this.props.headerText), d.div({ id: 'page-content' }, this.props.messages));
+    };
+    return MainPage;
 })(react.Component);
 var TextPage = (function (_super) {
     __extends(TextPage, _super);
@@ -638,24 +705,28 @@ var TextPage = (function (_super) {
         _super.call(this, props);
     }
     TextPage.prototype.render = function () {
-        return d.span(null, ce(EndpointSelector, {
-            eptChanged: function (endpt) { return window.location.hash = '#' + endpt.name; },
-            currEpt: '' // no endpoint should be highlighted in this case
-        }), d.span({ style: { float: 'left', width: '80%' } }, d.h1(null, 'Dropbox API Explorer'), this.props.message));
+        return ce(MainPage, {
+            currEpt: new utils.Endpoint('', '', null),
+            headerText: 'Dropbox API Explorer',
+            messages: [this.props.message]
+        });
     };
     return TextPage;
 })(react.Component);
 // Introductory page, which people see when they first open the webpage
-var introPage = ce(TextPage, { message: d.span(null, d.p(null, 'Welcome to the Dropbox API Explorer!'), d.p(null, 'This API Explorer is a tool to help you learn about the ', d.a({ href: 'https://www.dropbox.com/developers-preview' }, 'Dropbox API v2'), " and test your own examples. For each endpoint, you'll be able to submit an API call ", 'with your own parameters and see the code for that call, as well as the API response.'), d.p(null, 'Click on an endpoint on your left to get started, or check out ', d.a({ href: 'https://www.dropbox.com/developers-preview/documentation' }, 'the documentation'), ' for more information on the API.')) });
+var introPage = ce(TextPage, {
+    message: d.span(null, d.p(null, 'Welcome to the Dropbox API Explorer!'), d.p(null, 'This API Explorer is a tool to help you learn about the ', d.a({ href: 'https://www.dropbox.com/developers-preview' }, 'Dropbox API v2'), " and test your own examples. For each endpoint, you'll be able to submit an API call ", 'with your own parameters and see the code for that call, as well as the API response.'), d.p(null, 'Click on an endpoint on your left to get started, or check out ', d.a({ href: 'https://www.dropbox.com/developers-preview/documentation' }, 'the documentation'), ' for more information on the API.')) });
 /* The endpoint name (supplied via the URL's hash) doesn't correspond to any actual endpoint. Right
    now, this can only happen if the user edits the URL hash.
    React sanitizes its inputs, so displaying the hash below is safe.
  */
-var endpointNotFound = ce(TextPage, { message: d.span(null, d.p(null, 'Welcome to the Dropbox API Explorer!'), d.p(null, "Unfortunately, there doesn't seem to be an endpoint called ", d.b(null, window.location.hash.substr(1)), '. Try clicking on an endpoint on the left instead.'), d.p(null, 'If you think you received this message in error, please get in contact with us.')) });
+var endpointNotFound = ce(TextPage, {
+    message: d.span(null, d.p(null, 'Welcome to the Dropbox API Explorer!'), d.p(null, "Unfortunately, there doesn't seem to be an endpoint called ", d.b(null, window.location.hash.substr(1)), '. Try clicking on an endpoint on the left instead.'), d.p(null, 'If you think you received this message in error, please get in contact with us.')) });
 /* Error when the state parameter of the hash isn't what was expected, which could be due to an
    XSRF attack.
  */
-var stateError = ce(TextPage, { message: d.span(null, d.p(null, ''), d.p(null, 'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ', 'If this error persists, you may be using an insecure network.'), d.p(null, 'If you think you received this message in error, please get in contact with us.')) });
+var stateError = ce(TextPage, {
+    message: d.span(null, d.p(null, ''), d.p(null, 'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ', 'If this error persists, you may be using an insecure network.'), d.p(null, 'If you think you received this message in error, please get in contact with us.')) });
 /* The hash of the URL determines which page to render; no hash renders the intro page, and
    'auth_error!' (the ! chosen so it's less likely to have a name clash) renders the stateError
    page when the state parameter isn't what was expected.
@@ -867,17 +938,21 @@ var Parameter = (function () {
         var displayName = (this.name !== '__file__') ? this.name : 'File to upload';
         if (this.optional)
             displayName += ' (optional)';
-        return d.p(null, d.span(nameArgs, displayName + ': '), this.innerReact(props));
+        return d.tr(null, d.td(nameArgs, displayName), d.td(null, this.innerReact(props)));
     };
     return Parameter;
 })();
 exports.Parameter = Parameter;
+exports.parameterInput = function (props) {
+    props['className'] = 'parameter-input';
+    return d.input(props);
+};
 // A parameter whose value is a string.
 var TextParam = (function (_super) {
     __extends(TextParam, _super);
     function TextParam(name, optional) {
         _super.call(this, name, optional);
-        this.innerReact = function (props) { return d.input(props); };
+        this.innerReact = function (props) { return exports.parameterInput(props); };
     }
     return TextParam;
 })(Parameter);
@@ -888,7 +963,7 @@ var IntParam = (function (_super) {
     function IntParam(name, optional) {
         var _this = this;
         _super.call(this, name, optional);
-        this.innerReact = function (props) { return d.input(props); };
+        this.innerReact = function (props) { return exports.parameterInput(props); };
         this.getValue = function (s) { return (s === '') ? _this.defaultValue() : parseInt(s, 10); };
         this.defaultValue = function () { return 0; };
     }
@@ -903,7 +978,7 @@ var FloatParam = (function (_super) {
     function FloatParam(name, optional) {
         var _this = this;
         _super.call(this, name, optional);
-        this.innerReact = function (props) { return d.input(props); };
+        this.innerReact = function (props) { return exports.parameterInput(props); };
         this.getValue = function (s) { return (s === '') ? _this.defaultValue() : parseFloat(s); };
         this.defaultValue = function () { return 0; };
     }
@@ -957,7 +1032,7 @@ var FileParam = (function (_super) {
         _super.call(this, '__file__', false);
         this.innerReact = function (props) {
             props['type'] = 'file';
-            return d.input(props);
+            return exports.parameterInput(props);
         };
     }
     return FileParam;
@@ -1124,7 +1199,7 @@ var Highlight = (function (_super) {
         this.highlightCode = function () { return [].forEach.call(react.findDOMNode(_this).querySelectorAll('pre code'), function (node) { return hljs.highlightBlock(node); }); };
     }
     Highlight.prototype.render = function () {
-        return d.pre(null, d.code({ className: this.props.className }, this.props.children));
+        return d.pre({ className: this.props.className }, d.code({ className: this.props.className }, this.props.children));
     };
     return Highlight;
 })(react.Component);
