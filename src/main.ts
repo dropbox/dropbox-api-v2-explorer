@@ -23,6 +23,8 @@ interface FileElement extends HTMLElement {
 const ce = react.createElement;
 const  d = react.DOM;
 
+const developerPage = 'https://www.dropbox.com/developers-preview';
+
 /* Element for text field in page table.
  */
 const tableText = (text: string): HTMLAttributes => {
@@ -217,7 +219,7 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
             paramVals:   utils.initialValues(this.props.currEpt),
             __file__:    null, // a signal that no file has been chosen
             errMsg:      null,
-            showToken:   false,
+            showToken:   true,
             showCode: false
         };
     }
@@ -282,6 +284,11 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                 d.tr(null,
                     tableText('Request'),
                     d.td(null,
+                        d.div({className: 'align-right'},
+                            d.a({href: developerPage + '/documentation/http#documentation'},
+                                'Documentation'
+                            )
+                        ),
                         d.table({id: 'parameter-list'},
                             this.props.currEpt.params.map((param: utils.Parameter) =>
                                 ce(paramClassChooser(param), {
@@ -353,9 +360,22 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
 
     // Renders the logo and the list of endpoints
     public render() {
+        var groups: {[ns: string]: utils.Endpoint[]} = {};
+        var namespaces: string[] = [];
+
+        endpoints.endpointList.forEach((ept: utils.Endpoint) => {
+            if (groups[ept.ns] == undefined) {
+                groups[ept.ns] = [ept];
+                namespaces.push(ept.ns);
+            }
+            else {
+                groups[ept.ns].push(ept);
+            }
+        });
+
         return d.div({'id': 'sidebar'},
             d.p({style: {marginLeft: '35px', marginTop: '12px'}},
-                d.a({onClick: () => window.location.hash = ''},
+                d.a({onClick: () => window.location.href = developerPage},
                     d.img({
                         src:       'https://cf.dropboxstatic.com/static/images/icons/blue_dropbox_glyph-vflJ8-C5d.png',
                         width:     36,
@@ -364,13 +384,20 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
                 )
             ),
             d.div({id: 'endpoint-list'},
-              endpoints.endpointList.map((ept: utils.Endpoint) =>
-                ce(EndpointChoice, {
-                    key:         ept.name,
-                    ept:         ept,
-                    handleClick: this.props.eptChanged,
-                    isSelected:  this.props.currEpt == ept.name
-                }))
+                namespaces.sort().map((ns: string) =>
+                    d.div(null,
+                        d.li(null, ns),
+                        groups[ns].map((ept: utils.Endpoint) =>
+                            ce(EndpointChoice, {
+                                key:         ept.name,
+                                ept:         ept,
+                                handleClick: this.props.eptChanged,
+                                isSelected:  this.props.currEpt == ept.name
+                                }
+                            )
+                        )
+                    )
+                )
             )
         );
     }
@@ -449,8 +476,8 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
             null;
 
         return ce(MainPage, {
-            currEpt: this.state.ept,
-            headerText: 'Dropbox API Explorer • ' + this.state.ept.name,
+            currEpt:  this.state.ept,
+            header:   <react.ReactNode>d.span(null, 'Dropbox API Explorer • ' + this.state.ept.name),
             messages: [
                 ce(RequestArea, {
                     currEpt:    this.state.ept,
@@ -471,8 +498,8 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
    sidebar and main content page.
  */
 interface MainPageProps {
-    currEpt: utils.Endpoint;
-    headerText: string;
+    currEpt:  utils.Endpoint;
+    header:   react.ReactNode;
     messages: react.ReactNode[];
 }
 class MainPage extends react.Component<MainPageProps, void> {
@@ -484,7 +511,7 @@ class MainPage extends react.Component<MainPageProps, void> {
                 eptChanged: (endpt: utils.Endpoint) => window.location.hash = '#' + endpt.name,
                 currEpt:    this.props.currEpt.name
             }),
-            d.h1({id: 'header'}, this.props.headerText),
+            d.h1({id: 'header'}, this.props.header),
             d.div({id: 'page-content'},
                 this.props.messages
             )
@@ -504,7 +531,7 @@ class TextPage extends react.Component<TextPageProps, void> {
     public render() {
         return ce(MainPage, {
             currEpt:  new utils.Endpoint('', '', null),
-            headerText: 'Dropbox API Explorer',
+            header:   d.span(null, 'Dropbox API Explorer'),
             messages: [this.props.message]
         })
     }
@@ -517,13 +544,13 @@ const introPage: react.ReactElement<TextPageProps> = ce(TextPage, {
                 d.p(null, 'Welcome to the Dropbox API Explorer!'),
                 d.p(null,
                     'This API Explorer is a tool to help you learn about the ',
-                    d.a({href: 'https://www.dropbox.com/developers-preview'}, 'Dropbox API v2'),
+                    d.a({href: developerPage}, 'Dropbox API v2'),
                     " and test your own examples. For each endpoint, you'll be able to submit an API call ",
                     'with your own parameters and see the code for that call, as well as the API response.'
                 ),
                 d.p(null,
                     'Click on an endpoint on your left to get started, or check out ',
-                    d.a({href: 'https://www.dropbox.com/developers-preview/documentation'},
+                    d.a({href: developerPage + '/documentation'},
                         'the documentation'),
                     ' for more information on the API.'
                 )
@@ -599,7 +626,10 @@ const checkCsrf = (state: string): string => {
        token and some extra state (to check against XSRF attacks).
  */
 const main = (): void => {
-    window.onhashchange = (e: any) => renderGivenHash(e.newURL.split('#')[1]);
+    window.onhashchange = (e: any) => {
+        //first one works everywhere but IE, second one works everywhere but Firefox 40
+        renderGivenHash(e.newURL ? e.newURL.split('#')[1] : window.location.hash.slice(1));
+    }
 
     const hashes = utils.getHashDict();
     if ('state' in hashes) { // completing token flow, and checking the state is OK
