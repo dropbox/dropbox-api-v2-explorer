@@ -180,6 +180,11 @@ P.blocktext {
     list-style: none;
 }
 
+#endpoint-list li:first-child {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 table {
     border-collapse: collapse;
     border-spacing: 0;
@@ -191,8 +196,8 @@ table {
 
 .page-table td {
     vertical-align: top;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .page-table tr {
@@ -213,7 +218,7 @@ table {
 }
 
 .page-table .text {
-    padding: 4px 2px;
+    padding: 5px 2px;
 }
 
 .page-table .align-right {
@@ -222,8 +227,7 @@ table {
 }
 
 #token-input {
-    width: 600px;
-    margin-bottom: 5px;
+    width: 460px;
 }
 
 #parameter-list {
@@ -237,6 +241,8 @@ table {
 #parameter-list td {
     vertical-align: middle;
     padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #parameter-list .parameter-input {
