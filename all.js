@@ -569,7 +569,7 @@ var RequestArea = (function (_super) {
         return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
-        }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: developerPage + '/documentation/http#documentation' }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
+        }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-') }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
             return ce(paramClassChooser(param), {
                 key: _this.props.currEpt.name + param.name,
                 onChange: _this.updateParamValues,
