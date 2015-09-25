@@ -285,7 +285,7 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                     tableText('Request'),
                     d.td(null,
                         d.div({className: 'align-right'},
-                            d.a({href: developerPage + '/documentation/http#documentation'},
+                            d.a({href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-')},
                                 'Documentation'
                             )
                         ),
