@@ -125,6 +125,16 @@ class ParamInput extends react.Component<ParamInputProps, any> {
     }
 }
 
+/* Input component for single parameter.
+ */
+class SingleParamInput extends react.Component<ParamInputProps, any> {
+    public render() {
+        return d.tbody(null,
+            ce(ParamInput, this.props)
+        );
+    }
+}
+
 /* Some parameters are structs of other parameters, e.g. in upload_session/finish. In the input
    field, structs are treated as just a list of parameters. This means we currently can't really
    signal optional structs to the user. Moreover, nested structs are currently not possible.
@@ -171,7 +181,7 @@ class StructParamInput extends react.Component<StructInputProps, any> {
 
 // Picks the correct React class for a parameter, depending on whether it's a struct.
 const paramClassChooser = (param: utils.Parameter) => param.isStructParam?
-    StructParamInput : ParamInput;
+    StructParamInput : SingleParamInput;
 
 /* The code view section of the API Explorer. This component manages a selector which chooses what
    format to display the code in, as well as the div that contains the code view itself.
@@ -277,48 +287,50 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
 
         return d.span({id: 'request-area'},
             d.table({className: 'page-table'},
-                ce(TokenInput, {
-                    toggleShow:   this.showOrHide,
-                    showToken:    this.state.showToken
-                }),
-                d.tr(null,
-                    tableText('Request'),
-                    d.td(null,
-                        d.div({className: 'align-right'},
-                            d.a({href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-')},
-                                'Documentation'
+                d.tbody(null,
+                    ce(TokenInput, {
+                        toggleShow:   this.showOrHide,
+                        showToken:    this.state.showToken
+                    }),
+                    d.tr(null,
+                        tableText('Request'),
+                        d.td(null,
+                            d.div({className: 'align-right'},
+                                d.a({href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-')},
+                                    'Documentation'
+                                )
+                            ),
+                            d.table({id: 'parameter-list'},
+                                this.props.currEpt.params.map((param: utils.Parameter) =>
+                                    ce(paramClassChooser(param), {
+                                        key:      this.props.currEpt.name + param.name,
+                                        onChange: this.updateParamValues,
+                                        param:    param
+                                    }))
+                            ),
+                            d.div(null,
+                                d.button({onClick: this.showOrHideCode}, this.state.showCode ? 'Hide Code' : 'Show Code'),
+                                d.button({onClick: this.submit, disabled: this.props.inProgress}, 'Submit Call'),
+                                d.img({
+                                    src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
+                                    hidden: !this.props.inProgress,
+                                    style: {position: 'relative', top: '2px', left: '10px'}
+                                }),
+                                errMsg
                             )
-                        ),
-                        d.table({id: 'parameter-list'},
-                            this.props.currEpt.params.map((param: utils.Parameter) =>
-                                ce(paramClassChooser(param), {
-                                    key:      this.props.currEpt.name + param.name,
-                                    onChange: this.updateParamValues,
-                                    param:    param
-                                }))
-                        ),
-                        d.div(null,
-                            d.button({onClick: this.showOrHideCode}, this.state.showCode ? 'Hide Code' : 'Show Code'),
-                            d.button({onClick: this.submit, disabled: this.props.inProgress}, 'Submit Call'),
-                            d.img({
-                                src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
-                                hidden: !this.props.inProgress,
-                                style: {position: 'relative', top: '2px', left: '10px'}
-                            }),
-                            errMsg
                         )
-                    )
-                ),
-                d.tr({hidden: !this.state.showCode},
-                    tableText('Code'),
-                    d.td(null,
-                        d.div({id: 'request-container'},
-                            ce(CodeArea, {
-                                ept:       this.props.currEpt,
-                                paramVals: this.state.paramVals,
-                                __file__:  this.state.__file__,
-                                token:     this.state.showToken? utils.getToken() : '<access-token>'
-                            })
+                    ),
+                    d.tr({hidden: !this.state.showCode},
+                        tableText('Code'),
+                        d.td(null,
+                            d.div({id: 'request-container'},
+                                ce(CodeArea, {
+                                    ept:       this.props.currEpt,
+                                    paramVals: this.state.paramVals,
+                                    __file__:  this.state.__file__,
+                                    token:     this.state.showToken? utils.getToken() : '<access-token>'
+                                })
+                            )
                         )
                     )
                 )
@@ -418,13 +430,15 @@ class ResponseArea extends react.Component<ResponseAreaProps, any> {
     public render() {
         return d.span({id: 'response-area'},
             d.table({className: 'page-table', hidden: this.props.hide},
-                d.tr(null,
-                    tableText('Response'),
-                    d.td(null,
-                        d.div({id: 'response-container'},
-                            ce(utils.Highlight, {className: 'json'}, this.props.responseText)
-                        ),
-                        d.div(null, this.props.downloadButton)
+                d.tbody(null,
+                    d.tr(null,
+                        tableText('Response'),
+                        d.td(null,
+                            d.div({id: 'response-container'},
+                                ce(utils.Highlight, {className: 'json'}, this.props.responseText)
+                            ),
+                            d.div(null, this.props.downloadButton)
+                        )
                     )
                 )
             )
