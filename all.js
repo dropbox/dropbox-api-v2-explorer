@@ -458,6 +458,18 @@ var ParamInput = (function (_super) {
     };
     return ParamInput;
 })(react.Component);
+/* Input component for single parameter.
+ */
+var SingleParamInput = (function (_super) {
+    __extends(SingleParamInput, _super);
+    function SingleParamInput() {
+        _super.apply(this, arguments);
+    }
+    SingleParamInput.prototype.render = function () {
+        return d.tbody(null, ce(ParamInput, this.props));
+    };
+    return SingleParamInput;
+})(react.Component);
 var StructParamInput = (function (_super) {
     __extends(StructParamInput, _super);
     function StructParamInput(props) {
@@ -497,7 +509,7 @@ var StructParamInput = (function (_super) {
 })(react.Component);
 // Picks the correct React class for a parameter, depending on whether it's a struct.
 var paramClassChooser = function (param) { return param.isStructParam ?
-    StructParamInput : ParamInput; };
+    StructParamInput : SingleParamInput; };
 var CodeArea = (function (_super) {
     __extends(CodeArea, _super);
     function CodeArea(props) {
@@ -578,7 +590,7 @@ var RequestArea = (function (_super) {
         if (this.state.errMsg != null) {
             errMsg = [d.span({ style: { color: 'red' } }, this.state.errMsg)];
         }
-        return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, ce(TokenInput, {
+        return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, d.tbody(null, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
         }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-') }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
@@ -596,7 +608,7 @@ var RequestArea = (function (_super) {
             paramVals: this.state.paramVals,
             __file__: this.state.__file__,
             token: this.state.showToken ? utils.getToken() : '<access-token>'
-        }))))));
+        })))))));
     };
     return RequestArea;
 })(react.Component);
@@ -656,7 +668,7 @@ var ResponseArea = (function (_super) {
         _super.call(this, props);
     }
     ResponseArea.prototype.render = function () {
-        return d.span({ id: 'response-area' }, d.table({ className: 'page-table', hidden: this.props.hide }, d.tr(null, tableText('Response'), d.td(null, d.div({ id: 'response-container' }, ce(utils.Highlight, { className: 'json' }, this.props.responseText)), d.div(null, this.props.downloadButton)))));
+        return d.span({ id: 'response-area' }, d.table({ className: 'page-table', hidden: this.props.hide }, d.tbody(null, d.tr(null, tableText('Response'), d.td(null, d.div({ id: 'response-container' }, ce(utils.Highlight, { className: 'json' }, this.props.responseText)), d.div(null, this.props.downloadButton))))));
     };
     return ResponseArea;
 })(react.Component);
