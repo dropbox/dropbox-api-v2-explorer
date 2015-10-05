@@ -590,10 +590,12 @@ var RequestArea = (function (_super) {
         if (this.state.errMsg != null) {
             errMsg = [d.span({ style: { color: 'red' } }, this.state.errMsg)];
         }
+        var name = this.props.currEpt.name.replace('/', '-');
+        var documentation = developerPage + "/documentation/http#documentation-" + this.props.currEpt.ns + "-" + name;
         return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, d.tbody(null, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
-        }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-') }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
+        }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: documentation }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
             return ce(paramClassChooser(param), {
                 key: _this.props.currEpt.name + param.name,
                 onChange: _this.updateParamValues,
