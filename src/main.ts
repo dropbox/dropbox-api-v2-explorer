@@ -285,6 +285,9 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
             errMsg = [d.span({style: {color: 'red'}}, this.state.errMsg)];
         }
 
+        var name = this.props.currEpt.name.replace('/', '-')
+        var documentation = `${developerPage}/documentation/http#documentation-${this.props.currEpt.ns}-${name}`
+
         return d.span({id: 'request-area'},
             d.table({className: 'page-table'},
                 d.tbody(null,
@@ -296,7 +299,7 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                         tableText('Request'),
                         d.td(null,
                             d.div({className: 'align-right'},
-                                d.a({href: developerPage + '/documentation/http#documentation-' + this.props.currEpt.name.replace('/', '-')},
+                                d.a({href: documentation},
                                     'Documentation'
                                 )
                             ),
