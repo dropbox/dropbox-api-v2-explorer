@@ -305,10 +305,11 @@ exports.getAll = function () {
 var Utils = require('./utils');
 var Endpoints;
 (function (Endpoints) {
-    var get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
-    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true));
+    var get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true));
+    var list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", Utils.EndpointKind.RPCLike, new Utils.TextParam("cursor", false), new Utils.IntParam("timeout", true));
+    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
     var list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", Utils.EndpointKind.RPCLike, new Utils.TextParam("cursor", false));
-    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true));
+    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
     var download_endpt = new Utils.Endpoint("files", "download", Utils.EndpointKind.Download, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
     var upload_session_start_endpt = new Utils.Endpoint("files", "upload_session/start", Utils.EndpointKind.Upload, new Utils.FileParam());
     var upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", Utils.EndpointKind.Upload, new Utils.FileParam(), new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false));
@@ -328,9 +329,9 @@ var Endpoints;
     var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", Utils.EndpointKind.RPCLike);
     var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", true));
     var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", ["file", "folder"], true));
-    var get_shared_folder_endpt = new Utils.Endpoint("sharing", "get_shared_folder", Utils.EndpointKind.RPCLike, new Utils.TextParam("id", false), new Utils.BoolParam("include_membership", true));
-    var list_shared_folders_endpt = new Utils.Endpoint("sharing", "list_shared_folders", Utils.EndpointKind.RPCLike, new Utils.BoolParam("include_membership", true), new Utils.BoolParam("show_unmounted", true));
+    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", Utils.EndpointKind.RPCLike, new Utils.TextParam("url", false));
     Endpoints.endpointList = [get_metadata_endpt,
+        list_folder_longpoll_endpt,
         list_folder_endpt,
         list_folder_continue_endpt,
         list_folder_get_latest_cursor_endpt,
@@ -353,8 +354,7 @@ var Endpoints;
         get_space_usage_endpt,
         get_shared_links_endpt,
         create_shared_link_endpt,
-        get_shared_folder_endpt,
-        list_shared_folders_endpt];
+        revoke_shared_link_endpt];
 })(Endpoints || (Endpoints = {}));
 module.exports = Endpoints;
 
