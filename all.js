@@ -318,6 +318,7 @@ var Endpoints;
     var search_endpt = new Utils.Endpoint("files", "search", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.SelectorParam("mode", ["filename", "filename_and_content", "deleted_filename"], true));
     var create_folder_endpt = new Utils.Endpoint("files", "create_folder", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
     var delete_endpt = new Utils.Endpoint("files", "delete", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
+    var permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
     var copy_endpt = new Utils.Endpoint("files", "copy", Utils.EndpointKind.RPCLike, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
     var move_endpt = new Utils.Endpoint("files", "move", Utils.EndpointKind.RPCLike, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
     var get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", Utils.EndpointKind.Download, new Utils.TextParam("path", false), new Utils.SelectorParam("format", ["jpeg", "png"], true), new Utils.SelectorParam("size", ["w32h32", "w64h64", "w128h128", "w640h480", "w1024h768"], true));
@@ -327,6 +328,7 @@ var Endpoints;
     var get_account_endpt = new Utils.Endpoint("users", "get_account", Utils.EndpointKind.RPCLike, new Utils.TextParam("account_id", false));
     var get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", Utils.EndpointKind.RPCLike);
     var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", Utils.EndpointKind.RPCLike);
+    var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", Utils.EndpointKind.RPCLike, null /* not implemented yet */);
     var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", true));
     var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", ["file", "folder"], true));
     var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", Utils.EndpointKind.RPCLike, new Utils.TextParam("url", false));
@@ -343,6 +345,7 @@ var Endpoints;
         search_endpt,
         create_folder_endpt,
         delete_endpt,
+        permanently_delete_endpt,
         copy_endpt,
         move_endpt,
         get_thumbnail_endpt,
@@ -352,6 +355,7 @@ var Endpoints;
         get_account_endpt,
         get_current_account_endpt,
         get_space_usage_endpt,
+        get_account_batch_endpt,
         get_shared_links_endpt,
         create_shared_link_endpt,
         revoke_shared_link_endpt];
