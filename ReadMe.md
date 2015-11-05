@@ -7,9 +7,13 @@ A client-side web app that lets you mess around with the [Dropbox API v2](https:
 ## Development
 
 Setup:
+
 1. Make sure you have Node.js
+
 2. `# npm install`
+
 3. `# ./node_modules/.bin/tsd install`  (for Typescript definition files)
+
 
 Building:
 - `# npm run build`  (builds once; output goes in "build/")
