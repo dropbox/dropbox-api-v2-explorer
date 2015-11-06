@@ -70,7 +70,7 @@ exports.APIWrapper = function (data, endpt, token, listener, component, file) {
         endRequest(component);
         listener(component, resp);
     };
-    switch (endpt.kind) {
+    switch (endpt.getEndpointKind()) {
         case utils.EndpointKind.RPCLike:
             var request = initRequest(endpt, utils.RPCLikeHeaders(token), listener_wrapper, component);
             request.send(data);
@@ -263,7 +263,7 @@ exports.getSelector = function (onChange) { return d.select({ onChange: onChange
     return d.option({ key: key, value: key }, cv.description);
 })); };
 exports.render = function (cv, endpt, token, paramVals, file) {
-    if (endpt.kind === utils.EndpointKind.RPCLike) {
+    if (endpt.getEndpointKind() === utils.EndpointKind.RPCLike) {
         return cv.renderRPCLike(endpt, token, paramVals);
     }
     else if (file !== null) {
@@ -305,33 +305,56 @@ exports.getAll = function () {
 var Utils = require('./utils');
 var Endpoints;
 (function (Endpoints) {
-    var get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true));
-    var list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", Utils.EndpointKind.RPCLike, new Utils.TextParam("cursor", false), new Utils.IntParam("timeout", true));
-    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
-    var list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", Utils.EndpointKind.RPCLike, new Utils.TextParam("cursor", false));
-    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
-    var download_endpt = new Utils.Endpoint("files", "download", Utils.EndpointKind.Download, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
-    var upload_session_start_endpt = new Utils.Endpoint("files", "upload_session/start", Utils.EndpointKind.Upload, new Utils.FileParam());
-    var upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", Utils.EndpointKind.Upload, new Utils.FileParam(), new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false));
-    var upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", Utils.EndpointKind.Upload, new Utils.FileParam(), new Utils.StructParam("cursor", false, new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)), new Utils.StructParam("commit", false, new Utils.TextParam("path", false), new Utils.SelectorParam("mode", ["add", "overwrite", "update"], true), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)));
-    var upload_endpt = new Utils.Endpoint("files", "upload", Utils.EndpointKind.Upload, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.SelectorParam("mode", ["add", "overwrite", "update"], true), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
-    var search_endpt = new Utils.Endpoint("files", "search", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.SelectorParam("mode", ["filename", "filename_and_content", "deleted_filename"], true));
-    var create_folder_endpt = new Utils.Endpoint("files", "create_folder", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
-    var delete_endpt = new Utils.Endpoint("files", "delete", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
-    var permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false));
-    var copy_endpt = new Utils.Endpoint("files", "copy", Utils.EndpointKind.RPCLike, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
-    var move_endpt = new Utils.Endpoint("files", "move", Utils.EndpointKind.RPCLike, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
-    var get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", Utils.EndpointKind.Download, new Utils.TextParam("path", false), new Utils.SelectorParam("format", ["jpeg", "png"], true), new Utils.SelectorParam("size", ["w32h32", "w64h64", "w128h128", "w640h480", "w1024h768"], true));
-    var get_preview_endpt = new Utils.Endpoint("files", "get_preview", Utils.EndpointKind.Download, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
-    var list_revisions_endpt = new Utils.Endpoint("files", "list_revisions", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.IntParam("limit", true));
-    var restore_endpt = new Utils.Endpoint("files", "restore", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.TextParam("rev", false));
-    var get_account_endpt = new Utils.Endpoint("users", "get_account", Utils.EndpointKind.RPCLike, new Utils.TextParam("account_id", false));
-    var get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", Utils.EndpointKind.RPCLike);
-    var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", Utils.EndpointKind.RPCLike);
-    var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", Utils.EndpointKind.RPCLike, null /* not implemented yet */);
-    var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", true));
-    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", Utils.EndpointKind.RPCLike, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", ["file", "folder"], true));
-    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", Utils.EndpointKind.RPCLike, new Utils.TextParam("url", false));
+    var get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", {}, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true));
+    var list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", {
+        host: "notify"
+    }, new Utils.TextParam("cursor", false), new Utils.IntParam("timeout", true));
+    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
+    var list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", {}, new Utils.TextParam("cursor", false));
+    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
+    var download_endpt = new Utils.Endpoint("files", "download", {
+        host: "content",
+        style: "download"
+    }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
+    var upload_session_start_endpt = new Utils.Endpoint("files", "upload_session/start", {
+        host: "content",
+        style: "upload"
+    }, new Utils.FileParam());
+    var upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", {
+        host: "content",
+        style: "upload"
+    }, new Utils.FileParam(), new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false));
+    var upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", {
+        host: "content",
+        style: "upload"
+    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)), new Utils.StructParam("commit", false, new Utils.TextParam("path", false), new Utils.SelectorParam("mode", ["add", "overwrite", "update"], true), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)));
+    var upload_endpt = new Utils.Endpoint("files", "upload", {
+        host: "content",
+        style: "upload"
+    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.SelectorParam("mode", ["add", "overwrite", "update"], true), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
+    var search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.SelectorParam("mode", ["filename", "filename_and_content", "deleted_filename"], true));
+    var create_folder_endpt = new Utils.Endpoint("files", "create_folder", {}, new Utils.TextParam("path", false));
+    var delete_endpt = new Utils.Endpoint("files", "delete", {}, new Utils.TextParam("path", false));
+    var permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", {}, new Utils.TextParam("path", false));
+    var copy_endpt = new Utils.Endpoint("files", "copy", {}, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
+    var move_endpt = new Utils.Endpoint("files", "move", {}, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
+    var get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", {
+        host: "content",
+        style: "download"
+    }, new Utils.TextParam("path", false), new Utils.SelectorParam("format", ["jpeg", "png"], true), new Utils.SelectorParam("size", ["w32h32", "w64h64", "w128h128", "w640h480", "w1024h768"], true));
+    var get_preview_endpt = new Utils.Endpoint("files", "get_preview", {
+        host: "content",
+        style: "download"
+    }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
+    var list_revisions_endpt = new Utils.Endpoint("files", "list_revisions", {}, new Utils.TextParam("path", false), new Utils.IntParam("limit", true));
+    var restore_endpt = new Utils.Endpoint("files", "restore", {}, new Utils.TextParam("path", false), new Utils.TextParam("rev", false));
+    var get_account_endpt = new Utils.Endpoint("users", "get_account", {}, new Utils.TextParam("account_id", false));
+    var get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", {});
+    var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
+    var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
+    var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
+    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", ["file", "folder"], true));
+    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
     Endpoints.endpointList = [get_metadata_endpt,
         list_folder_longpoll_endpt,
         list_folder_endpt,
@@ -572,7 +595,7 @@ var RequestArea = (function (_super) {
             }
             else {
                 _this.setState({ errMsg: null });
-                var responseFn = apicalls.chooseCallback(_this.props.currEpt.kind, utils.getDownloadName(_this.props.currEpt, _this.state.paramVals));
+                var responseFn = apicalls.chooseCallback(_this.props.currEpt.getEndpointKind(), utils.getDownloadName(_this.props.currEpt, _this.state.paramVals));
                 _this.props.APICaller(JSON.stringify(_this.state.paramVals), _this.props.currEpt, token, responseFn, _this.state.__file__);
             }
         };
@@ -636,6 +659,16 @@ var EndpointSelector = (function (_super) {
     __extends(EndpointSelector, _super);
     function EndpointSelector(props) {
         _super.call(this, props);
+        this.filter = function (ept) {
+            if (ept.params.length > 0 && ept.params.indexOf(null) >= 0) {
+                // Skip not implemented endpoints.
+                return true;
+            }
+            if (ept.getHostname().indexOf("notify") >= 0) {
+                // Skip longpoll endpoints.
+                return true;
+            }
+        };
     }
     // Renders the logo and the list of endpoints
     EndpointSelector.prototype.render = function () {
@@ -643,6 +676,9 @@ var EndpointSelector = (function (_super) {
         var groups = {};
         var namespaces = [];
         endpoints.endpointList.forEach(function (ept) {
+            if (_this.filter(ept)) {
+                return;
+            }
             if (groups[ept.ns] == undefined) {
                 groups[ept.ns] = [ept];
                 namespaces.push(ept.ns);
@@ -940,19 +976,37 @@ var EndpointKind = exports.EndpointKind;
    endpoints.ts, which is code-generated.
  */
 var Endpoint = (function () {
-    function Endpoint(ns, name, kind) {
+    function Endpoint(ns, name, attrs) {
         var _this = this;
         var params = [];
         for (var _i = 3; _i < arguments.length; _i++) {
             params[_i - 3] = arguments[_i];
         }
-        this.getHostname = function () { return (_this.kind !== EndpointKind.RPCLike) ?
-            'content.dropboxapi.com' : 'api.dropboxapi.com'; };
+        this.getHostname = function () {
+            switch (_this.attrs["host"]) {
+                case "content":
+                    return "content.dropboxapi.com";
+                case "notify":
+                    return "notify.dropboxapi.com";
+                default:
+                    return "api.dropboxapi.com";
+            }
+        };
+        this.getEndpointKind = function () {
+            switch (_this.attrs["style"]) {
+                case "upload":
+                    return EndpointKind.Upload;
+                case "download":
+                    return EndpointKind.Download;
+                default:
+                    return EndpointKind.RPCLike;
+            }
+        };
         this.getPathname = function () { return '/2-beta-2/' + _this.ns + '/' + _this.name; };
         this.getURL = function () { return 'https://' + _this.getHostname() + _this.getPathname(); };
         this.ns = ns;
         this.name = name;
-        this.kind = kind;
+        this.attrs = attrs;
         this.params = params;
     }
     return Endpoint;
@@ -1274,7 +1328,7 @@ exports.downloadLikeHeaders = function (token, args) {
     };
 };
 exports.getHeaders = function (ept, token, args) {
-    switch (ept.kind) {
+    switch (ept.getEndpointKind()) {
         case EndpointKind.RPCLike: return exports.RPCLikeHeaders(token);
         case EndpointKind.Upload: return exports.uploadLikeHeaders(token, args);
         case EndpointKind.Download: return exports.downloadLikeHeaders(token, args);
