@@ -1002,7 +1002,7 @@ var Endpoint = (function () {
                     return EndpointKind.RPCLike;
             }
         };
-        this.getPathname = function () { return '/2-beta-2/' + _this.ns + '/' + _this.name; };
+        this.getPathname = function () { return '/2/' + _this.ns + '/' + _this.name; };
         this.getURL = function () { return 'https://' + _this.getHostname() + _this.getPathname(); };
         this.ns = ns;
         this.name = name;
