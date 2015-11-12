@@ -327,12 +327,12 @@ var Endpoints;
     var upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", {
         host: "content",
         style: "upload"
-    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)), new Utils.StructParam("commit", false, new Utils.TextParam("path", false), new Utils.SelectorParam("mode", ["add", "overwrite", "update"], true), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)));
+    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.SelectorParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)]));
     var upload_endpt = new Utils.Endpoint("files", "upload", {
         host: "content",
         style: "upload"
-    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.SelectorParam("mode", ["add", "overwrite", "update"], true), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
-    var search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.SelectorParam("mode", ["filename", "filename_and_content", "deleted_filename"], true));
+    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.SelectorParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
+    var search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.SelectorParam("mode", true, [new Utils.VoidParam("filename"), new Utils.VoidParam("filename_and_content"), new Utils.VoidParam("deleted_filename")]));
     var create_folder_endpt = new Utils.Endpoint("files", "create_folder", {}, new Utils.TextParam("path", false));
     var delete_endpt = new Utils.Endpoint("files", "delete", {}, new Utils.TextParam("path", false));
     var permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", {}, new Utils.TextParam("path", false));
@@ -341,7 +341,7 @@ var Endpoints;
     var get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", {
         host: "content",
         style: "download"
-    }, new Utils.TextParam("path", false), new Utils.SelectorParam("format", ["jpeg", "png"], true), new Utils.SelectorParam("size", ["w32h32", "w64h64", "w128h128", "w640h480", "w1024h768"], true));
+    }, new Utils.TextParam("path", false), new Utils.SelectorParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.SelectorParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w1024h768")]));
     var get_preview_endpt = new Utils.Endpoint("files", "get_preview", {
         host: "content",
         style: "download"
@@ -353,7 +353,7 @@ var Endpoints;
     var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
     var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
     var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
-    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", ["file", "folder"], true));
+    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
     var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
     Endpoints.endpointList = [get_metadata_endpt,
         list_folder_longpoll_endpt,
@@ -404,6 +404,9 @@ var endpoints = require('./endpoints');
 var utils = require('./utils');
 var apicalls = require('./apicalls');
 var codeview = require('./codeview');
+var utils_1 = require("./utils");
+var utils_2 = require("./utils");
+var utils_3 = require("./utils");
 var ce = react.createElement;
 var d = react.DOM;
 var developerPage = 'https://www.dropbox.com/developers-preview';
@@ -512,31 +515,70 @@ var StructParamInput = (function (_super) {
             _this.setState({ fields: newFields });
             _this.props.onChange(_this.props.param.name, newFields);
         };
-        // Updates a specific field
-        this.fieldEdited = function (param, event) {
-            var target = event.target;
-            // If valueToReturn is null, it signifies that the value should be removed from the list
-            var valueToReturn = (target.value !== '' || !param.optional) ?
-                param.getValue(target.value) : null;
-            _this.props.componentEdited(param.name, valueToReturn);
-        };
         this.state = { fields: this.props.param.defaultValue() };
     }
     StructParamInput.prototype.render = function () {
+        return d.tbody(null, this.renderItems());
+    };
+    StructParamInput.prototype.renderItems = function () {
         var _this = this;
-        return d.tbody(null, utils.Dict.map(this.props.param.fields, function (name, value) {
+        return this.props.param.fields.map(function (param) {
             return ce(ParamInput, {
-                key: _this.props.param.name + '_' + name,
+                key: _this.props.param.name + '_' + param.name,
                 onChange: _this.componentEdited,
-                param: value
+                param: param
             });
-        }));
+        });
     };
     return StructParamInput;
 })(react.Component);
+var UnionParamInput = (function (_super) {
+    __extends(UnionParamInput, _super);
+    function UnionParamInput(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.handleSelectionChange = function (event) {
+            var target = event.target;
+            _this.setState({ selected: target.value });
+            _this.props.onChange(_this.props.param.name, _this.getParam(target.value).defaultValue());
+        };
+        this.getParam = function (selected) {
+            var param = _this.props.param.choiceDict[selected];
+            var fields = null;
+            if (param instanceof utils_2.StructParam) {
+                fields = param.fields;
+            }
+            else if (param instanceof utils_1.VoidParam) {
+                fields = [];
+            }
+            else {
+                fields = [param];
+            }
+            return new utils_3.UnionStructParam(_this.props.param.name, fields, selected);
+        };
+        this.state = { selected: this.props.param.defaultValue() };
+    }
+    UnionParamInput.prototype.render = function () {
+        return d.tbody(null, this.props.param.asReact({ onChange: this.handleSelectionChange }), new StructParamInput({
+            key: this.props.key + '_' + this.state.selected,
+            onChange: this.props.onChange,
+            param: this.getParam(this.state.selected)
+        }).renderItems());
+    };
+    return UnionParamInput;
+})(react.Component);
 // Picks the correct React class for a parameter, depending on whether it's a struct.
-var paramClassChooser = function (param) { return param.isStructParam ?
-    StructParamInput : SingleParamInput; };
+var paramClassChooser = function (param) {
+    if (param instanceof utils.StructParam) {
+        return StructParamInput;
+    }
+    else if (param instanceof utils.SelectorParam && !(param instanceof utils.BoolParam)) {
+        return UnionParamInput;
+    }
+    else {
+        return SingleParamInput;
+    }
+};
 var CodeArea = (function (_super) {
     __extends(CodeArea, _super);
     function CodeArea(props) {
@@ -1017,7 +1059,6 @@ exports.Endpoint = Endpoint;
  */
 var Parameter = (function () {
     function Parameter(name, optional) {
-        this.isStructParam = false;
         /* Each subclass will implement these abstract methods differently.
             - getValue should parse the value in the string and return the (typed) value for that
               parameter. For example, integer parameters will use parseInt here.
@@ -1086,6 +1127,18 @@ var FloatParam = (function (_super) {
     return FloatParam;
 })(Parameter);
 exports.FloatParam = FloatParam;
+/* A parameter whose type is void.
+ */
+var VoidParam = (function (_super) {
+    __extends(VoidParam, _super);
+    function VoidParam(name) {
+        _super.call(this, name, true);
+        this.defaultValue = function () { return null; };
+        this.getValue = function (s) { return null; };
+    }
+    return VoidParam;
+})(Parameter);
+exports.VoidParam = VoidParam;
 /* An enumerated type, e.g. simple unions or booleans.
    TODO: more complicated unions (i.e. of more than just unit types) are currently not
    supported. For example, the mode argument to the upload endpoint has a union of two
@@ -1094,18 +1147,21 @@ exports.FloatParam = FloatParam;
  */
 var SelectorParam = (function (_super) {
     __extends(SelectorParam, _super);
-    function SelectorParam(name, choices, optional) {
+    function SelectorParam(name, optional, choices) {
         var _this = this;
         _super.call(this, name, optional);
         this.innerReact = function (props) { return d.select(props, _this.choices.map(function (choice) { return d.option({
-            key: choice,
-            value: choice
-        }, choice); })); };
-        this.defaultValue = function () { return _this.choices[0]; };
+            key: choice.name,
+            value: choice.name
+        }, choice.name); })); };
+        this.defaultValue = function () { return _this.choices[0].name; };
+        this.getValue = function (s) { return s; };
         this.choices = choices;
         if (this.optional) {
-            this.choices.unshift(''); // signals leaving an optional parameter out
+            this.choices.unshift(new VoidParam(''));
         }
+        this.choiceDict = {};
+        this.choices.forEach(function (choice) { return _this.choiceDict[choice.name] = choice; });
     }
     return SelectorParam;
 })(Parameter);
@@ -1114,7 +1170,8 @@ exports.SelectorParam = SelectorParam;
 var BoolParam = (function (_super) {
     __extends(BoolParam, _super);
     function BoolParam(name, optional) {
-        _super.call(this, name, ['false', 'true'], optional);
+        _super.call(this, name, optional, [new VoidParam('false'), new VoidParam('true')]);
+        this.defaultValue = function () { return false; };
         this.getValue = function (s) { return s === 'true'; };
     }
     return BoolParam;
@@ -1146,29 +1203,46 @@ exports.FileParam = FileParam;
  */
 var StructParam = (function (_super) {
     __extends(StructParam, _super);
-    function StructParam(name, optional) {
+    function StructParam(name, optional, fields) {
         var _this = this;
-        var fields = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            fields[_i - 2] = arguments[_i];
-        }
         _super.call(this, name, optional);
-        this.isStructParam = true;
+        this.populateFields = function (dict) {
+            _this.fields.forEach(function (field) {
+                if (!field.optional) {
+                    dict[field.name] = field.defaultValue();
+                }
+            });
+        };
         this.defaultValue = function () {
             var toReturn = {};
-            for (var name_1 in _this.fields) {
-                if (!_this.fields[name_1].optional) {
-                    toReturn[name_1] = _this.fields[name_1].defaultValue();
-                }
-            }
+            _this.populateFields(toReturn);
             return toReturn;
         };
-        this.fields = {};
-        fields.forEach(function (nextField) { return _this.fields[nextField.name] = nextField; });
+        this.fields = fields;
     }
     return StructParam;
 })(Parameter);
 exports.StructParam = StructParam;
+/* We struct union similar way as regular struct. In addition, we add .tag field at the beginning.
+ */
+var UnionStructParam = (function (_super) {
+    __extends(UnionStructParam, _super);
+    function UnionStructParam(name, fields, tag) {
+        var _this = this;
+        _super.call(this, name, false, fields);
+        this.defaultValue = function () {
+            if (_this.tag == '') {
+                return null;
+            }
+            var toReturn = { '.tag': _this.tag };
+            _this.populateFields(toReturn);
+            return toReturn;
+        };
+        this.tag = tag;
+    }
+    return UnionStructParam;
+})(StructParam);
+exports.UnionStructParam = UnionStructParam;
 // Utilities for token flow
 var csrfTokenStorageName = 'Dropbox_API_state';
 var tokenStorageName = 'Dropbox_API_explorer_token';
