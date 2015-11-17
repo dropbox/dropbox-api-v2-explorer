@@ -327,12 +327,12 @@ var Endpoints;
     var upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", {
         host: "content",
         style: "upload"
-    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.SelectorParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)]));
+    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)]));
     var upload_endpt = new Utils.Endpoint("files", "upload", {
         host: "content",
         style: "upload"
-    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.SelectorParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
-    var search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.SelectorParam("mode", true, [new Utils.VoidParam("filename"), new Utils.VoidParam("filename_and_content"), new Utils.VoidParam("deleted_filename")]));
+    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
+    var search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.UnionParam("mode", true, [new Utils.VoidParam("filename"), new Utils.VoidParam("filename_and_content"), new Utils.VoidParam("deleted_filename")]));
     var create_folder_endpt = new Utils.Endpoint("files", "create_folder", {}, new Utils.TextParam("path", false));
     var delete_endpt = new Utils.Endpoint("files", "delete", {}, new Utils.TextParam("path", false));
     var permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", {}, new Utils.TextParam("path", false));
@@ -341,7 +341,7 @@ var Endpoints;
     var get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", {
         host: "content",
         style: "download"
-    }, new Utils.TextParam("path", false), new Utils.SelectorParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.SelectorParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w1024h768")]));
+    }, new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w1024h768")]));
     var get_preview_endpt = new Utils.Endpoint("files", "get_preview", {
         host: "content",
         style: "download"
@@ -353,7 +353,7 @@ var Endpoints;
     var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
     var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
     var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
-    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.SelectorParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
+    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
     var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
     Endpoints.endpointList = [get_metadata_endpt,
         list_folder_longpoll_endpt,
@@ -407,6 +407,7 @@ var codeview = require('./codeview');
 var utils_1 = require("./utils");
 var utils_2 = require("./utils");
 var utils_3 = require("./utils");
+var utils_4 = require("./utils");
 var ce = react.createElement;
 var d = react.DOM;
 var developerPage = 'https://www.dropbox.com/developers-preview';
@@ -449,9 +450,201 @@ var TokenInput = (function (_super) {
     };
     return TokenInput;
 })(react.Component);
+/* Input component for single parameter.
+   A value handler is responsible for value update and signal for specific parameter.
+   Every time a field value gets updated, the update method of its corresponding value
+   handler should be called.
+ */
+var ValueHandler = (function () {
+    function ValueHandler() {
+        // Signal react render.
+        this.update = function () { return null; };
+        // Update value for current parameter.
+        this.updateValue = function (value) { return null; };
+    }
+    return ValueHandler;
+})();
+/*  Type of value handler which can contain child value handlers.
+ */
+var ParentValueHandler = (function (_super) {
+    __extends(ParentValueHandler, _super);
+    function ParentValueHandler() {
+        var _this = this;
+        _super.apply(this, arguments);
+        // Create a child value handler based on parameter type.
+        this.getChildHandler = function (param) {
+            if (param instanceof utils_4.FileParam) {
+                return new FileValueHandler(param, _this);
+            }
+            else if (param instanceof utils_3.UnionParam) {
+                return new UnionValueHandler(param, _this);
+            }
+            else if (param instanceof utils_2.StructParam) {
+                return new StructValueHandler(param, _this);
+            }
+            else {
+                return new ChildValueHandler(param, _this);
+            }
+        };
+        this.getOrCreate = function (name) {
+            var dict = _this.current();
+            if (name in dict) {
+                return dict[name];
+            }
+            else {
+                dict[name] = {};
+                return dict[name];
+            }
+        };
+        this.hasChild = function (name) {
+            var dict = _this.current();
+            if (name in dict) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        this.value = function (key) {
+            var dict = _this.current();
+            if (key in dict) {
+                return dict[key];
+            }
+            else {
+                return null;
+            }
+        };
+        this.updateChildValue = function (name, value) {
+            var dict = _this.current();
+            if (value == null) {
+                delete dict[name];
+            }
+            else {
+                dict[name] = value;
+            }
+        };
+        this.current = function () { throw new Error('Not implemented.'); };
+    }
+    return ParentValueHandler;
+})(ValueHandler);
+/* Value handler for struct type.
+ */
+var StructValueHandler = (function (_super) {
+    __extends(StructValueHandler, _super);
+    function StructValueHandler(param, parent) {
+        var _this = this;
+        _super.call(this);
+        this.current = function () { return _this.parent.getOrCreate(_this.param.name); };
+        this.update = function () { return _this.parent.update(); };
+        this.param = param;
+        this.parent = parent;
+    }
+    return StructValueHandler;
+})(ParentValueHandler);
+/* Value handler for union type.
+ */
+var UnionValueHandler = (function (_super) {
+    __extends(UnionValueHandler, _super);
+    function UnionValueHandler(param, parent) {
+        var _this = this;
+        _super.call(this, param, parent);
+        this.getTag = function () {
+            if (_this.parent.hasChild(_this.param.name)) {
+                return _this.value('.tag');
+            }
+            else {
+                return null;
+            }
+        };
+        this.updateTag = function (tag) {
+            _this.parent.updateChildValue(_this.param.name, null);
+            if (tag != null) {
+                _this.updateChildValue('.tag', tag);
+            }
+        };
+        this.getTagHandler = function () {
+            return new TagValueHandler(_this);
+        };
+    }
+    return UnionValueHandler;
+})(StructValueHandler);
+/* Value handler for primitive types.
+ */
+var ChildValueHandler = (function (_super) {
+    __extends(ChildValueHandler, _super);
+    function ChildValueHandler(param, parent) {
+        var _this = this;
+        _super.call(this);
+        this.updateValue = function (value) {
+            _this.parent.updateChildValue(_this.param.name, value);
+        };
+        this.update = function () { return _this.parent.update(); };
+        this.param = param;
+        this.parent = parent;
+    }
+    return ChildValueHandler;
+})(ValueHandler);
+/* Value handler for file parameter.
+ */
+var FileValueHandler = (function (_super) {
+    __extends(FileValueHandler, _super);
+    function FileValueHandler(param, parent) {
+        var _this = this;
+        _super.call(this, param, parent);
+        // Update value of current parameter.
+        this.updateValue = function (value) {
+            _this.parent.updateFile(value);
+        };
+    }
+    return FileValueHandler;
+})(ChildValueHandler);
+/* Value handler for union tag.
+ */
+var TagValueHandler = (function (_super) {
+    __extends(TagValueHandler, _super);
+    function TagValueHandler(parent) {
+        var _this = this;
+        _super.call(this, null, parent);
+        this.updateValue = function (value) {
+            _this.parent.updateTag(value);
+        };
+    }
+    return TagValueHandler;
+})(ChildValueHandler);
+/* Value handler for root.
+ */
+var RootValueHandler = (function (_super) {
+    __extends(RootValueHandler, _super);
+    function RootValueHandler(paramVals, callback) {
+        var _this = this;
+        _super.call(this);
+        this.current = function () { return _this.paramVals; };
+        this.update = function () { return _this.callback(_this.paramVals, _this.file); };
+        this.updateFile = function (value) { return _this.file = value; };
+        this.paramVals = paramVals;
+        this.file = null;
+        this.callback = callback;
+    }
+    return RootValueHandler;
+})(ParentValueHandler);
 var ParamInput = (function (_super) {
     __extends(ParamInput, _super);
     function ParamInput(props) {
+        _super.call(this, props);
+    }
+    ParamInput.prototype.render = function () {
+        return d.tbody(null, this.renderItems());
+    };
+    ParamInput.prototype.renderItems = function () {
+        throw new Error('Not implemented.');
+    };
+    return ParamInput;
+})(react.Component);
+/* Input component for single parameter.
+ */
+var SingleParamInput = (function (_super) {
+    __extends(SingleParamInput, _super);
+    function SingleParamInput(props) {
         var _this = this;
         _super.call(this, props);
         // When the field is edited, its value is parsed and the state is updated.
@@ -465,120 +658,100 @@ var ParamInput = (function (_super) {
             }
             else {
                 var target = event.target;
-                _this.setState({ text: target.value });
                 /* If valueToReturn is left as null, it signals an optional value that should be
-                   deleted from the dict of param values.
+                 deleted from the dict of param values.
                  */
                 if (target.value !== '' || !_this.props.param.optional) {
                     valueToReturn = _this.props.param.getValue(target.value);
                 }
             }
-            _this.props.onChange(_this.props.param.name, valueToReturn);
+            _this.props.handler.updateValue(valueToReturn);
+            _this.props.handler.update();
         };
-        this.shouldComponentUpdate = function (_, newState) {
-            return _this.state.text !== newState['text'];
-        };
-        this.state = { text: '' };
     }
-    /* Since different kinds of parameters have to render differently, this render method is a
-       wrapper to the parameter's own method.
-    */
-    ParamInput.prototype.render = function () {
-        return this.props.param.asReact({ onChange: this.handleEdit });
-    };
-    return ParamInput;
-})(react.Component);
-/* Input component for single parameter.
- */
-var SingleParamInput = (function (_super) {
-    __extends(SingleParamInput, _super);
-    function SingleParamInput() {
-        _super.apply(this, arguments);
-    }
-    SingleParamInput.prototype.render = function () {
-        return d.tbody(null, ce(ParamInput, this.props));
+    SingleParamInput.prototype.renderItems = function () {
+        return [this.props.param.asReact({ onChange: this.handleEdit }, this.props.key)];
     };
     return SingleParamInput;
-})(react.Component);
+})(ParamInput);
 var StructParamInput = (function (_super) {
     __extends(StructParamInput, _super);
     function StructParamInput(props) {
-        var _this = this;
         _super.call(this, props);
-        // Updates the whole struct
-        this.componentEdited = function (name, value) {
-            var newFields = _this.state.fields;
-            if (value === null)
-                delete newFields[name];
-            else
-                newFields[name] = value;
-            _this.setState({ fields: newFields });
-            _this.props.onChange(_this.props.param.name, newFields);
-        };
-        this.state = { fields: this.props.param.defaultValue() };
     }
-    StructParamInput.prototype.render = function () {
-        return d.tbody(null, this.renderItems());
-    };
     StructParamInput.prototype.renderItems = function () {
         var _this = this;
-        return this.props.param.fields.map(function (param) {
-            return ce(ParamInput, {
-                key: _this.props.param.name + '_' + param.name,
-                onChange: _this.componentEdited,
+        var toReturn = [];
+        this.props.param.fields.forEach(function (param) {
+            return toReturn = toReturn.concat(ParamClassChooser.getParamInput(param, {
+                key: _this.props.key + '_' + _this.props.param.name + '_' + param.name,
+                handler: _this.props.handler.getChildHandler(param),
                 param: param
-            });
+            }).renderItems());
         });
+        return toReturn;
     };
     return StructParamInput;
-})(react.Component);
+})(ParamInput);
 var UnionParamInput = (function (_super) {
     __extends(UnionParamInput, _super);
     function UnionParamInput(props) {
         var _this = this;
         _super.call(this, props);
-        this.handleSelectionChange = function (event) {
-            var target = event.target;
-            _this.setState({ selected: target.value });
-            _this.props.onChange(_this.props.param.name, _this.getParam(target.value).defaultValue());
-        };
-        this.getParam = function (selected) {
-            var param = _this.props.param.choiceDict[selected];
+        this.getParam = function () {
+            var tag = _this.props.handler.getTag();
             var fields = null;
-            if (param instanceof utils_2.StructParam) {
-                fields = param.fields;
-            }
-            else if (param instanceof utils_1.VoidParam) {
+            if (tag == null) {
                 fields = [];
             }
             else {
-                fields = [param];
+                var param = _this.props.param.fields.filter(function (t) { return t.name == tag; })[0];
+                if (param instanceof utils_2.StructParam) {
+                    fields = param.fields;
+                }
+                else if (param instanceof utils_1.VoidParam) {
+                    fields = [];
+                }
+                else {
+                    fields = [param];
+                }
             }
-            return new utils_3.UnionStructParam(_this.props.param.name, fields, selected);
+            return new utils_2.StructParam(_this.props.param.name, false, fields);
         };
-        this.state = { selected: this.props.param.defaultValue() };
     }
-    UnionParamInput.prototype.render = function () {
-        return d.tbody(null, this.props.param.asReact({ onChange: this.handleSelectionChange }), new StructParamInput({
-            key: this.props.key + '_' + this.state.selected,
-            onChange: this.props.onChange,
-            param: this.getParam(this.state.selected)
-        }).renderItems());
+    UnionParamInput.prototype.renderItems = function () {
+        var selectParam = new SingleParamInput({
+            key: this.props.key + '_selector',
+            handler: this.props.handler.getTagHandler(),
+            param: this.props.param.getSelectorParam()
+        });
+        var param = this.getParam();
+        var structParam = new StructParamInput({
+            key: this.props.key + '_' + param.name,
+            handler: this.props.handler,
+            param: param
+        });
+        return selectParam.renderItems().concat(structParam.renderItems());
     };
     return UnionParamInput;
-})(react.Component);
+})(ParamInput);
 // Picks the correct React class for a parameter, depending on whether it's a struct.
-var paramClassChooser = function (param) {
-    if (param instanceof utils.StructParam) {
-        return StructParamInput;
+var ParamClassChooser = (function () {
+    function ParamClassChooser() {
     }
-    else if (param instanceof utils.SelectorParam && !(param instanceof utils.BoolParam)) {
-        return UnionParamInput;
-    }
-    else {
-        return SingleParamInput;
-    }
-};
+    ParamClassChooser.getParamInput = function (param, props) {
+        if (param instanceof utils.UnionParam) {
+            return new UnionParamInput(props);
+        }
+        else if (param instanceof utils.StructParam) {
+            return new StructParamInput(props);
+        }
+        else {
+            return new SingleParamInput(props);
+        }
+    };
+    return ParamClassChooser;
+})();
 var CodeArea = (function (_super) {
     __extends(CodeArea, _super);
     function CodeArea(props) {
@@ -600,19 +773,8 @@ var RequestArea = (function (_super) {
     function RequestArea(props) {
         var _this = this;
         _super.call(this, props);
-        this.updateParamValues = function (key, value) {
-            if (key === '__file__') {
-                _this.setState({ __file__: value });
-            }
-            else {
-                var newVals = _this.state.paramVals;
-                // null is used as a signal to delete the value
-                if (value === null)
-                    delete newVals[key];
-                else
-                    newVals[key] = value;
-                _this.setState({ paramVals: newVals });
-            }
+        this.updateParamValues = function (paramVals, file) {
+            _this.setState({ paramVals: paramVals, __file__: file });
         };
         /* Called when a new endpoint is chosen or the user updates the token. If a new endpoint is
            chosen, we should initialize its parameter values; if a new token is chosen, any error
@@ -661,15 +823,16 @@ var RequestArea = (function (_super) {
         }
         var name = this.props.currEpt.name.replace('/', '-');
         var documentation = developerPage + "/documentation/http#documentation-" + this.props.currEpt.ns + "-" + name;
+        var handler = new RootValueHandler(this.state.paramVals, this.updateParamValues);
         return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, d.tbody(null, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
         }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: documentation }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
-            return ce(paramClassChooser(param), {
+            return ParamClassChooser.getParamInput(param, {
                 key: _this.props.currEpt.name + param.name,
-                onChange: _this.updateParamValues,
+                handler: handler.getChildHandler(param),
                 param: param
-            });
+            }).render();
         })), d.div(null, d.button({ onClick: this.showOrHideCode }, this.state.showCode ? 'Hide Code' : 'Show Code'), d.button({ onClick: this.submit, disabled: this.props.inProgress }, 'Submit Call'), d.img({
             src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
             hidden: !this.props.inProgress,
@@ -1075,12 +1238,12 @@ var Parameter = (function () {
     /* Renders the parameter's input field, using another method which depends on the
        parameter's subclass.
      */
-    Parameter.prototype.asReact = function (props) {
+    Parameter.prototype.asReact = function (props, key) {
         var nameArgs = this.optional ? { 'style': { 'color': '#999' } } : {};
         var displayName = (this.name !== '__file__') ? this.name : 'File to upload';
         if (this.optional)
             displayName += ' (optional)';
-        return d.tr(null, d.td(nameArgs, displayName), d.td(null, this.innerReact(props)));
+        return d.tr({ key: key }, d.td(nameArgs, displayName), d.td(null, this.innerReact(props)));
     };
     return Parameter;
 })();
@@ -1139,29 +1302,21 @@ var VoidParam = (function (_super) {
     return VoidParam;
 })(Parameter);
 exports.VoidParam = VoidParam;
-/* An enumerated type, e.g. simple unions or booleans.
-   TODO: more complicated unions (i.e. of more than just unit types) are currently not
-   supported. For example, the mode argument to the upload endpoint has a union of two
-   void types and a string; we would like to be able to support these, but haven't gotten
-   around to it yet.
- */
 var SelectorParam = (function (_super) {
     __extends(SelectorParam, _super);
     function SelectorParam(name, optional, choices) {
         var _this = this;
         _super.call(this, name, optional);
-        this.innerReact = function (props) { return d.select(props, _this.choices.map(function (choice) { return d.option({
-            key: choice.name,
-            value: choice.name
-        }, choice.name); })); };
-        this.defaultValue = function () { return _this.choices[0].name; };
+        this.defaultValue = function () { return _this.choices[0]; };
         this.getValue = function (s) { return s; };
+        this.innerReact = function (props) { return d.select(props, _this.choices.map(function (choice) { return d.option({
+            key: choice,
+            value: choice
+        }, choice); })); };
         this.choices = choices;
         if (this.optional) {
-            this.choices.unshift(new VoidParam(''));
+            this.choices.unshift('');
         }
-        this.choiceDict = {};
-        this.choices.forEach(function (choice) { return _this.choiceDict[choice.name] = choice; });
     }
     return SelectorParam;
 })(Parameter);
@@ -1170,8 +1325,7 @@ exports.SelectorParam = SelectorParam;
 var BoolParam = (function (_super) {
     __extends(BoolParam, _super);
     function BoolParam(name, optional) {
-        _super.call(this, name, optional, [new VoidParam('false'), new VoidParam('true')]);
-        this.defaultValue = function () { return false; };
+        _super.call(this, name, optional, ['false', 'true']);
         this.getValue = function (s) { return s === 'true'; };
     }
     return BoolParam;
@@ -1223,26 +1377,21 @@ var StructParam = (function (_super) {
     return StructParam;
 })(Parameter);
 exports.StructParam = StructParam;
-/* We struct union similar way as regular struct. In addition, we add .tag field at the beginning.
- */
-var UnionStructParam = (function (_super) {
-    __extends(UnionStructParam, _super);
-    function UnionStructParam(name, fields, tag) {
+// Union are selectors with multiple fields.
+var UnionParam = (function (_super) {
+    __extends(UnionParam, _super);
+    function UnionParam(name, optional, fields) {
         var _this = this;
-        _super.call(this, name, false, fields);
-        this.defaultValue = function () {
-            if (_this.tag == '') {
-                return null;
-            }
-            var toReturn = { '.tag': _this.tag };
-            _this.populateFields(toReturn);
-            return toReturn;
+        _super.call(this, name, optional, fields);
+        this.getSelectorParam = function () {
+            var choices = [];
+            _this.fields.forEach(function (p) { return choices.push(p.name); });
+            return new SelectorParam(_this.name, _this.optional, choices);
         };
-        this.tag = tag;
     }
-    return UnionStructParam;
+    return UnionParam;
 })(StructParam);
-exports.UnionStructParam = UnionStructParam;
+exports.UnionParam = UnionParam;
 // Utilities for token flow
 var csrfTokenStorageName = 'Dropbox_API_state';
 var tokenStorageName = 'Dropbox_API_explorer_token';
