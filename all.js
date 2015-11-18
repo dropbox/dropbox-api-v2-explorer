@@ -43,12 +43,17 @@ exports.chooseCallback = function (k, path) {
         default: return JSONListener;
     }
 };
-var initRequest = function (endpt, headers, listener, component) {
+var initRequest = function (endpt, token, data, listener, component) {
     var request = new XMLHttpRequest();
     request.onload = function (_) { return listener(component, request); };
     request.open('POST', endpt.getURL(), true);
+    var headers = utils.getHeaders(endpt, token, data);
     for (var key in headers) {
-        request.setRequestHeader(key, headers[key]);
+        var value = headers[key];
+        if (key == "Content-Type" && endpt.getEndpointKind() == utils.EndpointKind.RPCLike) {
+            value = "text/plain; charset=dropbox-cors-hack";
+        }
+        request.setRequestHeader(key, value);
     }
     return request;
 };
@@ -64,6 +69,12 @@ var endRequest = function (component) {
    the endpoint is upload-like, download-like, or RPC-like.
    The file parameter will be null unless the user specified a file on an upload-like endpoint.
  */
+var utf8Encode = function (data, request) {
+    var blob = new Blob([data]);
+    var reader = new FileReader();
+    reader.onloadend = function () { return request.send(new Uint8Array(reader.result)); };
+    reader.readAsArrayBuffer(blob);
+};
 exports.APIWrapper = function (data, endpt, token, listener, component, file) {
     beginRequest(component);
     var listener_wrapper = function (component, resp) {
@@ -72,11 +83,11 @@ exports.APIWrapper = function (data, endpt, token, listener, component, file) {
     };
     switch (endpt.getEndpointKind()) {
         case utils.EndpointKind.RPCLike:
-            var request = initRequest(endpt, utils.RPCLikeHeaders(token), listener_wrapper, component);
-            request.send(data);
+            var request = initRequest(endpt, token, data, listener_wrapper, component);
+            utf8Encode(data, request);
             break;
         case utils.EndpointKind.Upload:
-            var request = initRequest(endpt, utils.uploadLikeHeaders(token, data), listener_wrapper, component);
+            var request = initRequest(endpt, token, data, listener_wrapper, component);
             if (file !== null) {
                 var reader = new FileReader();
                 reader.onload = function () { return request.send(reader.result); };
@@ -87,7 +98,7 @@ exports.APIWrapper = function (data, endpt, token, listener, component, file) {
             }
             break;
         case utils.EndpointKind.Download:
-            var request = initRequest(endpt, utils.downloadLikeHeaders(token, data), listener_wrapper, component);
+            var request = initRequest(endpt, token, data, listener_wrapper, component);
             // Binary files shouldn't be accessed as strings
             request.responseType = 'arraybuffer';
             request.send();
@@ -153,10 +164,10 @@ var RequestsCodeViewer = function () {
         return syntaxHighlight(syntax, d.span(null, preamble(endpt), dictToPython('headers', headers), dataReader, call));
     };
     var requestsRPCLike = function (endpt, token, paramVals) {
-        return requestsTemplate(endpt, utils.RPCLikeHeaders(token), dictToPython('data', paramVals), 'r = requests.post(url, headers=headers, data=json.dumps(data))');
+        return requestsTemplate(endpt, utils.getHeaders(endpt, token), dictToPython('data', paramVals), 'r = requests.post(url, headers=headers, data=json.dumps(data))');
     };
     var requestsUploadLike = function (endpt, token, paramVals, file) {
-        return requestsTemplate(endpt, utils.uploadLikeHeaders(token, JSON.stringify(paramVals)), 'data = open(' + JSON.stringify(file.name) + ', "rb").read()\n\n', 'r = requests.post(url, headers=headers, data=data)');
+        return requestsTemplate(endpt, utils.getHeaders(endpt, token, JSON.stringify(paramVals)), 'data = open(' + JSON.stringify(file.name) + ', "rb").read()\n\n', 'r = requests.post(url, headers=headers, data=data)');
     };
     var requestsDownloadLike = function (endpt, token, paramVals) {
         return requestsTemplate(endpt, utils.getHeaders(endpt, token, JSON.stringify(paramVals)), '', 'r = requests.post(url, headers=headers)');
@@ -177,10 +188,10 @@ var HttplibCodeViewer = function () {
         return syntaxHighlight(syntax, d.span(null, preamble, dictToPython('headers', headers), dataReader, 'c = httplib.HTTPSConnection("' + endpt.getHostname() + '")\n', 'c.request("POST", "' + endpt.getPathname() + '", ' + dataArg + ', headers)\n', 'r = c.getresponse()'));
     };
     var httplibRPCLike = function (endpt, token, paramVals) {
-        return httplibTemplate(endpt, utils.RPCLikeHeaders(token), dictToPython('params', paramVals), 'json.dumps(params)');
+        return httplibTemplate(endpt, utils.getHeaders(endpt, token), dictToPython('params', paramVals), 'json.dumps(params)');
     };
     var httplibUploadLike = function (endpt, token, paramVals, file) {
-        return httplibTemplate(endpt, utils.uploadLikeHeaders(token, JSON.stringify(paramVals)), 'data = open(' + JSON.stringify(file.name) + ', "rb")\n\n', 'data');
+        return httplibTemplate(endpt, utils.getHeaders(endpt, token, JSON.stringify(paramVals)), 'data = open(' + JSON.stringify(file.name) + ', "rb")\n\n', 'data');
     };
     var httplibDownloadLike = function (endpt, token, paramVals) {
         return httplibTemplate(endpt, utils.getHeaders(endpt, token, JSON.stringify(paramVals)), '', '""');
@@ -207,10 +218,10 @@ var CurlCodeViewer = function () {
         return syntaxHighlight(syntax, d.span(null, urlArea(endpt), makeHeaders(headers), data));
     };
     var curlRPCLike = function (endpt, token, paramVals) {
-        return curlTemplate(endpt, utils.RPCLikeHeaders(token), "\\\n  --data '" + shellEscape(paramVals) + "'");
+        return curlTemplate(endpt, utils.getHeaders(endpt, token), "\\\n  --data '" + shellEscape(paramVals) + "'");
     };
     var curlUploadLike = function (endpt, token, paramVals, file) {
-        var headers = utils.uploadLikeHeaders(token, shellEscape(paramVals, false));
+        var headers = utils.getHeaders(endpt, token, shellEscape(paramVals, false));
         return curlTemplate(endpt, headers, "\\\n  --data-binary @'" + file.name.replace(/'/g, "'\\''") + "'");
     };
     var curlDownloadLike = function (endpt, token, paramVals) {
@@ -231,13 +242,13 @@ var HTTPCodeViewer = function () {
     };
     var httpRPCLike = function (endpt, token, paramVals) {
         var body = JSON.stringify(paramVals, null, 4);
-        var headers = utils.RPCLikeHeaders(token);
+        var headers = utils.getHeaders(endpt, token);
         // TODO: figure out how to determine the UTF-8 encoded length
         //headers['Content-Length'] = ...
         return httpTemplate(endpt, headers, "\n" + body);
     };
     var httpUploadLike = function (endpt, token, paramVals, file) {
-        var headers = utils.uploadLikeHeaders(token, JSON.stringify(paramVals));
+        var headers = utils.getHeaders(endpt, token, JSON.stringify(paramVals));
         headers['Content-Length'] = file.size;
         return httpTemplate(endpt, headers, "\n--- (content of " + file.name + " goes here) ---");
     };
@@ -869,10 +880,6 @@ var EndpointSelector = (function (_super) {
                 // Skip not implemented endpoints.
                 return true;
             }
-            if (ept.getHostname().indexOf("notify") >= 0) {
-                // Skip longpoll endpoints.
-                return true;
-            }
         };
     }
     // Renders the logo and the list of endpoints
@@ -1176,6 +1183,13 @@ exports.LocalStorage = LocalStorage;
 })(exports.EndpointKind || (exports.EndpointKind = {}));
 var EndpointKind = exports.EndpointKind;
 ;
+(function (AuthType) {
+    AuthType[AuthType["None"] = 0] = "None";
+    AuthType[AuthType["User"] = 1] = "User";
+    AuthType[AuthType["Team"] = 2] = "Team";
+})(exports.AuthType || (exports.AuthType = {}));
+var AuthType = exports.AuthType;
+;
 /* A class with all the information about an endpoint: its name and namespace; its kind
    (as listed above), and its list of parameters. The endpoints are all initialized in
    endpoints.ts, which is code-generated.
@@ -1195,6 +1209,17 @@ var Endpoint = (function () {
                     return "notify.dropboxapi.com";
                 default:
                     return "api.dropboxapi.com";
+            }
+        };
+        this.getAuthType = function () {
+            if (_this.attrs["host"] == "notify") {
+                return AuthType.None;
+            }
+            else if (_this.attrs["auth"] == "team") {
+                return AuthType.Team;
+            }
+            else {
+                return AuthType.User;
             }
         };
         this.getEndpointKind = function () {
@@ -1530,11 +1555,13 @@ var Highlight = (function (_super) {
 exports.Highlight = Highlight;
 // Utility functions for getting the headers for an API call
 // The headers for an RPC-like endpoint HTTP request
-exports.RPCLikeHeaders = function (token) {
-    return {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json"
-    };
+exports.RPCLikeHeaders = function (token, includeAuth) {
+    var toReturn = {};
+    if (includeAuth) {
+        toReturn['Authorization'] = "Bearer " + token;
+    }
+    toReturn["Content-Type"] = "application/json";
+    return toReturn;
 };
 // args may need to be modified by the client, so they're passed in as a string
 exports.uploadLikeHeaders = function (token, args) {
@@ -1551,8 +1578,9 @@ exports.downloadLikeHeaders = function (token, args) {
     };
 };
 exports.getHeaders = function (ept, token, args) {
+    if (args === void 0) { args = null; }
     switch (ept.getEndpointKind()) {
-        case EndpointKind.RPCLike: return exports.RPCLikeHeaders(token);
+        case EndpointKind.RPCLike: return exports.RPCLikeHeaders(token, ept.getAuthType() != AuthType.None);
         case EndpointKind.Upload: return exports.uploadLikeHeaders(token, args);
         case EndpointKind.Download: return exports.downloadLikeHeaders(token, args);
     }
