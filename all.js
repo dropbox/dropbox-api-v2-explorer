@@ -318,11 +318,12 @@ var Endpoints;
 (function (Endpoints) {
     var get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", {}, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true));
     var list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", {
-        host: "notify"
+        host: "notify",
+        auth: "noauth"
     }, new Utils.TextParam("cursor", false), new Utils.IntParam("timeout", true));
-    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
+    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true));
     var list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", {}, new Utils.TextParam("cursor", false));
-    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true));
+    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true));
     var download_endpt = new Utils.Endpoint("files", "download", {
         host: "content",
         style: "download"
@@ -359,13 +360,30 @@ var Endpoints;
     }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
     var list_revisions_endpt = new Utils.Endpoint("files", "list_revisions", {}, new Utils.TextParam("path", false), new Utils.IntParam("limit", true));
     var restore_endpt = new Utils.Endpoint("files", "restore", {}, new Utils.TextParam("path", false), new Utils.TextParam("rev", false));
+    var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
+    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
+    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
+    var list_folders_endpt = new Utils.Endpoint("sharing", "list_folders", {});
+    var list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue", {}, new Utils.TextParam("cursor", false));
+    var get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata", {}, new Utils.TextParam("shared_folder_id", false));
+    var list_folder_members_endpt = new Utils.Endpoint("sharing", "list_folder_members", {}, new Utils.TextParam("shared_folder_id", false));
+    var list_folder_members_continue_endpt = new Utils.Endpoint("sharing", "list_folder_members/continue", {}, new Utils.TextParam("cursor", false));
+    var share_folder_endpt = new Utils.Endpoint("sharing", "share_folder", {}, new Utils.TextParam("path", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.BoolParam("force_async", true));
+    var check_share_job_status_endpt = new Utils.Endpoint("sharing", "check_share_job_status", {}, new Utils.TextParam("async_job_id", false));
+    var check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status", {}, new Utils.TextParam("async_job_id", false));
+    var unshare_folder_endpt = new Utils.Endpoint("sharing", "unshare_folder", {}, new Utils.TextParam("shared_folder_id", false), new Utils.BoolParam("leave_a_copy", false));
+    var transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder", {}, new Utils.TextParam("shared_folder_id", false), new Utils.TextParam("to_dropbox_id", false));
+    var update_folder_policy_endpt = new Utils.Endpoint("sharing", "update_folder_policy", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]));
+    var add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member", {}, new Utils.TextParam("shared_folder_id", false), null /* not implemented yet */, new Utils.BoolParam("quiet", true), new Utils.TextParam("custom_message", true));
+    var remove_folder_member_endpt = new Utils.Endpoint("sharing", "remove_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.BoolParam("leave_a_copy", false));
+    var update_folder_member_endpt = new Utils.Endpoint("sharing", "update_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("other")]));
+    var mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder", {}, new Utils.TextParam("shared_folder_id", false));
+    var unmount_folder_endpt = new Utils.Endpoint("sharing", "unmount_folder", {}, new Utils.TextParam("shared_folder_id", false));
+    var relinquish_folder_membership_endpt = new Utils.Endpoint("sharing", "relinquish_folder_membership", {}, new Utils.TextParam("shared_folder_id", false));
     var get_account_endpt = new Utils.Endpoint("users", "get_account", {}, new Utils.TextParam("account_id", false));
     var get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", {});
     var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
     var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
-    var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
-    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
-    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
     Endpoints.endpointList = [get_metadata_endpt,
         list_folder_longpoll_endpt,
         list_folder_endpt,
@@ -386,13 +404,30 @@ var Endpoints;
         get_preview_endpt,
         list_revisions_endpt,
         restore_endpt,
+        get_shared_links_endpt,
+        create_shared_link_endpt,
+        revoke_shared_link_endpt,
+        list_folders_endpt,
+        list_folders_continue_endpt,
+        get_folder_metadata_endpt,
+        list_folder_members_endpt,
+        list_folder_members_continue_endpt,
+        share_folder_endpt,
+        check_share_job_status_endpt,
+        check_job_status_endpt,
+        unshare_folder_endpt,
+        transfer_folder_endpt,
+        update_folder_policy_endpt,
+        add_folder_member_endpt,
+        remove_folder_member_endpt,
+        update_folder_member_endpt,
+        mount_folder_endpt,
+        unmount_folder_endpt,
+        relinquish_folder_membership_endpt,
         get_account_endpt,
         get_current_account_endpt,
         get_space_usage_endpt,
-        get_account_batch_endpt,
-        get_shared_links_endpt,
-        create_shared_link_endpt,
-        revoke_shared_link_endpt];
+        get_account_batch_endpt];
 })(Endpoints || (Endpoints = {}));
 module.exports = Endpoints;
 
@@ -421,7 +456,7 @@ var utils_3 = require("./utils");
 var utils_4 = require("./utils");
 var ce = react.createElement;
 var d = react.DOM;
-var developerPage = 'https://www.dropbox.com/developers-preview';
+var developerPage = 'https://www.dropbox.com/developers';
 /* Element for text field in page table.
  */
 var tableText = function (text) {
@@ -833,7 +868,7 @@ var RequestArea = (function (_super) {
             errMsg = [d.span({ style: { color: 'red' } }, this.state.errMsg)];
         }
         var name = this.props.currEpt.name.replace('/', '-');
-        var documentation = developerPage + "/documentation/http#documentation-" + this.props.currEpt.ns + "-" + name;
+        var documentation = developerPage + "/documentation/http/documentation#" + this.props.currEpt.ns + "-" + name;
         var handler = new RootValueHandler(this.state.paramVals, this.updateParamValues);
         return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, d.tbody(null, ce(TokenInput, {
             toggleShow: this.showOrHide,
@@ -1412,6 +1447,20 @@ var UnionParam = (function (_super) {
             var choices = [];
             _this.fields.forEach(function (p) { return choices.push(p.name); });
             return new SelectorParam(_this.name, _this.optional, choices);
+        };
+        this.defaultValue = function () {
+            if (_this.optional) {
+                return null;
+            }
+            var param = _this.fields[0];
+            var toReturn = { '.tag': param.name };
+            if (param instanceof StructParam) {
+                param.populateFields(toReturn);
+            }
+            else {
+                toReturn[param.name] = param.defaultValue();
+            }
+            return toReturn;
         };
     }
     return UnionParam;
