@@ -360,9 +360,17 @@ var Endpoints;
     }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
     var list_revisions_endpt = new Utils.Endpoint("files", "list_revisions", {}, new Utils.TextParam("path", false), new Utils.IntParam("limit", true));
     var restore_endpt = new Utils.Endpoint("files", "restore", {}, new Utils.TextParam("path", false), new Utils.TextParam("rev", false));
+    var get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata", {}, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
+    var list_shared_links_endpt = new Utils.Endpoint("sharing", "list_shared_links", {}, new Utils.TextParam("path", true), new Utils.TextParam("cursor", true));
+    var modify_shared_link_settings_endpt = new Utils.Endpoint("sharing", "modify_shared_link_settings", {}, new Utils.TextParam("url", false), new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
+    var create_shared_link_with_settings_endpt = new Utils.Endpoint("sharing", "create_shared_link_with_settings", {}, new Utils.TextParam("path", false), new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
+    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
+    var get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file", {
+        host: "content",
+        style: "download"
+    }, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
     var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
     var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
-    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
     var list_folders_endpt = new Utils.Endpoint("sharing", "list_folders", {});
     var list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue", {}, new Utils.TextParam("cursor", false));
     var get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata", {}, new Utils.TextParam("shared_folder_id", false));
@@ -404,9 +412,14 @@ var Endpoints;
         get_preview_endpt,
         list_revisions_endpt,
         restore_endpt,
+        get_shared_link_metadata_endpt,
+        list_shared_links_endpt,
+        modify_shared_link_settings_endpt,
+        create_shared_link_with_settings_endpt,
+        revoke_shared_link_endpt,
+        get_shared_link_file_endpt,
         get_shared_links_endpt,
         create_shared_link_endpt,
-        revoke_shared_link_endpt,
         list_folders_endpt,
         list_folders_continue_endpt,
         get_folder_metadata_endpt,
