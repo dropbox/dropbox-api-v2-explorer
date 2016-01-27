@@ -1236,10 +1236,10 @@ var MainPage = (function (_super) {
         _super.call(this, props);
         this.getAuthSwitch = function () {
             if (utils.getAuthType() == utils.AuthType.User) {
-                return d.a({ id: 'auth-switch', href: '/team' }, 'Switch to Business endpoints');
+                return d.a({ id: 'auth-switch', href: 'team' }, 'Switch to Business endpoints');
             }
             else {
-                return d.a({ id: 'auth-switch', href: '/' }, 'Switch to User endpoints');
+                return d.a({ id: 'auth-switch', href: '../' }, 'Switch to User endpoints');
             }
         };
     }
