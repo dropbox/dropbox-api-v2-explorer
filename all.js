@@ -388,6 +388,111 @@ var Endpoints;
     var mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder", {}, new Utils.TextParam("shared_folder_id", false));
     var unmount_folder_endpt = new Utils.Endpoint("sharing", "unmount_folder", {}, new Utils.TextParam("shared_folder_id", false));
     var relinquish_folder_membership_endpt = new Utils.Endpoint("sharing", "relinquish_folder_membership", {}, new Utils.TextParam("shared_folder_id", false));
+    var get_info_endpt = new Utils.Endpoint("team", "get_info", {
+        auth: "team"
+    });
+    var devices_list_member_devices_endpt = new Utils.Endpoint("team", "devices/list_member_devices", {
+        auth: "team"
+    }, new Utils.TextParam("team_member_id", false), new Utils.BoolParam("include_web_sessions", true), new Utils.BoolParam("include_desktop_clients", true), new Utils.BoolParam("include_mobile_clients", true));
+    var devices_list_team_devices_endpt = new Utils.Endpoint("team", "devices/list_team_devices", {
+        auth: "team"
+    }, new Utils.TextParam("cursor", true), new Utils.BoolParam("include_web_sessions", true), new Utils.BoolParam("include_desktop_clients", true), new Utils.BoolParam("include_mobile_clients", true));
+    var devices_revoke_device_session_endpt = new Utils.Endpoint("team", "devices/revoke_device_session", {
+        auth: "team"
+    }, new Utils.StructParam("web_session", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]), new Utils.StructParam("desktop_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("delete_on_unlink", true)]), new Utils.StructParam("mobile_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]));
+    var devices_revoke_device_session_batch_endpt = new Utils.Endpoint("team", "devices/revoke_device_session_batch", {
+        auth: "team"
+    }, null /* not implemented yet */);
+    var groups_list_endpt = new Utils.Endpoint("team", "groups/list", {
+        auth: "team"
+    }, new Utils.IntParam("limit", true));
+    var groups_list_continue_endpt = new Utils.Endpoint("team", "groups/list/continue", {
+        auth: "team"
+    }, new Utils.TextParam("cursor", false));
+    var groups_get_info_endpt = new Utils.Endpoint("team", "groups/get_info", {
+        auth: "team"
+    }, null /* not implemented yet */, null /* not implemented yet */);
+    var groups_create_endpt = new Utils.Endpoint("team", "groups/create", {
+        auth: "team"
+    }, new Utils.TextParam("group_name", false), new Utils.TextParam("group_external_id", true));
+    var groups_delete_endpt = new Utils.Endpoint("team", "groups/delete", {
+        auth: "team"
+    }, new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false));
+    var groups_update_endpt = new Utils.Endpoint("team", "groups/update", {
+        auth: "team"
+    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.TextParam("new_group_name", true), new Utils.TextParam("new_group_external_id", true));
+    var groups_members_add_endpt = new Utils.Endpoint("team", "groups/members/add", {
+        auth: "team"
+    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), null /* not implemented yet */);
+    var groups_members_remove_endpt = new Utils.Endpoint("team", "groups/members/remove", {
+        auth: "team"
+    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), null /* not implemented yet */);
+    var groups_members_set_access_type_endpt = new Utils.Endpoint("team", "groups/members/set_access_type", {
+        auth: "team"
+    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_type", false, [new Utils.VoidParam("member"), new Utils.VoidParam("owner")]));
+    var groups_job_status_get_endpt = new Utils.Endpoint("team", "groups/job_status/get", {
+        auth: "team"
+    }, new Utils.TextParam("async_job_id", false));
+    var linked_apps_list_member_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_member_linked_apps", {
+        auth: "team"
+    }, new Utils.TextParam("team_member_id", false));
+    var linked_apps_list_team_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_team_linked_apps", {
+        auth: "team"
+    }, new Utils.TextParam("cursor", true));
+    var linked_apps_revoke_linked_app_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app", {
+        auth: "team"
+    }, new Utils.TextParam("app_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("keep_app_folder", true));
+    var linked_apps_revoke_linked_app_batch_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app_batch", {
+        auth: "team"
+    }, null /* not implemented yet */);
+    var members_list_endpt = new Utils.Endpoint("team", "members/list", {
+        auth: "team"
+    }, new Utils.IntParam("limit", true));
+    var members_list_continue_endpt = new Utils.Endpoint("team", "members/list/continue", {
+        auth: "team"
+    }, new Utils.TextParam("cursor", false));
+    var members_get_info_endpt = new Utils.Endpoint("team", "members/get_info", {
+        auth: "team"
+    }, null /* not implemented yet */);
+    var members_add_endpt = new Utils.Endpoint("team", "members/add", {
+        auth: "team"
+    }, null /* not implemented yet */, new Utils.BoolParam("force_async", true));
+    var members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get", {
+        auth: "team"
+    }, new Utils.TextParam("async_job_id", false));
+    var members_set_profile_endpt = new Utils.Endpoint("team", "members/set_profile", {
+        auth: "team"
+    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.TextParam("new_email", true), new Utils.TextParam("new_external_id", true), new Utils.TextParam("new_given_name", true), new Utils.TextParam("new_surname", true));
+    var members_set_admin_permissions_endpt = new Utils.Endpoint("team", "members/set_admin_permissions", {
+        auth: "team"
+    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("new_role", false, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]));
+    var members_send_welcome_email_endpt = new Utils.Endpoint("team", "members/send_welcome_email", {
+        auth: "team"
+    }, new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false));
+    var members_remove_endpt = new Utils.Endpoint("team", "members/remove", {
+        auth: "team"
+    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.BoolParam("wipe_data", true), new Utils.UnionParam("transfer_dest_id", true, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("transfer_admin_id", true, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]));
+    var members_remove_job_status_get_endpt = new Utils.Endpoint("team", "members/remove/job_status/get", {
+        auth: "team"
+    }, new Utils.TextParam("async_job_id", false));
+    var members_suspend_endpt = new Utils.Endpoint("team", "members/suspend", {
+        auth: "team"
+    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.BoolParam("wipe_data", true));
+    var members_unsuspend_endpt = new Utils.Endpoint("team", "members/unsuspend", {
+        auth: "team"
+    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]));
+    var reports_get_storage_endpt = new Utils.Endpoint("team", "reports/get_storage", {
+        auth: "team"
+    }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
+    var reports_get_activity_endpt = new Utils.Endpoint("team", "reports/get_activity", {
+        auth: "team"
+    }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
+    var reports_get_membership_endpt = new Utils.Endpoint("team", "reports/get_membership", {
+        auth: "team"
+    }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
+    var reports_get_devices_endpt = new Utils.Endpoint("team", "reports/get_devices", {
+        auth: "team"
+    }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
     var get_account_endpt = new Utils.Endpoint("users", "get_account", {}, new Utils.TextParam("account_id", false));
     var get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", {});
     var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
@@ -437,6 +542,41 @@ var Endpoints;
         mount_folder_endpt,
         unmount_folder_endpt,
         relinquish_folder_membership_endpt,
+        get_info_endpt,
+        devices_list_member_devices_endpt,
+        devices_list_team_devices_endpt,
+        devices_revoke_device_session_endpt,
+        devices_revoke_device_session_batch_endpt,
+        groups_list_endpt,
+        groups_list_continue_endpt,
+        groups_get_info_endpt,
+        groups_create_endpt,
+        groups_delete_endpt,
+        groups_update_endpt,
+        groups_members_add_endpt,
+        groups_members_remove_endpt,
+        groups_members_set_access_type_endpt,
+        groups_job_status_get_endpt,
+        linked_apps_list_member_linked_apps_endpt,
+        linked_apps_list_team_linked_apps_endpt,
+        linked_apps_revoke_linked_app_endpt,
+        linked_apps_revoke_linked_app_batch_endpt,
+        members_list_endpt,
+        members_list_continue_endpt,
+        members_get_info_endpt,
+        members_add_endpt,
+        members_add_job_status_get_endpt,
+        members_set_profile_endpt,
+        members_set_admin_permissions_endpt,
+        members_send_welcome_email_endpt,
+        members_remove_endpt,
+        members_remove_job_status_get_endpt,
+        members_suspend_endpt,
+        members_unsuspend_endpt,
+        reports_get_storage_endpt,
+        reports_get_activity_endpt,
+        reports_get_membership_endpt,
+        reports_get_devices_endpt,
         get_account_endpt,
         get_current_account_endpt,
         get_space_usage_endpt,
@@ -475,6 +615,51 @@ var developerPage = 'https://www.dropbox.com/developers';
 var tableText = function (text) {
     return d.td({ className: 'label' }, d.div({ className: 'text' }, text));
 };
+/* Map between client id and associated permission type.
+ */
+var clientIdMap = {
+    'vyjzkx2chlpsooc': 'Team Information',
+    'pq2bj4ll002gohi': 'Team Auditing',
+    'j3zzv20pgxds87u': 'Team Member File Access',
+    'oq1ywlcgrto51qk': 'Team Member Management'
+};
+/* Get client id from local storage. If doesn't exist. Use default value instead.
+ */
+var getClientId = function () {
+    var clientId = utils.getClientId();
+    if (clientId != null) {
+        return clientId;
+    }
+    return utils.getAuthType() == utils.AuthType.User
+        ? 'cg750anjts67v15'
+        : 'vyjzkx2chlpsooc';
+};
+/* The dropdown menu to select app permission type for business endpoints. For each
+business endpoint. Only certain permission type would work and this component maps each
+permission type to associated client id.
+ */
+var AppPermissionInputProps = (function () {
+    function AppPermissionInputProps() {
+    }
+    return AppPermissionInputProps;
+})();
+var AppPermissionInput = (function (_super) {
+    __extends(AppPermissionInput, _super);
+    function AppPermissionInput(props) {
+        _super.call(this, props);
+    }
+    AppPermissionInput.prototype.render = function () {
+        var options = [];
+        var clientId = getClientId();
+        for (var id in clientIdMap) {
+            var value = clientIdMap[id];
+            var selected = id == clientId;
+            options.push(d.option({ key: value, choice: value, selected: selected }, value));
+        }
+        return d.tr(null, tableText('App Permission'), d.td(null, d.select({ style: { 'margin-top': '5px' }, onChange: this.props.handler }, options)));
+    };
+    return AppPermissionInput;
+})(react.Component);
 var TokenInput = (function (_super) {
     __extends(TokenInput, _super);
     function TokenInput(props) {
@@ -484,10 +669,11 @@ var TokenInput = (function (_super) {
         };
         // This function handles the initial part of the OAuth2 token flow for the user.
         this.retrieveAuth = function () {
+            var clientId = getClientId();
             var state = utils.getHashDict()['__ept__'] + '!' + utils.createCsrfToken();
             var params = {
                 response_type: 'token',
-                client_id: 'cg750anjts67v15',
+                client_id: clientId,
                 redirect_uri: utils.currentURL(),
                 state: state
             };
@@ -866,6 +1052,16 @@ var RequestArea = (function (_super) {
         this.showOrHide = function () { return _this.setState({ showToken: !_this.state.showToken }); };
         // Toggles whether code block is visiable.
         this.showOrHideCode = function () { return _this.setState({ showCode: !_this.state.showCode }); };
+        // Update client id when app permission change.
+        this.updateClientId = function (e) {
+            var value = (e.target).value;
+            for (var id in clientIdMap) {
+                if (clientIdMap[id] == value) {
+                    utils.putClientId(id);
+                    return;
+                }
+            }
+        };
         this.state = {
             paramVals: utils.initialValues(this.props.currEpt),
             __file__: null,
@@ -883,7 +1079,9 @@ var RequestArea = (function (_super) {
         var name = this.props.currEpt.name.replace('/', '-');
         var documentation = developerPage + "/documentation/http/documentation#" + this.props.currEpt.ns + "-" + name;
         var handler = new RootValueHandler(this.state.paramVals, this.updateParamValues);
-        return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, d.tbody(null, ce(TokenInput, {
+        return d.span({ id: 'request-area' }, d.table({ className: 'page-table' }, d.tbody(null, utils.getAuthType() == utils.AuthType.Team
+            ? ce(AppPermissionInput, { handler: this.updateClientId })
+            : null, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
         }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: documentation }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
@@ -928,6 +1126,11 @@ var EndpointSelector = (function (_super) {
                 // Skip not implemented endpoints.
                 return true;
             }
+            if (ept.getAuthType() != utils.getAuthType()) {
+                // Skip endpoints with different auth type.
+                return true;
+            }
+            return false;
         };
     }
     // Renders the logo and the list of endpoints
@@ -1007,7 +1210,7 @@ var APIExplorer = (function (_super) {
                 download: this.state.downloadFilename
             }, d.button(null, 'Download ' + this.state.downloadFilename)) :
             null;
-        return ce(MainPage, {
+        var props = {
             currEpt: this.state.ept,
             header: d.span(null, 'Dropbox API Explorer • ' + this.state.ept.name),
             messages: [
@@ -1021,8 +1224,9 @@ var APIExplorer = (function (_super) {
                     responseText: this.state.responseText,
                     downloadButton: downloadButton
                 })
-            ].map(function (t) { return t; })
-        });
+            ]
+        };
+        return ce(MainPage, props);
     };
     return APIExplorer;
 })(react.Component);
@@ -1030,12 +1234,20 @@ var MainPage = (function (_super) {
     __extends(MainPage, _super);
     function MainPage(props) {
         _super.call(this, props);
+        this.getAuthSwitch = function () {
+            if (utils.getAuthType() == utils.AuthType.User) {
+                return d.a({ id: 'auth-switch', href: '/team' }, 'Switch to Business endpoints');
+            }
+            else {
+                return d.a({ id: 'auth-switch', href: '/' }, 'Switch to User endpoints');
+            }
+        };
     }
     MainPage.prototype.render = function () {
         return d.span(null, ce(EndpointSelector, {
             eptChanged: function (endpt) { return window.location.hash = '#' + endpt.name; },
             currEpt: this.props.currEpt.name
-        }), d.h1({ id: 'header' }, this.props.header), d.div({ id: 'page-content' }, this.props.messages));
+        }), d.h1({ id: 'header' }, this.props.header, this.getAuthSwitch()), d.div({ id: 'page-content' }, this.props.messages));
     };
     return MainPage;
 })(react.Component);
@@ -1482,6 +1694,12 @@ exports.UnionParam = UnionParam;
 // Utilities for token flow
 var csrfTokenStorageName = 'Dropbox_API_state';
 var tokenStorageName = 'Dropbox_API_explorer_token';
+var clientIdStorageName = 'Dropbox_API_explorer_client_id';
+exports.getAuthType = function () {
+    return window.location.href.indexOf('/team') > 0
+        ? AuthType.Team
+        : AuthType.User;
+};
 exports.createCsrfToken = function () {
     var randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
     // If available, use the cryptographically secure generator, otherwise use Math.random.
@@ -1526,9 +1744,18 @@ exports.getHashDict = function () {
 };
 // Reading and writing the token, which is preserved in LocalStorage.
 exports.putToken = function (token) {
-    return LocalStorage.setItem(tokenStorageName, token);
+    LocalStorage.setItem(tokenStorageName + '_' + exports.getAuthType(), token);
 };
-exports.getToken = function () { return LocalStorage.getItem(tokenStorageName); };
+exports.getToken = function () {
+    return LocalStorage.getItem(tokenStorageName + '_' + exports.getAuthType());
+};
+// Reading and writing the client id, which is preserved in LocalStorage.
+exports.putClientId = function (clientId) {
+    LocalStorage.setItem(clientIdStorageName + '_' + exports.getAuthType(), clientId);
+};
+exports.getClientId = function () {
+    return LocalStorage.getItem(clientIdStorageName + '_' + exports.getAuthType());
+};
 // Some utilities that help with processing user input
 // Returns an endpoint given its name, or null if there was none
 exports.getEndpoint = function (epts, name) {

@@ -31,7 +31,7 @@ body {
     min-height: 100%;
     margin: auto;
     padding-top: 20px;
-    width: 1280px;
+    width: 1310px;
 }
 
 a, a * {
@@ -140,9 +140,12 @@ pre {
     top:0;
     bottom:0;
     left:0;
-    width: 200px;
+    width: 250px;
+    height: 1000px;
     float: left;
+    overflow: hidden;
     padding-right: 40px;
+    padding-bottom: 100px;
 }
 
 P.blocktext {
@@ -171,8 +174,15 @@ P.blocktext {
 }
 
 #endpoint-list {
+    height: inherit;
+    overflow-y: auto;
+    overflow-x: hidden;
+
     margin-left: 25px;
     margin-top: 30px;
+
+    margin-right: -100px;
+    padding-right: 100px;
 }
 
 #endpoint-list li {
@@ -253,4 +263,10 @@ table {
     border: none;
     box-shadow: none;
     outline: none;
+}
+
+#auth-switch {
+    float: right;
+    padding-right: 20px;
+    font-size: 13px;
 }
