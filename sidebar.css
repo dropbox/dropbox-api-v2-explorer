@@ -175,14 +175,14 @@ P.blocktext {
 
 #endpoint-list {
     height: inherit;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
 
     margin-left: 25px;
     margin-top: 30px;
+}
 
-    margin-right: -100px;
-    padding-right: 100px;
+#endpoint-list:hover {
+    overflow-y: auto;
 }
 
 #endpoint-list li {

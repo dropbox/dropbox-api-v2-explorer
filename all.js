@@ -185,7 +185,7 @@ var HttplibCodeViewer = function () {
     var syntax = "python";
     var preamble = d.span(null, 'import sys\nimport json\n', 'if (3,0) <= sys.version_info < (4,0):\n', '    import http.client as httplib\n', 'elif (2,6) <= sys.version_info < (3,0):\n', '    import httplib\n\n');
     var httplibTemplate = function (endpt, headers, dataReader, dataArg) {
-        return syntaxHighlight(syntax, d.span(null, preamble, dictToPython('headers', headers), dataReader, 'c = httplib.HTTPSConnection("' + endpt.getHostname() + '")\n', 'c.request("POST", "' + endpt.getPathname() + '", ' + dataArg + ', headers)\n', 'r = c.getresponse()'));
+        return syntaxHighlight(syntax, d.span(null, preamble, dictToPython('headers', headers), dataReader, 'c = httplib.HTTPSConnection("' + endpt.getHostname() + '")\n', 'c.request("POST", "' + endpt.getPathName() + '", ' + dataArg + ', headers)\n', 'r = c.getresponse()'));
     };
     var httplibRPCLike = function (endpt, token, paramVals) {
         return httplibTemplate(endpt, utils.getHeaders(endpt, token), dictToPython('params', paramVals), 'json.dumps(params)');
@@ -238,7 +238,7 @@ var CurlCodeViewer = function () {
 var HTTPCodeViewer = function () {
     var syntax = 'http';
     var httpTemplate = function (endpt, headers, body) {
-        return syntaxHighlight(syntax, d.span(null, 'POST ' + endpt.getPathname() + "\n", 'Host: https://' + endpt.getHostname() + "\n", 'User-Agent: api-explorer-client\n', utils.Dict.map(headers, function (key, value) { return d.span({ key: key }, key + ": " + value + "\n"); }), body));
+        return syntaxHighlight(syntax, d.span(null, 'POST ' + endpt.getPathName() + "\n", 'Host: https://' + endpt.getHostname() + "\n", 'User-Agent: api-explorer-client\n', utils.Dict.map(headers, function (key, value) { return d.span({ key: key }, key + ": " + value + "\n"); }), body));
     };
     var httpRPCLike = function (endpt, token, paramVals) {
         var body = JSON.stringify(paramVals, null, 4);
@@ -316,271 +316,271 @@ exports.getAll = function () {
 var Utils = require('./utils');
 var Endpoints;
 (function (Endpoints) {
-    var get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", {}, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true));
-    var list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", {
+    var files_get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", {}, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true));
+    var files_list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", {
         host: "notify",
         auth: "noauth"
     }, new Utils.TextParam("cursor", false), new Utils.IntParam("timeout", true));
-    var list_folder_endpt = new Utils.Endpoint("files", "list_folder", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true));
-    var list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", {}, new Utils.TextParam("cursor", false));
-    var list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true));
-    var download_endpt = new Utils.Endpoint("files", "download", {
+    var files_list_folder_endpt = new Utils.Endpoint("files", "list_folder", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true));
+    var files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", {}, new Utils.TextParam("cursor", false));
+    var files_list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor", {}, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true));
+    var files_download_endpt = new Utils.Endpoint("files", "download", {
         host: "content",
         style: "download"
     }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
-    var upload_session_start_endpt = new Utils.Endpoint("files", "upload_session/start", {
+    var files_upload_session_start_endpt = new Utils.Endpoint("files", "upload_session/start", {
         host: "content",
         style: "upload"
     }, new Utils.FileParam());
-    var upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", {
+    var files_upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", {
         host: "content",
         style: "upload"
     }, new Utils.FileParam(), new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false));
-    var upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", {
+    var files_upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", {
         host: "content",
         style: "upload"
     }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true)]));
-    var upload_endpt = new Utils.Endpoint("files", "upload", {
+    var files_upload_endpt = new Utils.Endpoint("files", "upload", {
         host: "content",
         style: "upload"
     }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true));
-    var search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.UnionParam("mode", true, [new Utils.VoidParam("filename"), new Utils.VoidParam("filename_and_content"), new Utils.VoidParam("deleted_filename")]));
-    var create_folder_endpt = new Utils.Endpoint("files", "create_folder", {}, new Utils.TextParam("path", false));
-    var delete_endpt = new Utils.Endpoint("files", "delete", {}, new Utils.TextParam("path", false));
-    var permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", {}, new Utils.TextParam("path", false));
-    var copy_endpt = new Utils.Endpoint("files", "copy", {}, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
-    var move_endpt = new Utils.Endpoint("files", "move", {}, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
-    var get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", {
+    var files_search_endpt = new Utils.Endpoint("files", "search", {}, new Utils.TextParam("path", false), new Utils.TextParam("query", false), new Utils.IntParam("start", true), new Utils.IntParam("max_results", true), new Utils.UnionParam("mode", true, [new Utils.VoidParam("filename"), new Utils.VoidParam("filename_and_content"), new Utils.VoidParam("deleted_filename")]));
+    var files_create_folder_endpt = new Utils.Endpoint("files", "create_folder", {}, new Utils.TextParam("path", false));
+    var files_delete_endpt = new Utils.Endpoint("files", "delete", {}, new Utils.TextParam("path", false));
+    var files_permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete", {}, new Utils.TextParam("path", false));
+    var files_copy_endpt = new Utils.Endpoint("files", "copy", {}, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
+    var files_move_endpt = new Utils.Endpoint("files", "move", {}, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false));
+    var files_get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail", {
         host: "content",
         style: "download"
     }, new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w1024h768")]));
-    var get_preview_endpt = new Utils.Endpoint("files", "get_preview", {
+    var files_get_preview_endpt = new Utils.Endpoint("files", "get_preview", {
         host: "content",
         style: "download"
     }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
-    var list_revisions_endpt = new Utils.Endpoint("files", "list_revisions", {}, new Utils.TextParam("path", false), new Utils.IntParam("limit", true));
-    var restore_endpt = new Utils.Endpoint("files", "restore", {}, new Utils.TextParam("path", false), new Utils.TextParam("rev", false));
-    var get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata", {}, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
-    var list_shared_links_endpt = new Utils.Endpoint("sharing", "list_shared_links", {}, new Utils.TextParam("path", true), new Utils.TextParam("cursor", true));
-    var modify_shared_link_settings_endpt = new Utils.Endpoint("sharing", "modify_shared_link_settings", {}, new Utils.TextParam("url", false), new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
-    var create_shared_link_with_settings_endpt = new Utils.Endpoint("sharing", "create_shared_link_with_settings", {}, new Utils.TextParam("path", false), new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
-    var revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
-    var get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file", {
+    var files_list_revisions_endpt = new Utils.Endpoint("files", "list_revisions", {}, new Utils.TextParam("path", false), new Utils.IntParam("limit", true));
+    var files_restore_endpt = new Utils.Endpoint("files", "restore", {}, new Utils.TextParam("path", false), new Utils.TextParam("rev", false));
+    var sharing_get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata", {}, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
+    var sharing_list_shared_links_endpt = new Utils.Endpoint("sharing", "list_shared_links", {}, new Utils.TextParam("path", true), new Utils.TextParam("cursor", true));
+    var sharing_modify_shared_link_settings_endpt = new Utils.Endpoint("sharing", "modify_shared_link_settings", {}, new Utils.TextParam("url", false), new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
+    var sharing_create_shared_link_with_settings_endpt = new Utils.Endpoint("sharing", "create_shared_link_with_settings", {}, new Utils.TextParam("path", false), new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
+    var sharing_revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link", {}, new Utils.TextParam("url", false));
+    var sharing_get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file", {
         host: "content",
         style: "download"
     }, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
-    var get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
-    var create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
-    var list_folders_endpt = new Utils.Endpoint("sharing", "list_folders", {});
-    var list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue", {}, new Utils.TextParam("cursor", false));
-    var get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata", {}, new Utils.TextParam("shared_folder_id", false));
-    var list_folder_members_endpt = new Utils.Endpoint("sharing", "list_folder_members", {}, new Utils.TextParam("shared_folder_id", false));
-    var list_folder_members_continue_endpt = new Utils.Endpoint("sharing", "list_folder_members/continue", {}, new Utils.TextParam("cursor", false));
-    var share_folder_endpt = new Utils.Endpoint("sharing", "share_folder", {}, new Utils.TextParam("path", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.BoolParam("force_async", true));
-    var check_share_job_status_endpt = new Utils.Endpoint("sharing", "check_share_job_status", {}, new Utils.TextParam("async_job_id", false));
-    var check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status", {}, new Utils.TextParam("async_job_id", false));
-    var unshare_folder_endpt = new Utils.Endpoint("sharing", "unshare_folder", {}, new Utils.TextParam("shared_folder_id", false), new Utils.BoolParam("leave_a_copy", false));
-    var transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder", {}, new Utils.TextParam("shared_folder_id", false), new Utils.TextParam("to_dropbox_id", false));
-    var update_folder_policy_endpt = new Utils.Endpoint("sharing", "update_folder_policy", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]));
-    var add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member", {}, new Utils.TextParam("shared_folder_id", false), null /* not implemented yet */, new Utils.BoolParam("quiet", true), new Utils.TextParam("custom_message", true));
-    var remove_folder_member_endpt = new Utils.Endpoint("sharing", "remove_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.BoolParam("leave_a_copy", false));
-    var update_folder_member_endpt = new Utils.Endpoint("sharing", "update_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("other")]));
-    var mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder", {}, new Utils.TextParam("shared_folder_id", false));
-    var unmount_folder_endpt = new Utils.Endpoint("sharing", "unmount_folder", {}, new Utils.TextParam("shared_folder_id", false));
-    var relinquish_folder_membership_endpt = new Utils.Endpoint("sharing", "relinquish_folder_membership", {}, new Utils.TextParam("shared_folder_id", false));
-    var get_info_endpt = new Utils.Endpoint("team", "get_info", {
+    var sharing_get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
+    var sharing_create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
+    var sharing_list_folders_endpt = new Utils.Endpoint("sharing", "list_folders", {});
+    var sharing_list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue", {}, new Utils.TextParam("cursor", false));
+    var sharing_get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata", {}, new Utils.TextParam("shared_folder_id", false));
+    var sharing_list_folder_members_endpt = new Utils.Endpoint("sharing", "list_folder_members", {}, new Utils.TextParam("shared_folder_id", false));
+    var sharing_list_folder_members_continue_endpt = new Utils.Endpoint("sharing", "list_folder_members/continue", {}, new Utils.TextParam("cursor", false));
+    var sharing_share_folder_endpt = new Utils.Endpoint("sharing", "share_folder", {}, new Utils.TextParam("path", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.BoolParam("force_async", true));
+    var sharing_check_share_job_status_endpt = new Utils.Endpoint("sharing", "check_share_job_status", {}, new Utils.TextParam("async_job_id", false));
+    var sharing_check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status", {}, new Utils.TextParam("async_job_id", false));
+    var sharing_unshare_folder_endpt = new Utils.Endpoint("sharing", "unshare_folder", {}, new Utils.TextParam("shared_folder_id", false), new Utils.BoolParam("leave_a_copy", false));
+    var sharing_transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder", {}, new Utils.TextParam("shared_folder_id", false), new Utils.TextParam("to_dropbox_id", false));
+    var sharing_update_folder_policy_endpt = new Utils.Endpoint("sharing", "update_folder_policy", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]));
+    var sharing_add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member", {}, new Utils.TextParam("shared_folder_id", false), null /* not implemented yet */, new Utils.BoolParam("quiet", true), new Utils.TextParam("custom_message", true));
+    var sharing_remove_folder_member_endpt = new Utils.Endpoint("sharing", "remove_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.BoolParam("leave_a_copy", false));
+    var sharing_update_folder_member_endpt = new Utils.Endpoint("sharing", "update_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("other")]));
+    var sharing_mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder", {}, new Utils.TextParam("shared_folder_id", false));
+    var sharing_unmount_folder_endpt = new Utils.Endpoint("sharing", "unmount_folder", {}, new Utils.TextParam("shared_folder_id", false));
+    var sharing_relinquish_folder_membership_endpt = new Utils.Endpoint("sharing", "relinquish_folder_membership", {}, new Utils.TextParam("shared_folder_id", false));
+    var team_get_info_endpt = new Utils.Endpoint("team", "get_info", {
         auth: "team"
     });
-    var devices_list_member_devices_endpt = new Utils.Endpoint("team", "devices/list_member_devices", {
+    var team_devices_list_member_devices_endpt = new Utils.Endpoint("team", "devices/list_member_devices", {
         auth: "team"
     }, new Utils.TextParam("team_member_id", false), new Utils.BoolParam("include_web_sessions", true), new Utils.BoolParam("include_desktop_clients", true), new Utils.BoolParam("include_mobile_clients", true));
-    var devices_list_team_devices_endpt = new Utils.Endpoint("team", "devices/list_team_devices", {
+    var team_devices_list_team_devices_endpt = new Utils.Endpoint("team", "devices/list_team_devices", {
         auth: "team"
     }, new Utils.TextParam("cursor", true), new Utils.BoolParam("include_web_sessions", true), new Utils.BoolParam("include_desktop_clients", true), new Utils.BoolParam("include_mobile_clients", true));
-    var devices_revoke_device_session_endpt = new Utils.Endpoint("team", "devices/revoke_device_session", {
+    var team_devices_revoke_device_session_endpt = new Utils.Endpoint("team", "devices/revoke_device_session", {
         auth: "team"
     }, new Utils.StructParam("web_session", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]), new Utils.StructParam("desktop_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("delete_on_unlink", true)]), new Utils.StructParam("mobile_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]));
-    var devices_revoke_device_session_batch_endpt = new Utils.Endpoint("team", "devices/revoke_device_session_batch", {
+    var team_devices_revoke_device_session_batch_endpt = new Utils.Endpoint("team", "devices/revoke_device_session_batch", {
         auth: "team"
     }, null /* not implemented yet */);
-    var groups_list_endpt = new Utils.Endpoint("team", "groups/list", {
+    var team_groups_list_endpt = new Utils.Endpoint("team", "groups/list", {
         auth: "team"
     }, new Utils.IntParam("limit", true));
-    var groups_list_continue_endpt = new Utils.Endpoint("team", "groups/list/continue", {
+    var team_groups_list_continue_endpt = new Utils.Endpoint("team", "groups/list/continue", {
         auth: "team"
     }, new Utils.TextParam("cursor", false));
-    var groups_get_info_endpt = new Utils.Endpoint("team", "groups/get_info", {
+    var team_groups_get_info_endpt = new Utils.Endpoint("team", "groups/get_info", {
         auth: "team"
     }, null /* not implemented yet */, null /* not implemented yet */);
-    var groups_create_endpt = new Utils.Endpoint("team", "groups/create", {
+    var team_groups_create_endpt = new Utils.Endpoint("team", "groups/create", {
         auth: "team"
     }, new Utils.TextParam("group_name", false), new Utils.TextParam("group_external_id", true));
-    var groups_delete_endpt = new Utils.Endpoint("team", "groups/delete", {
+    var team_groups_delete_endpt = new Utils.Endpoint("team", "groups/delete", {
         auth: "team"
     }, new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false));
-    var groups_update_endpt = new Utils.Endpoint("team", "groups/update", {
+    var team_groups_update_endpt = new Utils.Endpoint("team", "groups/update", {
         auth: "team"
     }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.TextParam("new_group_name", true), new Utils.TextParam("new_group_external_id", true));
-    var groups_members_add_endpt = new Utils.Endpoint("team", "groups/members/add", {
+    var team_groups_members_add_endpt = new Utils.Endpoint("team", "groups/members/add", {
         auth: "team"
     }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), null /* not implemented yet */);
-    var groups_members_remove_endpt = new Utils.Endpoint("team", "groups/members/remove", {
+    var team_groups_members_remove_endpt = new Utils.Endpoint("team", "groups/members/remove", {
         auth: "team"
     }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), null /* not implemented yet */);
-    var groups_members_set_access_type_endpt = new Utils.Endpoint("team", "groups/members/set_access_type", {
+    var team_groups_members_set_access_type_endpt = new Utils.Endpoint("team", "groups/members/set_access_type", {
         auth: "team"
     }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_type", false, [new Utils.VoidParam("member"), new Utils.VoidParam("owner")]));
-    var groups_job_status_get_endpt = new Utils.Endpoint("team", "groups/job_status/get", {
+    var team_groups_job_status_get_endpt = new Utils.Endpoint("team", "groups/job_status/get", {
         auth: "team"
     }, new Utils.TextParam("async_job_id", false));
-    var linked_apps_list_member_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_member_linked_apps", {
+    var team_linked_apps_list_member_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_member_linked_apps", {
         auth: "team"
     }, new Utils.TextParam("team_member_id", false));
-    var linked_apps_list_team_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_team_linked_apps", {
+    var team_linked_apps_list_team_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_team_linked_apps", {
         auth: "team"
     }, new Utils.TextParam("cursor", true));
-    var linked_apps_revoke_linked_app_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app", {
+    var team_linked_apps_revoke_linked_app_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app", {
         auth: "team"
     }, new Utils.TextParam("app_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("keep_app_folder", true));
-    var linked_apps_revoke_linked_app_batch_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app_batch", {
+    var team_linked_apps_revoke_linked_app_batch_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app_batch", {
         auth: "team"
     }, null /* not implemented yet */);
-    var members_list_endpt = new Utils.Endpoint("team", "members/list", {
+    var team_members_list_endpt = new Utils.Endpoint("team", "members/list", {
         auth: "team"
     }, new Utils.IntParam("limit", true));
-    var members_list_continue_endpt = new Utils.Endpoint("team", "members/list/continue", {
+    var team_members_list_continue_endpt = new Utils.Endpoint("team", "members/list/continue", {
         auth: "team"
     }, new Utils.TextParam("cursor", false));
-    var members_get_info_endpt = new Utils.Endpoint("team", "members/get_info", {
+    var team_members_get_info_endpt = new Utils.Endpoint("team", "members/get_info", {
         auth: "team"
     }, null /* not implemented yet */);
-    var members_add_endpt = new Utils.Endpoint("team", "members/add", {
+    var team_members_add_endpt = new Utils.Endpoint("team", "members/add", {
         auth: "team"
     }, null /* not implemented yet */, new Utils.BoolParam("force_async", true));
-    var members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get", {
+    var team_members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get", {
         auth: "team"
     }, new Utils.TextParam("async_job_id", false));
-    var members_set_profile_endpt = new Utils.Endpoint("team", "members/set_profile", {
+    var team_members_set_profile_endpt = new Utils.Endpoint("team", "members/set_profile", {
         auth: "team"
     }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.TextParam("new_email", true), new Utils.TextParam("new_external_id", true), new Utils.TextParam("new_given_name", true), new Utils.TextParam("new_surname", true));
-    var members_set_admin_permissions_endpt = new Utils.Endpoint("team", "members/set_admin_permissions", {
+    var team_members_set_admin_permissions_endpt = new Utils.Endpoint("team", "members/set_admin_permissions", {
         auth: "team"
     }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("new_role", false, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]));
-    var members_send_welcome_email_endpt = new Utils.Endpoint("team", "members/send_welcome_email", {
+    var team_members_send_welcome_email_endpt = new Utils.Endpoint("team", "members/send_welcome_email", {
         auth: "team"
     }, new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false));
-    var members_remove_endpt = new Utils.Endpoint("team", "members/remove", {
+    var team_members_remove_endpt = new Utils.Endpoint("team", "members/remove", {
         auth: "team"
     }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.BoolParam("wipe_data", true), new Utils.UnionParam("transfer_dest_id", true, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("transfer_admin_id", true, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]));
-    var members_remove_job_status_get_endpt = new Utils.Endpoint("team", "members/remove/job_status/get", {
+    var team_members_remove_job_status_get_endpt = new Utils.Endpoint("team", "members/remove/job_status/get", {
         auth: "team"
     }, new Utils.TextParam("async_job_id", false));
-    var members_suspend_endpt = new Utils.Endpoint("team", "members/suspend", {
+    var team_members_suspend_endpt = new Utils.Endpoint("team", "members/suspend", {
         auth: "team"
     }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.BoolParam("wipe_data", true));
-    var members_unsuspend_endpt = new Utils.Endpoint("team", "members/unsuspend", {
+    var team_members_unsuspend_endpt = new Utils.Endpoint("team", "members/unsuspend", {
         auth: "team"
     }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]));
-    var reports_get_storage_endpt = new Utils.Endpoint("team", "reports/get_storage", {
+    var team_reports_get_storage_endpt = new Utils.Endpoint("team", "reports/get_storage", {
         auth: "team"
     }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
-    var reports_get_activity_endpt = new Utils.Endpoint("team", "reports/get_activity", {
+    var team_reports_get_activity_endpt = new Utils.Endpoint("team", "reports/get_activity", {
         auth: "team"
     }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
-    var reports_get_membership_endpt = new Utils.Endpoint("team", "reports/get_membership", {
+    var team_reports_get_membership_endpt = new Utils.Endpoint("team", "reports/get_membership", {
         auth: "team"
     }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
-    var reports_get_devices_endpt = new Utils.Endpoint("team", "reports/get_devices", {
+    var team_reports_get_devices_endpt = new Utils.Endpoint("team", "reports/get_devices", {
         auth: "team"
     }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
-    var get_account_endpt = new Utils.Endpoint("users", "get_account", {}, new Utils.TextParam("account_id", false));
-    var get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", {});
-    var get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
-    var get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
-    Endpoints.endpointList = [get_metadata_endpt,
-        list_folder_longpoll_endpt,
-        list_folder_endpt,
-        list_folder_continue_endpt,
-        list_folder_get_latest_cursor_endpt,
-        download_endpt,
-        upload_session_start_endpt,
-        upload_session_append_endpt,
-        upload_session_finish_endpt,
-        upload_endpt,
-        search_endpt,
-        create_folder_endpt,
-        delete_endpt,
-        permanently_delete_endpt,
-        copy_endpt,
-        move_endpt,
-        get_thumbnail_endpt,
-        get_preview_endpt,
-        list_revisions_endpt,
-        restore_endpt,
-        get_shared_link_metadata_endpt,
-        list_shared_links_endpt,
-        modify_shared_link_settings_endpt,
-        create_shared_link_with_settings_endpt,
-        revoke_shared_link_endpt,
-        get_shared_link_file_endpt,
-        get_shared_links_endpt,
-        create_shared_link_endpt,
-        list_folders_endpt,
-        list_folders_continue_endpt,
-        get_folder_metadata_endpt,
-        list_folder_members_endpt,
-        list_folder_members_continue_endpt,
-        share_folder_endpt,
-        check_share_job_status_endpt,
-        check_job_status_endpt,
-        unshare_folder_endpt,
-        transfer_folder_endpt,
-        update_folder_policy_endpt,
-        add_folder_member_endpt,
-        remove_folder_member_endpt,
-        update_folder_member_endpt,
-        mount_folder_endpt,
-        unmount_folder_endpt,
-        relinquish_folder_membership_endpt,
-        get_info_endpt,
-        devices_list_member_devices_endpt,
-        devices_list_team_devices_endpt,
-        devices_revoke_device_session_endpt,
-        devices_revoke_device_session_batch_endpt,
-        groups_list_endpt,
-        groups_list_continue_endpt,
-        groups_get_info_endpt,
-        groups_create_endpt,
-        groups_delete_endpt,
-        groups_update_endpt,
-        groups_members_add_endpt,
-        groups_members_remove_endpt,
-        groups_members_set_access_type_endpt,
-        groups_job_status_get_endpt,
-        linked_apps_list_member_linked_apps_endpt,
-        linked_apps_list_team_linked_apps_endpt,
-        linked_apps_revoke_linked_app_endpt,
-        linked_apps_revoke_linked_app_batch_endpt,
-        members_list_endpt,
-        members_list_continue_endpt,
-        members_get_info_endpt,
-        members_add_endpt,
-        members_add_job_status_get_endpt,
-        members_set_profile_endpt,
-        members_set_admin_permissions_endpt,
-        members_send_welcome_email_endpt,
-        members_remove_endpt,
-        members_remove_job_status_get_endpt,
-        members_suspend_endpt,
-        members_unsuspend_endpt,
-        reports_get_storage_endpt,
-        reports_get_activity_endpt,
-        reports_get_membership_endpt,
-        reports_get_devices_endpt,
-        get_account_endpt,
-        get_current_account_endpt,
-        get_space_usage_endpt,
-        get_account_batch_endpt];
+    var users_get_account_endpt = new Utils.Endpoint("users", "get_account", {}, new Utils.TextParam("account_id", false));
+    var users_get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", {});
+    var users_get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
+    var users_get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
+    Endpoints.endpointList = [files_get_metadata_endpt,
+        files_list_folder_longpoll_endpt,
+        files_list_folder_endpt,
+        files_list_folder_continue_endpt,
+        files_list_folder_get_latest_cursor_endpt,
+        files_download_endpt,
+        files_upload_session_start_endpt,
+        files_upload_session_append_endpt,
+        files_upload_session_finish_endpt,
+        files_upload_endpt,
+        files_search_endpt,
+        files_create_folder_endpt,
+        files_delete_endpt,
+        files_permanently_delete_endpt,
+        files_copy_endpt,
+        files_move_endpt,
+        files_get_thumbnail_endpt,
+        files_get_preview_endpt,
+        files_list_revisions_endpt,
+        files_restore_endpt,
+        sharing_get_shared_link_metadata_endpt,
+        sharing_list_shared_links_endpt,
+        sharing_modify_shared_link_settings_endpt,
+        sharing_create_shared_link_with_settings_endpt,
+        sharing_revoke_shared_link_endpt,
+        sharing_get_shared_link_file_endpt,
+        sharing_get_shared_links_endpt,
+        sharing_create_shared_link_endpt,
+        sharing_list_folders_endpt,
+        sharing_list_folders_continue_endpt,
+        sharing_get_folder_metadata_endpt,
+        sharing_list_folder_members_endpt,
+        sharing_list_folder_members_continue_endpt,
+        sharing_share_folder_endpt,
+        sharing_check_share_job_status_endpt,
+        sharing_check_job_status_endpt,
+        sharing_unshare_folder_endpt,
+        sharing_transfer_folder_endpt,
+        sharing_update_folder_policy_endpt,
+        sharing_add_folder_member_endpt,
+        sharing_remove_folder_member_endpt,
+        sharing_update_folder_member_endpt,
+        sharing_mount_folder_endpt,
+        sharing_unmount_folder_endpt,
+        sharing_relinquish_folder_membership_endpt,
+        team_get_info_endpt,
+        team_devices_list_member_devices_endpt,
+        team_devices_list_team_devices_endpt,
+        team_devices_revoke_device_session_endpt,
+        team_devices_revoke_device_session_batch_endpt,
+        team_groups_list_endpt,
+        team_groups_list_continue_endpt,
+        team_groups_get_info_endpt,
+        team_groups_create_endpt,
+        team_groups_delete_endpt,
+        team_groups_update_endpt,
+        team_groups_members_add_endpt,
+        team_groups_members_remove_endpt,
+        team_groups_members_set_access_type_endpt,
+        team_groups_job_status_get_endpt,
+        team_linked_apps_list_member_linked_apps_endpt,
+        team_linked_apps_list_team_linked_apps_endpt,
+        team_linked_apps_revoke_linked_app_endpt,
+        team_linked_apps_revoke_linked_app_batch_endpt,
+        team_members_list_endpt,
+        team_members_list_continue_endpt,
+        team_members_get_info_endpt,
+        team_members_add_endpt,
+        team_members_add_job_status_get_endpt,
+        team_members_set_profile_endpt,
+        team_members_set_admin_permissions_endpt,
+        team_members_send_welcome_email_endpt,
+        team_members_remove_endpt,
+        team_members_remove_job_status_get_endpt,
+        team_members_suspend_endpt,
+        team_members_unsuspend_endpt,
+        team_reports_get_storage_endpt,
+        team_reports_get_activity_endpt,
+        team_reports_get_membership_endpt,
+        team_reports_get_devices_endpt,
+        users_get_account_endpt,
+        users_get_current_account_endpt,
+        users_get_space_usage_endpt,
+        users_get_account_batch_endpt];
 })(Endpoints || (Endpoints = {}));
 module.exports = Endpoints;
 
@@ -1126,7 +1126,10 @@ var EndpointSelector = (function (_super) {
                 // Skip not implemented endpoints.
                 return true;
             }
-            if (ept.getAuthType() != utils.getAuthType()) {
+            var eptAuthType = ept.getAuthType() == utils.AuthType.Team
+                ? utils.AuthType.Team
+                : utils.AuthType.User;
+            if (eptAuthType != utils.getAuthType()) {
                 // Skip endpoints with different auth type.
                 return true;
             }
@@ -1160,7 +1163,7 @@ var EndpointSelector = (function (_super) {
                     key: ept.name,
                     ept: ept,
                     handleClick: _this.props.eptChanged,
-                    isSelected: _this.props.currEpt == ept.name
+                    isSelected: _this.props.currEpt == ept
                 });
             }));
         })));
@@ -1245,8 +1248,8 @@ var MainPage = (function (_super) {
     }
     MainPage.prototype.render = function () {
         return d.span(null, ce(EndpointSelector, {
-            eptChanged: function (endpt) { return window.location.hash = '#' + endpt.name; },
-            currEpt: this.props.currEpt.name
+            eptChanged: function (endpt) { return window.location.hash = '#' + endpt.getFullName(); },
+            currEpt: this.props.currEpt
         }), d.h1({ id: 'header' }, this.props.header, this.getAuthSwitch()), d.div({ id: 'page-content' }, this.props.messages));
     };
     return MainPage;
@@ -1492,8 +1495,9 @@ var Endpoint = (function () {
                     return EndpointKind.RPCLike;
             }
         };
-        this.getPathname = function () { return '/2/' + _this.ns + '/' + _this.name; };
-        this.getURL = function () { return 'https://' + _this.getHostname() + _this.getPathname(); };
+        this.getPathName = function () { return '/2/' + _this.ns + '/' + _this.name; };
+        this.getFullName = function () { return _this.ns + '_' + _this.name; };
+        this.getURL = function () { return 'https://' + _this.getHostname() + _this.getPathName(); };
         this.ns = ns;
         this.name = name;
         this.attrs = attrs;
@@ -1760,7 +1764,7 @@ exports.getClientId = function () {
 // Returns an endpoint given its name, or null if there was none
 exports.getEndpoint = function (epts, name) {
     for (var i = 0; i < epts.length; i++) {
-        if (epts[i].name === name)
+        if (epts[i].getFullName() === name)
             return epts[i];
     }
     return null; // signals an error

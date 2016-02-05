@@ -3,6 +3,18 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/googlecode.min.css">
 <link href="https://cf.dropboxstatic.com/static/images/favicon-vflk5FiAC.ico" rel="shortcut icon">
 <title>Dropbox API Explorer</title>
+
+<!-- clickjack busting stuff-->
+<meta http-equiv="X-Frame-Options" content="deny">
+<style id="antiClickjack">body{display:none !important;}</style>
+<script type="text/javascript">
+   if (self === top) {
+       var antiClickjack = document.getElementById("antiClickjack");
+       antiClickjack.parentNode.removeChild(antiClickjack);
+   } else {
+       top.location = self.location;
+   }
+</script>
 </head>
 
 <body>
