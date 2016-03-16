@@ -613,6 +613,7 @@ var utils_4 = require("./utils");
 var ce = react.createElement;
 var d = react.DOM;
 var developerPage = 'https://www.dropbox.com/developers';
+var displayNone = { style: { display: 'none' } };
 /* Element for text field in page table.
  */
 var tableText = function (text) {
@@ -1097,7 +1098,7 @@ var RequestArea = (function (_super) {
             src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
             hidden: !this.props.inProgress,
             style: { position: 'relative', top: '2px', left: '10px' }
-        }), errMsg))), d.tr({ hidden: !this.state.showCode }, tableText('Code'), d.td(null, d.div({ id: 'request-container' }, ce(CodeArea, {
+        }), errMsg))), d.tr(this.state.showCode ? null : displayNone, tableText('Code'), d.td(null, d.div({ id: 'request-container' }, ce(CodeArea, {
             ept: this.props.currEpt,
             paramVals: this.state.paramVals,
             __file__: this.state.__file__,
@@ -1179,7 +1180,7 @@ var ResponseArea = (function (_super) {
         _super.call(this, props);
     }
     ResponseArea.prototype.render = function () {
-        return d.span({ id: 'response-area' }, d.table({ className: 'page-table', hidden: this.props.hide }, d.tbody(null, d.tr(null, tableText('Response'), d.td(null, d.div({ id: 'response-container' }, ce(utils.Highlight, { className: 'json' }, this.props.responseText)), d.div(null, this.props.downloadButton))))));
+        return d.span({ id: 'response-area' }, d.table({ className: 'page-table' }, d.tbody(this.props.hide ? displayNone : null, d.tr(null, tableText('Response'), d.td(null, d.div({ id: 'response-container' }, ce(utils.Highlight, { className: 'json' }, this.props.responseText)), d.div(null, this.props.downloadButton))))));
     };
     return ResponseArea;
 })(react.Component);
