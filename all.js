@@ -360,23 +360,23 @@ var Endpoints;
         host: "content",
         style: "upload"
     }, new Utils.FileParam());
-    var sharing_add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member", {}, new Utils.TextParam("shared_folder_id", false), null /* not implemented yet */, new Utils.BoolParam("quiet", true), new Utils.TextParam("custom_message", true));
+    var sharing_add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member", {}, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("members", false, function (index) { return new Utils.StructParam(index, false, [new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("other")])]); }), new Utils.BoolParam("quiet", true), new Utils.TextParam("custom_message", true));
     var sharing_check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status", {}, new Utils.TextParam("async_job_id", false));
     var sharing_check_share_job_status_endpt = new Utils.Endpoint("sharing", "check_share_job_status", {}, new Utils.TextParam("async_job_id", false));
     var sharing_create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {}, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
     var sharing_create_shared_link_with_settings_endpt = new Utils.Endpoint("sharing", "create_shared_link_with_settings", {}, new Utils.TextParam("path", false), new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
-    var sharing_get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata", {}, new Utils.TextParam("shared_folder_id", false), null /* not implemented yet */);
+    var sharing_get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata", {}, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("other")]); }));
     var sharing_get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file", {
         host: "content",
         style: "download"
     }, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
     var sharing_get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata", {}, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
     var sharing_get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {}, new Utils.TextParam("path", true));
-    var sharing_list_folder_members_endpt = new Utils.Endpoint("sharing", "list_folder_members", {}, new Utils.TextParam("shared_folder_id", false), null /* not implemented yet */, new Utils.IntParam("limit", true));
+    var sharing_list_folder_members_endpt = new Utils.Endpoint("sharing", "list_folder_members", {}, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("make_editor"), new Utils.VoidParam("make_owner"), new Utils.VoidParam("make_viewer"), new Utils.VoidParam("remove"), new Utils.VoidParam("other")]); }), new Utils.IntParam("limit", true));
     var sharing_list_folder_members_continue_endpt = new Utils.Endpoint("sharing", "list_folder_members/continue", {}, new Utils.TextParam("cursor", false));
-    var sharing_list_folders_endpt = new Utils.Endpoint("sharing", "list_folders", {}, new Utils.IntParam("limit", true), null /* not implemented yet */);
+    var sharing_list_folders_endpt = new Utils.Endpoint("sharing", "list_folders", {}, new Utils.IntParam("limit", true), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("other")]); }));
     var sharing_list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue", {}, new Utils.TextParam("cursor", false));
-    var sharing_list_mountable_folders_endpt = new Utils.Endpoint("sharing", "list_mountable_folders", {}, new Utils.IntParam("limit", true), null /* not implemented yet */);
+    var sharing_list_mountable_folders_endpt = new Utils.Endpoint("sharing", "list_mountable_folders", {}, new Utils.IntParam("limit", true), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("other")]); }));
     var sharing_list_mountable_folders_continue_endpt = new Utils.Endpoint("sharing", "list_mountable_folders/continue", {}, new Utils.TextParam("cursor", false));
     var sharing_list_shared_links_endpt = new Utils.Endpoint("sharing", "list_shared_links", {}, new Utils.TextParam("path", true), new Utils.TextParam("cursor", true), new Utils.BoolParam("direct_only", true));
     var sharing_modify_shared_link_settings_endpt = new Utils.Endpoint("sharing", "modify_shared_link_settings", {}, new Utils.TextParam("url", false), new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]));
@@ -401,7 +401,7 @@ var Endpoints;
     }, new Utils.StructParam("web_session", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]), new Utils.StructParam("desktop_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("delete_on_unlink", true)]), new Utils.StructParam("mobile_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]));
     var team_devices_revoke_device_session_batch_endpt = new Utils.Endpoint("team", "devices/revoke_device_session_batch", {
         auth: "team"
-    }, null /* not implemented yet */);
+    }, new Utils.ListParam("revoke_devices", false, function (index) { return new Utils.UnionParam(index, false, [new Utils.StructParam("web_session", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)]), new Utils.StructParam("desktop_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("delete_on_unlink", true)]), new Utils.StructParam("mobile_client", false, [new Utils.TextParam("session_id", false), new Utils.TextParam("team_member_id", false)])]); }));
     var team_get_info_endpt = new Utils.Endpoint("team", "get_info", {
         auth: "team"
     });
@@ -413,7 +413,7 @@ var Endpoints;
     }, new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false));
     var team_groups_get_info_endpt = new Utils.Endpoint("team", "groups/get_info", {
         auth: "team"
-    }, null /* not implemented yet */, null /* not implemented yet */);
+    }, new Utils.ListParam("group_ids", false, function (index) { return new Utils.TextParam(index, false); }), new Utils.ListParam("group_external_ids", false, function (index) { return new Utils.TextParam(index, false); }));
     var team_groups_job_status_get_endpt = new Utils.Endpoint("team", "groups/job_status/get", {
         auth: "team"
     }, new Utils.TextParam("async_job_id", false));
@@ -425,10 +425,10 @@ var Endpoints;
     }, new Utils.TextParam("cursor", false));
     var team_groups_members_add_endpt = new Utils.Endpoint("team", "groups/members/add", {
         auth: "team"
-    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), null /* not implemented yet */);
+    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.ListParam("members", false, function (index) { return new Utils.StructParam(index, false, [new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_type", false, [new Utils.VoidParam("member"), new Utils.VoidParam("owner")])]); }));
     var team_groups_members_remove_endpt = new Utils.Endpoint("team", "groups/members/remove", {
         auth: "team"
-    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), null /* not implemented yet */);
+    }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.ListParam("users", false, function (index) { return new Utils.UnionParam(index, false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]); }));
     var team_groups_members_set_access_type_endpt = new Utils.Endpoint("team", "groups/members/set_access_type", {
         auth: "team"
     }, new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]), new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_type", false, [new Utils.VoidParam("member"), new Utils.VoidParam("owner")]));
@@ -446,16 +446,16 @@ var Endpoints;
     }, new Utils.TextParam("app_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("keep_app_folder", true));
     var team_linked_apps_revoke_linked_app_batch_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app_batch", {
         auth: "team"
-    }, null /* not implemented yet */);
+    }, new Utils.ListParam("revoke_linked_app", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("app_id", false), new Utils.TextParam("team_member_id", false), new Utils.BoolParam("keep_app_folder", true)]); }));
     var team_members_add_endpt = new Utils.Endpoint("team", "members/add", {
         auth: "team"
-    }, null /* not implemented yet */, new Utils.BoolParam("force_async", true));
+    }, new Utils.ListParam("new_members", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", false), new Utils.TextParam("member_surname", false), new Utils.TextParam("member_external_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")])]); }), new Utils.BoolParam("force_async", true));
     var team_members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get", {
         auth: "team"
     }, new Utils.TextParam("async_job_id", false));
     var team_members_get_info_endpt = new Utils.Endpoint("team", "members/get_info", {
         auth: "team"
-    }, null /* not implemented yet */);
+    }, new Utils.ListParam("members", false, function (index) { return new Utils.UnionParam(index, false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]); }));
     var team_members_list_endpt = new Utils.Endpoint("team", "members/list", {
         auth: "team"
     }, new Utils.IntParam("limit", true));
@@ -496,7 +496,7 @@ var Endpoints;
         auth: "team"
     }, new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
     var users_get_account_endpt = new Utils.Endpoint("users", "get_account", {}, new Utils.TextParam("account_id", false));
-    var users_get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, null /* not implemented yet */);
+    var users_get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch", {}, new Utils.ListParam("account_ids", false, function (index) { return new Utils.TextParam(index, false); }));
     var users_get_current_account_endpt = new Utils.Endpoint("users", "get_current_account", {});
     var users_get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage", {});
     Endpoints.endpointList = [files_copy_endpt,
@@ -610,6 +610,7 @@ var utils_1 = require("./utils");
 var utils_2 = require("./utils");
 var utils_3 = require("./utils");
 var utils_4 = require("./utils");
+var utils_5 = require("./utils");
 var ce = react.createElement;
 var d = react.DOM;
 var developerPage = 'https://www.dropbox.com/developers';
@@ -731,17 +732,20 @@ var ParentValueHandler = (function (_super) {
             else if (param instanceof utils_2.StructParam) {
                 return new StructValueHandler(param, _this);
             }
+            else if (param instanceof utils_5.ListParam) {
+                return new ListValueHandler(param, _this);
+            }
             else {
                 return new ChildValueHandler(param, _this);
             }
         };
-        this.getOrCreate = function (name) {
+        this.getOrCreate = function (name, defaultValue) {
             var dict = _this.current();
             if (name in dict) {
                 return dict[name];
             }
             else {
-                dict[name] = {};
+                dict[name] = defaultValue;
                 return dict[name];
             }
         };
@@ -783,7 +787,7 @@ var StructValueHandler = (function (_super) {
     function StructValueHandler(param, parent) {
         var _this = this;
         _super.call(this);
-        this.current = function () { return _this.parent.getOrCreate(_this.param.name); };
+        this.current = function () { return _this.parent.getOrCreate(_this.param.name, {}); };
         this.update = function () { return _this.parent.update(); };
         this.param = param;
         this.parent = parent;
@@ -806,7 +810,7 @@ var UnionValueHandler = (function (_super) {
             }
         };
         this.updateTag = function (tag) {
-            _this.parent.updateChildValue(_this.param.name, null);
+            _this.parent.updateChildValue(_this.param.name, _this.param.defaultValue());
             if (tag != null) {
                 _this.updateChildValue('.tag', tag);
             }
@@ -817,6 +821,42 @@ var UnionValueHandler = (function (_super) {
     }
     return UnionValueHandler;
 })(StructValueHandler);
+/* Value handler for list type.
+ */
+var ListValueHandler = (function (_super) {
+    __extends(ListValueHandler, _super);
+    function ListValueHandler(param, parent) {
+        var _this = this;
+        _super.call(this);
+        this.addItem = function () {
+            var list = _this.current();
+            var param = _this.param.createItem(0);
+            list.push(param.defaultValue());
+            _this.update();
+        };
+        this.reset = function () {
+            _this.parent.updateChildValue(_this.param.name, _this.param.defaultValue());
+            _this.update();
+        };
+        this.getOrCreate = function (name, defaultValue) {
+            return _this.current()[+name];
+        };
+        this.hasChild = function (name) {
+            return true;
+        };
+        this.value = function (key) {
+            return _this.current()[+name];
+        };
+        this.updateChildValue = function (name, value) {
+            _this.current()[+name] = value;
+        };
+        this.current = function () { return _this.parent.getOrCreate(_this.param.name, []); };
+        this.update = function () { return _this.parent.update(); };
+        this.param = param;
+        this.parent = parent;
+    }
+    return ListValueHandler;
+})(ParentValueHandler);
 /* Value handler for primitive types.
  */
 var ChildValueHandler = (function (_super) {
@@ -882,9 +922,6 @@ var ParamInput = (function (_super) {
         _super.call(this, props);
     }
     ParamInput.prototype.render = function () {
-        return d.tbody(null, this.renderItems());
-    };
-    ParamInput.prototype.renderItems = function () {
         throw new Error('Not implemented.');
     };
     return ParamInput;
@@ -918,27 +955,28 @@ var SingleParamInput = (function (_super) {
             _this.props.handler.update();
         };
     }
-    SingleParamInput.prototype.renderItems = function () {
-        return [this.props.param.asReact({ onChange: this.handleEdit }, this.props.key)];
+    SingleParamInput.prototype.render = function () {
+        return this.props.param.asReact({ onChange: this.handleEdit }, this.props.key);
     };
     return SingleParamInput;
 })(ParamInput);
 var StructParamInput = (function (_super) {
     __extends(StructParamInput, _super);
     function StructParamInput(props) {
-        _super.call(this, props);
-    }
-    StructParamInput.prototype.renderItems = function () {
         var _this = this;
-        var toReturn = [];
-        this.props.param.fields.forEach(function (param) {
-            return toReturn = toReturn.concat(ParamClassChooser.getParamInput(param, {
-                key: _this.props.key + '_' + _this.props.param.name + '_' + param.name,
-                handler: _this.props.handler.getChildHandler(param),
-                param: param
-            }).renderItems());
-        });
-        return toReturn;
+        _super.call(this, props);
+        this.renderItems = function () {
+            return _this.props.param.fields.map(function (p) {
+                return ParamClassChooser.getParamInput(p, {
+                    key: _this.props.key + '_' + _this.props.param.name + '_' + p.name,
+                    handler: _this.props.handler.getChildHandler(p),
+                    param: p
+                });
+            });
+        };
+    }
+    StructParamInput.prototype.render = function () {
+        return d.tr(null, this.props.param.getNameColumn(), d.td(null, d.table(null, d.tbody(null, this.renderItems()))));
     };
     return StructParamInput;
 })(ParamInput);
@@ -968,21 +1006,58 @@ var UnionParamInput = (function (_super) {
             return new utils_2.StructParam(_this.props.param.name, false, fields);
         };
     }
-    UnionParamInput.prototype.renderItems = function () {
-        var selectParam = new SingleParamInput({
+    UnionParamInput.prototype.render = function () {
+        var selectParamProps = {
             key: this.props.key + '_selector',
             handler: this.props.handler.getTagHandler(),
-            param: this.props.param.getSelectorParam()
-        });
+            param: this.props.param.getSelectorParam(this.props.handler.getTag())
+        };
         var param = this.getParam();
+        if (param.fields.length == 0) {
+            return ce(SingleParamInput, selectParamProps);
+        }
         var structParam = new StructParamInput({
             key: this.props.key + '_' + param.name,
             handler: this.props.handler,
             param: param
         });
-        return selectParam.renderItems().concat(structParam.renderItems());
+        return d.tr(null, this.props.param.getNameColumn(), d.td(null, d.table(null, d.tbody(null, [ce(SingleParamInput, selectParamProps)].concat(structParam.renderItems())))));
     };
     return UnionParamInput;
+})(ParamInput);
+var ListParamInput = (function (_super) {
+    __extends(ListParamInput, _super);
+    function ListParamInput(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.addItem = function () {
+            _this.props.handler.addItem();
+            _this.setState({ 'count': _this.state.count + 1 });
+        };
+        this.reset = function () {
+            _this.props.handler.reset();
+            _this.setState({ 'count': 0 });
+        };
+        this.renderItems = function () {
+            var ret = [];
+            for (var i = 0; i < _this.state.count; i++) {
+                var param = _this.props.param.createItem(i);
+                var item = ParamClassChooser.getParamInput(param, {
+                    key: _this.props.key + '_' + _this.props.param.name + '_' + i.toString(),
+                    handler: _this.props.handler.getChildHandler(param),
+                    param: param
+                });
+                ret.push(item);
+            }
+            ret.push(d.tr({ className: 'list-param-actions' }, d.td(null, ''), d.td(null, d.button({ onClick: _this.addItem }, 'Add'), d.button({ onClick: _this.reset }, 'Clear'))));
+            return ret;
+        };
+        this.state = { 'count': 0 };
+    }
+    ListParamInput.prototype.render = function () {
+        return d.tr(null, this.props.param.getNameColumn(), d.td(null, d.table(null, d.tbody(null, this.renderItems()))));
+    };
+    return ListParamInput;
 })(ParamInput);
 // Picks the correct React class for a parameter, depending on whether it's a struct.
 var ParamClassChooser = (function () {
@@ -990,13 +1065,16 @@ var ParamClassChooser = (function () {
     }
     ParamClassChooser.getParamInput = function (param, props) {
         if (param instanceof utils.UnionParam) {
-            return new UnionParamInput(props);
+            return ce(UnionParamInput, props);
         }
         else if (param instanceof utils.StructParam) {
-            return new StructParamInput(props);
+            return ce(StructParamInput, props);
+        }
+        else if (param instanceof utils.ListParam) {
+            return ce(ListParamInput, props);
         }
         else {
-            return new SingleParamInput(props);
+            return ce(SingleParamInput, props);
         }
     };
     return ParamClassChooser;
@@ -1088,13 +1166,13 @@ var RequestArea = (function (_super) {
             : null, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken
-        }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: documentation }, 'Documentation')), d.table({ id: 'parameter-list' }, this.props.currEpt.params.map(function (param) {
+        }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: documentation }, 'Documentation')), d.table({ id: 'parameter-list' }, d.tbody(null, this.props.currEpt.params.map(function (param) {
             return ParamClassChooser.getParamInput(param, {
                 key: _this.props.currEpt.name + param.name,
                 handler: handler.getChildHandler(param),
                 param: param
-            }).render();
-        })), d.div(null, d.button({ onClick: this.showOrHideCode }, this.state.showCode ? 'Hide Code' : 'Show Code'), d.button({ onClick: this.submit, disabled: this.props.inProgress }, 'Submit Call'), d.img({
+            });
+        }))), d.div(null, d.button({ onClick: this.showOrHideCode }, this.state.showCode ? 'Hide Code' : 'Show Code'), d.button({ onClick: this.submit, disabled: this.props.inProgress }, 'Submit Call'), d.img({
             src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
             hidden: !this.props.inProgress,
             style: { position: 'relative', top: '2px', left: '10px' }
@@ -1396,6 +1474,14 @@ var Dict = (function () {
     return Dict;
 })();
 exports.Dict = Dict;
+var List = (function () {
+    function List() {
+        var _this = this;
+        this.push = function (value) { return _this.push(value); };
+    }
+    return List;
+})();
+exports.List = List;
 /* Helper class which deal with local storage. If session storage is allowed, items
    will be written to session storage. If session storage is disabled (e.g. safari
    private browsing mode), cookie storage will be used as fallback.
@@ -1514,6 +1600,24 @@ exports.Endpoint = Endpoint;
  */
 var Parameter = (function () {
     function Parameter(name, optional) {
+        var _this = this;
+        this.getDisplayName = function () {
+            if (!isNaN(+_this.name)) {
+                return '';
+            }
+            else {
+                var displayName = (_this.name !== '__file__') ? _this.name : 'File to upload';
+                if (_this.optional)
+                    displayName += ' (optional)';
+                return displayName;
+            }
+        };
+        this.getNameStyleArgs = function () {
+            return _this.optional ? { 'style': { 'color': '#999' } } : {};
+        };
+        this.getNameColumn = function () {
+            return d.td(_this.getNameStyleArgs(), _this.getDisplayName());
+        };
         /* Each subclass will implement these abstract methods differently.
             - getValue should parse the value in the string and return the (typed) value for that
               parameter. For example, integer parameters will use parseInt here.
@@ -1531,11 +1635,7 @@ var Parameter = (function () {
        parameter's subclass.
      */
     Parameter.prototype.asReact = function (props, key) {
-        var nameArgs = this.optional ? { 'style': { 'color': '#999' } } : {};
-        var displayName = (this.name !== '__file__') ? this.name : 'File to upload';
-        if (this.optional)
-            displayName += ' (optional)';
-        return d.tr({ key: key }, d.td(nameArgs, displayName), d.td(null, this.innerReact(props)));
+        return d.tr({ key: key }, this.getNameColumn(), d.td(null, this.innerReact(props)));
     };
     return Parameter;
 })();
@@ -1596,19 +1696,24 @@ var VoidParam = (function (_super) {
 exports.VoidParam = VoidParam;
 var SelectorParam = (function (_super) {
     __extends(SelectorParam, _super);
-    function SelectorParam(name, optional, choices) {
+    function SelectorParam(name, optional, choices, selected) {
         var _this = this;
+        if (selected === void 0) { selected = null; }
         _super.call(this, name, optional);
         this.defaultValue = function () { return _this.choices[0]; };
         this.getValue = function (s) { return s; };
-        this.innerReact = function (props) { return d.select(props, _this.choices.map(function (choice) { return d.option({
-            key: choice,
-            value: choice
-        }, choice); })); };
+        this.innerReact = function (props) {
+            props['value'] = _this.selected;
+            return d.select(props, _this.choices.map(function (choice) { return d.option({
+                key: choice,
+                value: choice
+            }, choice); }));
+        };
         this.choices = choices;
         if (this.optional) {
             this.choices.unshift('');
         }
+        this.selected = selected != null ? selected : this.defaultValue();
     }
     return SelectorParam;
 })(Parameter);
@@ -1675,10 +1780,11 @@ var UnionParam = (function (_super) {
     function UnionParam(name, optional, fields) {
         var _this = this;
         _super.call(this, name, optional, fields);
-        this.getSelectorParam = function () {
+        this.getSelectorParam = function (selected) {
+            if (selected === void 0) { selected = null; }
             var choices = [];
             _this.fields.forEach(function (p) { return choices.push(p.name); });
-            return new SelectorParam(_this.name, _this.optional, choices);
+            return new SelectorParam(_this.name, _this.optional, choices, selected);
         };
         this.defaultValue = function () {
             if (_this.optional) {
@@ -1689,6 +1795,8 @@ var UnionParam = (function (_super) {
             if (param instanceof StructParam) {
                 param.populateFields(toReturn);
             }
+            else if (param instanceof VoidParam) {
+            }
             else {
                 toReturn[param.name] = param.defaultValue();
             }
@@ -1698,6 +1806,20 @@ var UnionParam = (function (_super) {
     return UnionParam;
 })(StructParam);
 exports.UnionParam = UnionParam;
+var ListParam = (function (_super) {
+    __extends(ListParam, _super);
+    function ListParam(name, optional, creator) {
+        var _this = this;
+        _super.call(this, name, optional);
+        this.createItem = function (index) { return _this.creator(index.toString()); };
+        this.defaultValue = function () {
+            return _this.optional ? null : [];
+        };
+        this.creator = creator;
+    }
+    return ListParam;
+})(Parameter);
+exports.ListParam = ListParam;
 // Utilities for token flow
 var csrfTokenStorageName = 'Dropbox_API_state';
 var tokenStorageName = 'Dropbox_API_explorer_token';
