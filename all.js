@@ -810,7 +810,7 @@ var UnionValueHandler = (function (_super) {
             }
         };
         this.updateTag = function (tag) {
-            _this.parent.updateChildValue(_this.param.name, _this.param.defaultValue());
+            _this.parent.updateChildValue(_this.param.name, null);
             if (tag != null) {
                 _this.updateChildValue('.tag', tag);
             }
@@ -1049,7 +1049,7 @@ var ListParamInput = (function (_super) {
                 });
                 ret.push(item);
             }
-            ret.push(d.tr({ className: 'list-param-actions' }, d.td(null, ''), d.td(null, d.button({ onClick: _this.addItem }, 'Add'), d.button({ onClick: _this.reset }, 'Clear'))));
+            ret.push(d.tr({ className: 'list-param-actions' }, d.td(null, d.button({ onClick: _this.addItem }, 'Add'), d.button({ onClick: _this.reset }, 'Clear'))));
             return ret;
         };
         this.state = { 'count': 0 };
@@ -1601,22 +1601,16 @@ exports.Endpoint = Endpoint;
 var Parameter = (function () {
     function Parameter(name, optional) {
         var _this = this;
-        this.getDisplayName = function () {
-            if (!isNaN(+_this.name)) {
-                return '';
-            }
-            else {
-                var displayName = (_this.name !== '__file__') ? _this.name : 'File to upload';
-                if (_this.optional)
-                    displayName += ' (optional)';
-                return displayName;
-            }
-        };
-        this.getNameStyleArgs = function () {
-            return _this.optional ? { 'style': { 'color': '#999' } } : {};
-        };
         this.getNameColumn = function () {
-            return d.td(_this.getNameStyleArgs(), _this.getDisplayName());
+            if (!isNaN(+_this.name)) {
+                // Don't show name column for list parameter item.
+                return null;
+            }
+            var displayName = (_this.name !== '__file__') ? _this.name : 'File to upload';
+            if (_this.optional)
+                displayName += ' (optional)';
+            var nameArgs = _this.optional ? { 'style': { 'color': '#999' } } : {};
+            return d.td(nameArgs, displayName);
         };
         /* Each subclass will implement these abstract methods differently.
             - getValue should parse the value in the string and return the (typed) value for that
