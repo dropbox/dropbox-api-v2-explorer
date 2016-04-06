@@ -810,7 +810,7 @@ var UnionValueHandler = (function (_super) {
             }
         };
         this.updateTag = function (tag) {
-            _this.parent.updateChildValue(_this.param.name, null);
+            _this.parent.updateChildValue(_this.param.name, _this.param.optional ? null : {});
             if (tag != null) {
                 _this.updateChildValue('.tag', tag);
             }
