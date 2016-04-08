@@ -1697,7 +1697,9 @@ var SelectorParam = (function (_super) {
         this.defaultValue = function () { return _this.choices[0]; };
         this.getValue = function (s) { return s; };
         this.innerReact = function (props) {
-            props['value'] = _this.selected;
+            if (_this.selected != null) {
+                props['value'] = _this.selected;
+            }
             return d.select(props, _this.choices.map(function (choice) { return d.option({
                 key: choice,
                 value: choice
@@ -1707,7 +1709,7 @@ var SelectorParam = (function (_super) {
         if (this.optional) {
             this.choices.unshift('');
         }
-        this.selected = selected != null ? selected : this.defaultValue();
+        this.selected = selected;
     }
     return SelectorParam;
 })(Parameter);
