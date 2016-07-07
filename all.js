@@ -2809,8 +2809,9 @@ var UnionParam = (function (_super) {
             if (selected === void 0) { selected = null; }
             var choices = [];
             _this.fields.forEach(function (p) { return choices.push(p.name); });
-            return new SelectorParam(_this.name, _this.optional, choices, selected);
+            return new SelectorParam(_this.getSelectorName(), _this.optional, choices, selected);
         };
+        this.getSelectorName = function () { return _this.name; };
         this.defaultValue = function () {
             if (_this.optional) {
                 return null;
@@ -2835,6 +2836,7 @@ var RootUnionParam = (function (_super) {
     __extends(RootUnionParam, _super);
     function RootUnionParam(name, optional, fields) {
         _super.call(this, name, optional, fields);
+        this.getSelectorName = function () { return 'tag'; };
     }
     return RootUnionParam;
 })(UnionParam);
