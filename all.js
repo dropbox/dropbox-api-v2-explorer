@@ -1710,9 +1710,11 @@ var AppPermissionInput = (function (_super) {
 var TokenInput = (function (_super) {
     __extends(TokenInput, _super);
     function TokenInput(props) {
+        var _this = this;
         _super.call(this, props);
         this.handleEdit = function (event) {
-            return utils.putToken(event.target.value);
+            var value = event.target.value;
+            _this.props.callback(value);
         };
         // This function handles the initial part of the OAuth2 token flow for the user.
         this.retrieveAuth = function () {
@@ -2175,6 +2177,12 @@ var RequestArea = (function (_super) {
         this.updateParamValues = function (paramVals, fileVals) {
             _this.setState({ paramVals: paramVals, fileVals: fileVals });
         };
+        this.updateTokenValue = function (tokenValue) {
+            // This is called only to trigger live update. Use utils.getToken
+            // to get latest token.
+            utils.putToken(tokenValue);
+            _this.forceUpdate();
+        };
         /* Called when a new endpoint is chosen or the user updates the token. If a new endpoint is
            chosen, we should initialize its parameter values; if a new token is chosen, any error
            message about the token no longer applies.
@@ -2237,7 +2245,8 @@ var RequestArea = (function (_super) {
             ? ce(AppPermissionInput, { handler: this.updateClientId })
             : null, ce(TokenInput, {
             toggleShow: this.showOrHide,
-            showToken: this.state.showToken
+            showToken: this.state.showToken,
+            callback: this.updateTokenValue
         }), d.tr(null, tableText('Request'), d.td(null, d.div({ className: 'align-right' }, d.a({ href: documentation }, 'Documentation')), d.table({ id: 'parameter-list' }, d.tbody(null, this.props.currEpt.params.map(function (param) {
             return ParamClassChooser.getParamInput(param, {
                 key: _this.props.currEpt.name + param.name,
