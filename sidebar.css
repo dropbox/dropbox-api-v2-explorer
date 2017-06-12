@@ -279,3 +279,11 @@ table {
     padding-right: 20px;
     font-size: 13px;
 }
+
+.header-name {
+    height: 26px
+}
+
+.header-value {
+    height: 26px
+}
