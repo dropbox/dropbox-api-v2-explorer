@@ -2985,15 +2985,22 @@ var RequestArea = (function (_super) {
          */
         this.submit = function () {
             var token = utils.getToken();
-            if (token == null || token === '') {
+            var currEpt = _this.props.currEpt;
+            var authType = currEpt.getAuthType();
+            if (authType == utils.AuthType.App) {
+                _this.setState({
+                    errMsg: "Error: Making API call for app auth endpoint is not supported. Please run the code using credential of your own app."
+                });
+            }
+            else if (authType != utils.AuthType.None && (token == null || token === '')) {
                 _this.setState({
                     errMsg: 'Error: missing token. Please enter a token above or click the "Get Token" button.'
                 });
             }
             else {
                 _this.setState({ errMsg: null });
-                var responseFn = apicalls.chooseCallback(_this.props.currEpt.getEndpointKind(), utils.getDownloadName(_this.props.currEpt, _this.state.paramVals));
-                _this.props.APICaller(JSON.stringify(_this.state.paramVals), _this.props.currEpt, token, _this.state.headerVals, responseFn, _this.state.fileVals['file']);
+                var responseFn = apicalls.chooseCallback(currEpt.getEndpointKind(), utils.getDownloadName(currEpt, _this.state.paramVals));
+                _this.props.APICaller(JSON.stringify(_this.state.paramVals), currEpt, token, _this.state.headerVals, responseFn, _this.state.fileVals['file']);
             }
         };
         // Toggles whether the token is hidden, or visible on the screen.
@@ -3475,6 +3482,7 @@ var EndpointKind = exports.EndpointKind;
     AuthType[AuthType["None"] = 0] = "None";
     AuthType[AuthType["User"] = 1] = "User";
     AuthType[AuthType["Team"] = 2] = "Team";
+    AuthType[AuthType["App"] = 3] = "App";
 })(exports.AuthType || (exports.AuthType = {}));
 var AuthType = exports.AuthType;
 /* A class with all the information about an endpoint: its name and namespace; its kind
@@ -3502,8 +3510,12 @@ var Endpoint = (function () {
             if (_this.attrs["host"] == "notify") {
                 return AuthType.None;
             }
-            else if (_this.attrs["auth"] == "team") {
+            var auth = _this.attrs["auth"];
+            if (auth == "team") {
                 return AuthType.Team;
+            }
+            else if (auth == "app") {
+                return AuthType.App;
             }
             else {
                 return AuthType.User;
@@ -3946,9 +3958,14 @@ var Highlight = (function (_super) {
 exports.Highlight = Highlight;
 // Utility functions for getting the headers for an API call
 // The headers for an RPC-like endpoint HTTP request
-exports.RPCLikeHeaders = function (token, includeAuth) {
+exports.RPCLikeHeaders = function (token, authType) {
     var toReturn = {};
-    if (includeAuth) {
+    if (authType == AuthType.None) {
+    }
+    else if (authType == AuthType.App) {
+        toReturn['Authorization'] = "Basic <APP_KEY>:<APP_SECRET>";
+    }
+    else {
         toReturn['Authorization'] = "Bearer " + token;
     }
     toReturn["Content-Type"] = "application/json";
@@ -3973,7 +3990,7 @@ exports.getHeaders = function (ept, token, customHeaders, args) {
     var headers = {};
     switch (ept.getEndpointKind()) {
         case EndpointKind.RPCLike: {
-            headers = exports.RPCLikeHeaders(token, ept.getAuthType() != AuthType.None);
+            headers = exports.RPCLikeHeaders(token, ept.getAuthType());
             break;
         }
         case EndpointKind.Upload: {
