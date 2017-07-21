@@ -599,7 +599,7 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         select_admin_enabled: "False"
-    }, new Utils.TextParam("path", true), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true), new Utils.BoolParam("include_has_explicit_shared_members", true), new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]));
+    }, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true), new Utils.BoolParam("include_has_explicit_shared_members", true));
     var files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", {
         style: "rpc",
         api_group: "None",
@@ -625,7 +625,7 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         select_admin_enabled: "False"
-    }, new Utils.TextParam("path", true), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true), new Utils.BoolParam("include_has_explicit_shared_members", true));
+    }, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true), new Utils.BoolParam("include_has_explicit_shared_members", true));
     var files_list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll", {
         style: "rpc",
         api_group: "None",
