@@ -4259,7 +4259,9 @@ var hljs = (typeof window !== "undefined" ? window['hljs'] : typeof global !== "
 var cookie = require('./cookie');
 var d = react.DOM;
 var allowedHeaders = [
-    'Dropbox-API-Select-User'
+    'Dropbox-Api-Select-User',
+    'Dropbox-Api-Select-Admin',
+    'Dropbox-Api-Path-Root'
 ];
 // This class mostly exists to help Typescript type-check my programs.
 var Dict = (function () {
