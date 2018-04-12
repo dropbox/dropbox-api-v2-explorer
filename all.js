@@ -622,53 +622,11 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("id", false), new Utils.TextParam("title", true), new Utils.TextParam("destination", true), new Utils.UnionParam("deadline", true, [new Utils.VoidParam("no_update"), new Utils.StructParam("update", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always"), new Utils.VoidParam("other")])]), new Utils.VoidParam("other")]), new Utils.BoolParam("open", true));
-    var files_alpha_get_metadata_endpt = new Utils.Endpoint("files", "alpha/get_metadata", {
-        style: "rpc",
-        api_group: "properties",
-        is_preview: "True",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true), new Utils.BoolParam("include_has_explicit_shared_members", true), new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, function (index) { return new Utils.TextParam(index, false); }), new Utils.VoidParam("other")]), new Utils.ListParam("include_property_templates", true, function (index) { return new Utils.TextParam(index, false); }));
-    var files_alpha_upload_endpt = new Utils.Endpoint("files", "alpha/upload", {
-        style: "upload",
-        api_group: "properties",
-        is_preview: "True",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "content",
-        allow_app_folder_app: "True",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); })]); }));
-    var files_copy_endpt = new Utils.Endpoint("files", "copy", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false), new Utils.BoolParam("allow_shared_folder", true), new Utils.BoolParam("autorename", true), new Utils.BoolParam("allow_ownership_transfer", true));
     var files_copy_batch_endpt = new Utils.Endpoint("files", "copy_batch", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -682,7 +640,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -724,7 +682,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -734,11 +692,11 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false), new Utils.BoolParam("allow_shared_folder", true), new Utils.BoolParam("autorename", true), new Utils.BoolParam("allow_ownership_transfer", true));
-    var files_create_folder_endpt = new Utils.Endpoint("files", "create_folder", {
+    var files_create_folder_batch_endpt = new Utils.Endpoint("files", "create_folder_batch", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -747,12 +705,26 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.BoolParam("autorename", true));
+    }, new Utils.ListParam("paths", false, function (index) { return new Utils.TextParam(index, false); }), new Utils.BoolParam("autorename", true), new Utils.BoolParam("force_async", true));
+    var files_create_folder_batch_check_endpt = new Utils.Endpoint("files", "create_folder_batch/check", {
+        style: "rpc",
+        api_group: "None",
+        is_preview: "False",
+        select_admin_mode: "team_admin",
+        feature: "None",
+        auth: "user",
+        cluster: "meta-api",
+        host: "api",
+        allow_app_folder_app: "True",
+        owner: "api-platform",
+        takes_path_root: "False",
+        is_web_alpha: "False"
+    }, new Utils.TextParam("async_job_id", false));
     var files_create_folder_v2_endpt = new Utils.Endpoint("files", "create_folder_v2", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -762,25 +734,11 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("path", false), new Utils.BoolParam("autorename", true));
-    var files_delete_endpt = new Utils.Endpoint("files", "delete", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false));
     var files_delete_batch_endpt = new Utils.Endpoint("files", "delete_batch", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -789,12 +747,12 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.ListParam("entries", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("path", false)]); }));
+    }, new Utils.ListParam("entries", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.TextParam("parent_rev", true)]); }));
     var files_delete_batch_check_endpt = new Utils.Endpoint("files", "delete_batch/check", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -808,7 +766,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -817,8 +775,22 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("path", false));
+    }, new Utils.TextParam("path", false), new Utils.TextParam("parent_rev", true));
     var files_download_endpt = new Utils.Endpoint("files", "download", {
+        style: "download",
+        api_group: "None",
+        is_preview: "False",
+        select_admin_mode: "whole_team",
+        feature: "None",
+        auth: "user",
+        cluster: "meta-api",
+        host: "content",
+        allow_app_folder_app: "True",
+        owner: "api-platform",
+        takes_path_root: "False",
+        is_web_alpha: "False"
+    }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
+    var files_download_zip_endpt = new Utils.Endpoint("files", "download_zip", {
         style: "download",
         api_group: "None",
         is_preview: "False",
@@ -831,7 +803,7 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.TextParam("rev", true));
+    }, new Utils.TextParam("path", false));
     var files_get_metadata_endpt = new Utils.Endpoint("files", "get_metadata", {
         style: "rpc",
         api_group: "None",
@@ -850,7 +822,7 @@ var Endpoints;
         style: "download",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "whole_team",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -878,7 +850,7 @@ var Endpoints;
         style: "download",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "whole_team",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -887,12 +859,12 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w1024h768")]));
+    }, new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit")]));
     var files_get_thumbnail_batch_endpt = new Utils.Endpoint("files", "get_thumbnail_batch", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "whole_team",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -901,7 +873,7 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.ListParam("entries", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w1024h768")])]); }));
+    }, new Utils.ListParam("entries", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit")])]); }));
     var files_list_folder_endpt = new Utils.Endpoint("files", "list_folder", {
         style: "rpc",
         api_group: "None",
@@ -962,7 +934,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "whole_team",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -972,25 +944,11 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("path"), new Utils.VoidParam("id"), new Utils.VoidParam("other")]), new Utils.IntParam("limit", true));
-    var files_move_endpt = new Utils.Endpoint("files", "move", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false), new Utils.BoolParam("allow_shared_folder", true), new Utils.BoolParam("autorename", true), new Utils.BoolParam("allow_ownership_transfer", true));
     var files_move_batch_endpt = new Utils.Endpoint("files", "move_batch", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1004,7 +962,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1018,7 +976,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1032,7 +990,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1041,96 +999,12 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("path", false));
-    var files_properties_add_endpt = new Utils.Endpoint("files", "properties/add", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.ListParam("property_groups", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); })]); }));
-    var files_properties_overwrite_endpt = new Utils.Endpoint("files", "properties/overwrite", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.ListParam("property_groups", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); })]); }));
-    var files_properties_remove_endpt = new Utils.Endpoint("files", "properties/remove", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.ListParam("property_template_ids", false, function (index) { return new Utils.TextParam(index, false); }));
-    var files_properties_template_get_endpt = new Utils.Endpoint("files", "properties/template/get", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("template_id", false));
-    var files_properties_template_list_endpt = new Utils.Endpoint("files", "properties/template/list", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    });
-    var files_properties_update_endpt = new Utils.Endpoint("files", "properties/update", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.ListParam("update_property_groups", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("add_or_update_fields", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); }), new Utils.ListParam("remove_fields", true, function (index) { return new Utils.TextParam(index, false); })]); }));
+    }, new Utils.TextParam("path", false), new Utils.TextParam("parent_rev", true));
     var files_restore_endpt = new Utils.Endpoint("files", "restore", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1186,21 +1060,7 @@ var Endpoints;
         style: "upload",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
-        feature: "upload_api_rate_limit",
-        auth: "user",
-        cluster: "meta-api",
-        host: "content",
-        allow_app_folder_app: "True",
-        owner: "api-platform",
-        takes_path_root: "True",
-        is_web_alpha: "False"
-    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); })]); }));
-    var files_upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", {
-        style: "upload",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "upload_api_rate_limit",
         auth: "user",
         cluster: "meta-api",
@@ -1209,12 +1069,12 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.FileParam(), new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false));
+    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); })]); }));
     var files_upload_session_append_v2_endpt = new Utils.Endpoint("files", "upload_session/append_v2", {
         style: "upload",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "upload_api_rate_limit",
         auth: "user",
         cluster: "meta-api",
@@ -1228,7 +1088,7 @@ var Endpoints;
         style: "upload",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "upload_api_rate_limit",
         auth: "user",
         cluster: "meta-api",
@@ -1242,7 +1102,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "upload_api_rate_limit",
         auth: "user",
         cluster: "meta-api",
@@ -1256,7 +1116,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1270,7 +1130,7 @@ var Endpoints;
         style: "upload",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "upload_api_rate_limit",
         auth: "user",
         cluster: "meta-api",
@@ -1508,7 +1368,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1522,41 +1382,27 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("members", false, function (index) { return new Utils.StructParam(index, false, [new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")])]); }), new Utils.BoolParam("quiet", true), new Utils.TextParam("custom_message", true));
-    var sharing_change_file_member_access_endpt = new Utils.Endpoint("sharing", "change_file_member_access", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "sharing",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("file", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")]));
     var sharing_check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("async_job_id", false));
@@ -1564,13 +1410,13 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("async_job_id", false));
@@ -1578,35 +1424,21 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("async_job_id", false));
-    var sharing_create_shared_link_endpt = new Utils.Endpoint("sharing", "create_shared_link", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "sharing",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.BoolParam("short_url", true), new Utils.UnionParam("pending_upload", true, [new Utils.VoidParam("file"), new Utils.VoidParam("folder")]));
     var sharing_create_shared_link_with_settings_endpt = new Utils.Endpoint("sharing", "create_shared_link_with_settings", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1620,7 +1452,7 @@ var Endpoints;
         style: "rpc",
         api_group: "truelink-alpha",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1654,10 +1486,10 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("other")]); }));
+    }, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance"), new Utils.VoidParam("other")]); }));
     var sharing_get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file", {
         style: "download",
         api_group: "None",
@@ -1686,25 +1518,11 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
-    var sharing_get_shared_links_endpt = new Utils.Endpoint("sharing", "get_shared_links", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "sharing",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", true));
     var sharing_list_file_members_endpt = new Utils.Endpoint("sharing", "list_file_members", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1752,7 +1570,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("make_editor"), new Utils.VoidParam("make_owner"), new Utils.VoidParam("make_viewer"), new Utils.VoidParam("make_viewer_no_comment"), new Utils.VoidParam("remove"), new Utils.VoidParam("other")]); }), new Utils.IntParam("limit", true));
@@ -1766,7 +1584,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("cursor", false));
@@ -1780,10 +1598,10 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.IntParam("limit", true), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("other")]); }));
+    }, new Utils.IntParam("limit", true), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance"), new Utils.VoidParam("other")]); }));
     var sharing_list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue", {
         style: "rpc",
         api_group: "None",
@@ -1794,7 +1612,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("cursor", false));
@@ -1808,10 +1626,10 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.IntParam("limit", true), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("other")]); }));
+    }, new Utils.IntParam("limit", true), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance"), new Utils.VoidParam("other")]); }));
     var sharing_list_mountable_folders_continue_endpt = new Utils.Endpoint("sharing", "list_mountable_folders/continue", {
         style: "rpc",
         api_group: "None",
@@ -1822,7 +1640,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("cursor", false));
@@ -1830,7 +1648,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1892,7 +1710,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false));
@@ -1900,7 +1718,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1920,29 +1738,15 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.BoolParam("leave_a_copy", true));
-    var sharing_remove_file_member_endpt = new Utils.Endpoint("sharing", "remove_file_member", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "True",
-        owner: "sharing",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("file", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]));
     var sharing_remove_file_member_2_endpt = new Utils.Endpoint("sharing", "remove_file_member_2", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1956,13 +1760,13 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.BoolParam("leave_a_copy", false));
@@ -1970,7 +1774,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -1980,21 +1784,7 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("url", false));
-    var sharing_share_folder_endpt = new Utils.Endpoint("sharing", "share_folder", {
-        style: "rpc",
-        api_group: "truelink-alpha",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "user",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "sharing-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("path", false), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.BoolParam("force_async", true), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled"), new Utils.VoidParam("other")]), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("other")]); }), new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false), new Utils.VoidParam("other")]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false), new Utils.VoidParam("other")])]));
-    var sharing_transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder", {
+    var sharing_set_access_inheritance_endpt = new Utils.Endpoint("sharing", "set_access_inheritance", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -2004,7 +1794,35 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
+        takes_path_root: "False",
+        is_web_alpha: "False"
+    }, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("access_inheritance", true, [new Utils.VoidParam("inherit"), new Utils.VoidParam("no_inherit"), new Utils.VoidParam("other")]));
+    var sharing_share_folder_endpt = new Utils.Endpoint("sharing", "share_folder", {
+        style: "rpc",
+        api_group: "truelink-alpha",
+        is_preview: "False",
+        select_admin_mode: "team_admin",
+        feature: "None",
+        auth: "user",
+        cluster: "meta-api",
+        host: "api",
+        allow_app_folder_app: "False",
+        owner: "company-dropbox-team",
+        takes_path_root: "False",
+        is_web_alpha: "False"
+    }, new Utils.TextParam("path", false), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.BoolParam("force_async", true), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled"), new Utils.VoidParam("other")]), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance"), new Utils.VoidParam("other")]); }), new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false), new Utils.VoidParam("other")]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false), new Utils.VoidParam("other")])]));
+    var sharing_transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder", {
+        style: "rpc",
+        api_group: "None",
+        is_preview: "False",
+        select_admin_mode: "team_admin",
+        feature: "None",
+        auth: "user",
+        cluster: "meta-api",
+        host: "api",
+        allow_app_folder_app: "False",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.TextParam("to_dropbox_id", false));
@@ -2012,13 +1830,13 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false));
@@ -2026,7 +1844,7 @@ var Endpoints;
         style: "rpc",
         api_group: "truelink-alpha",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -2040,13 +1858,13 @@ var Endpoints;
         style: "rpc",
         api_group: "truelink-alpha",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.BoolParam("leave_a_copy", true));
@@ -2054,7 +1872,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -2068,13 +1886,13 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false), new Utils.VoidParam("other")]), new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")]));
@@ -2082,16 +1900,16 @@ var Endpoints;
         style: "rpc",
         api_group: "truelink-alpha",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "team_admin",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false), new Utils.VoidParam("other")]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false), new Utils.VoidParam("other")])]), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("other")]); }));
+    }, new Utils.TextParam("shared_folder_id", false), new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("other")]), new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors"), new Utils.VoidParam("other")]), new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled"), new Utils.VoidParam("other")]), new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("other")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("members"), new Utils.VoidParam("other")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false), new Utils.VoidParam("other")]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false), new Utils.VoidParam("other")])]), new Utils.ListParam("actions", true, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance"), new Utils.VoidParam("other")]); }));
     var team_devices_list_member_devices_endpt = new Utils.Endpoint("team", "devices/list_member_devices", {
         style: "rpc",
         api_group: "None",
@@ -2107,20 +1925,6 @@ var Endpoints;
         is_web_alpha: "False"
     }, new Utils.TextParam("team_member_id", false), new Utils.BoolParam("include_web_sessions", true), new Utils.BoolParam("include_desktop_clients", true), new Utils.BoolParam("include_mobile_clients", true));
     var team_devices_list_members_devices_endpt = new Utils.Endpoint("team", "devices/list_members_devices", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "team",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "tools-and-insights",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("cursor", true), new Utils.BoolParam("include_web_sessions", true), new Utils.BoolParam("include_desktop_clients", true), new Utils.BoolParam("include_mobile_clients", true));
-    var team_devices_list_team_devices_endpt = new Utils.Endpoint("team", "devices/list_team_devices", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -2175,7 +1979,7 @@ var Endpoints;
         owner: "api-platform",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.ListParam("features", false, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("upload_api_rate_limit"), new Utils.VoidParam("has_team_shared_dropbox"), new Utils.VoidParam("has_team_file_events"), new Utils.VoidParam("other")]); }));
+    }, new Utils.ListParam("features", false, function (index) { return new Utils.UnionParam(index, false, [new Utils.VoidParam("upload_api_rate_limit"), new Utils.VoidParam("has_team_shared_dropbox"), new Utils.VoidParam("has_team_file_events"), new Utils.VoidParam("has_team_selective_sync"), new Utils.VoidParam("other")]); }));
     var team_get_info_endpt = new Utils.Endpoint("team", "get_info", {
         style: "rpc",
         api_group: "None",
@@ -2373,20 +2177,6 @@ var Endpoints;
         is_web_alpha: "False"
     }, new Utils.TextParam("team_member_id", false));
     var team_linked_apps_list_members_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_members_linked_apps", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "team",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "tools-and-insights",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("cursor", true));
-    var team_linked_apps_list_team_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_team_linked_apps", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -2718,7 +2508,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.IntParam("limit", true));
@@ -2732,66 +2522,10 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "False",
-        owner: "sharing-platform",
+        owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("cursor", false));
-    var team_properties_template_add_endpt = new Utils.Endpoint("team", "properties/template/add", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "team",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("name", false), new Utils.TextParam("description", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("description", false), new Utils.UnionParam("type", false, [new Utils.VoidParam("string"), new Utils.VoidParam("other")])]); }));
-    var team_properties_template_get_endpt = new Utils.Endpoint("team", "properties/template/get", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "team",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("template_id", false));
-    var team_properties_template_list_endpt = new Utils.Endpoint("team", "properties/template/list", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "team",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    });
-    var team_properties_template_update_endpt = new Utils.Endpoint("team", "properties/template/update", {
-        style: "rpc",
-        api_group: "None",
-        is_preview: "False",
-        select_admin_mode: "None",
-        feature: "None",
-        auth: "team",
-        cluster: "meta-api",
-        host: "api",
-        allow_app_folder_app: "False",
-        owner: "api-platform",
-        takes_path_root: "False",
-        is_web_alpha: "False"
-    }, new Utils.TextParam("template_id", false), new Utils.TextParam("name", true), new Utils.TextParam("description", true), new Utils.ListParam("add_fields", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("description", false), new Utils.UnionParam("type", false, [new Utils.VoidParam("string"), new Utils.VoidParam("other")])]); }));
     var team_reports_get_activity_endpt = new Utils.Endpoint("team", "reports/get_activity", {
         style: "rpc",
         api_group: "None",
@@ -2903,7 +2637,7 @@ var Endpoints;
         owner: "company-dropbox-team",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.TextParam("name", false));
+    }, new Utils.TextParam("name", false), new Utils.UnionParam("sync_setting", true, [new Utils.VoidParam("default"), new Utils.VoidParam("not_synced"), new Utils.VoidParam("other")]));
     var team_team_folder_get_info_endpt = new Utils.Endpoint("team", "team_folder/get_info", {
         style: "rpc",
         api_group: "None",
@@ -2974,6 +2708,20 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("team_folder_id", false), new Utils.TextParam("name", false));
+    var team_team_folder_update_sync_settings_endpt = new Utils.Endpoint("team", "team_folder/update_sync_settings", {
+        style: "rpc",
+        api_group: "None",
+        is_preview: "True",
+        select_admin_mode: "None",
+        feature: "None",
+        auth: "team",
+        cluster: "meta-api",
+        host: "api",
+        allow_app_folder_app: "False",
+        owner: "company-dropbox-team",
+        takes_path_root: "False",
+        is_web_alpha: "False"
+    }, new Utils.TextParam("team_folder_id", false), new Utils.UnionParam("sync_setting", true, [new Utils.VoidParam("default"), new Utils.VoidParam("not_synced"), new Utils.VoidParam("other")]), new Utils.ListParam("content_sync_settings", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("id", false), new Utils.UnionParam("sync_setting", false, [new Utils.VoidParam("default"), new Utils.VoidParam("not_synced"), new Utils.VoidParam("other")])]); }));
     var team_token_get_authenticated_admin_endpt = new Utils.Endpoint("team", "token/get_authenticated_admin", {
         style: "rpc",
         api_group: "None",
@@ -2991,7 +2739,7 @@ var Endpoints;
     var team_log_get_events_endpt = new Utils.Endpoint("team_log", "get_events", {
         style: "rpc",
         api_group: "None",
-        is_preview: "True",
+        is_preview: "False",
         select_admin_mode: "None",
         feature: "None",
         auth: "team",
@@ -3001,11 +2749,11 @@ var Endpoints;
         owner: "audit-log-team",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.IntParam("limit", true), new Utils.TextParam("account_id", true), new Utils.StructParam("time", true, [new Utils.TextParam("start_time", true), new Utils.TextParam("end_time", true)]), new Utils.UnionParam("category", true, [new Utils.VoidParam("account_capture"), new Utils.VoidParam("administration"), new Utils.VoidParam("apps"), new Utils.VoidParam("authentication"), new Utils.VoidParam("comments"), new Utils.VoidParam("content_access"), new Utils.VoidParam("devices"), new Utils.VoidParam("device_approvals"), new Utils.VoidParam("domains"), new Utils.VoidParam("emm"), new Utils.VoidParam("errors"), new Utils.VoidParam("files"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("reports"), new Utils.VoidParam("sessions"), new Utils.VoidParam("shared_files"), new Utils.VoidParam("shared_folders"), new Utils.VoidParam("shared_links"), new Utils.VoidParam("sharing"), new Utils.VoidParam("sharing_policies"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa"), new Utils.VoidParam("other")]));
+    }, new Utils.IntParam("limit", true), new Utils.TextParam("account_id", true), new Utils.StructParam("time", true, [new Utils.TextParam("start_time", true), new Utils.TextParam("end_time", true)]), new Utils.UnionParam("category", true, [new Utils.VoidParam("apps"), new Utils.VoidParam("comments"), new Utils.VoidParam("devices"), new Utils.VoidParam("domains"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("reports"), new Utils.VoidParam("sharing"), new Utils.VoidParam("showcase"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa"), new Utils.VoidParam("other")]));
     var team_log_get_events_continue_endpt = new Utils.Endpoint("team_log", "get_events/continue", {
         style: "rpc",
         api_group: "None",
-        is_preview: "True",
+        is_preview: "False",
         select_admin_mode: "None",
         feature: "None",
         auth: "team",
@@ -3048,7 +2796,7 @@ var Endpoints;
         style: "rpc",
         api_group: "None",
         is_preview: "False",
-        select_admin_mode: "None",
+        select_admin_mode: "whole_team",
         feature: "None",
         auth: "user",
         cluster: "meta-api",
@@ -3068,7 +2816,7 @@ var Endpoints;
         cluster: "meta-api",
         host: "api",
         allow_app_folder_app: "True",
-        owner: "api-platform",
+        owner: "identity",
         takes_path_root: "False",
         is_web_alpha: "False"
     });
@@ -3094,21 +2842,19 @@ var Endpoints;
         file_requests_get_endpt,
         file_requests_list_endpt,
         file_requests_update_endpt,
-        files_alpha_get_metadata_endpt,
-        files_alpha_upload_endpt,
-        files_copy_endpt,
         files_copy_batch_endpt,
         files_copy_batch_check_endpt,
         files_copy_reference_get_endpt,
         files_copy_reference_save_endpt,
         files_copy_v2_endpt,
-        files_create_folder_endpt,
+        files_create_folder_batch_endpt,
+        files_create_folder_batch_check_endpt,
         files_create_folder_v2_endpt,
-        files_delete_endpt,
         files_delete_batch_endpt,
         files_delete_batch_check_endpt,
         files_delete_v2_endpt,
         files_download_endpt,
+        files_download_zip_endpt,
         files_get_metadata_endpt,
         files_get_preview_endpt,
         files_get_temporary_link_endpt,
@@ -3119,23 +2865,15 @@ var Endpoints;
         files_list_folder_get_latest_cursor_endpt,
         files_list_folder_longpoll_endpt,
         files_list_revisions_endpt,
-        files_move_endpt,
         files_move_batch_endpt,
         files_move_batch_check_endpt,
         files_move_v2_endpt,
         files_permanently_delete_endpt,
-        files_properties_add_endpt,
-        files_properties_overwrite_endpt,
-        files_properties_remove_endpt,
-        files_properties_template_get_endpt,
-        files_properties_template_list_endpt,
-        files_properties_update_endpt,
         files_restore_endpt,
         files_save_url_endpt,
         files_save_url_check_job_status_endpt,
         files_search_endpt,
         files_upload_endpt,
-        files_upload_session_append_endpt,
         files_upload_session_append_v2_endpt,
         files_upload_session_finish_endpt,
         files_upload_session_finish_batch_endpt,
@@ -3159,18 +2897,15 @@ var Endpoints;
         paper_docs_users_remove_endpt,
         sharing_add_file_member_endpt,
         sharing_add_folder_member_endpt,
-        sharing_change_file_member_access_endpt,
         sharing_check_job_status_endpt,
         sharing_check_remove_member_job_status_endpt,
         sharing_check_share_job_status_endpt,
-        sharing_create_shared_link_endpt,
         sharing_create_shared_link_with_settings_endpt,
         sharing_get_file_metadata_endpt,
         sharing_get_file_metadata_batch_endpt,
         sharing_get_folder_metadata_endpt,
         sharing_get_shared_link_file_endpt,
         sharing_get_shared_link_metadata_endpt,
-        sharing_get_shared_links_endpt,
         sharing_list_file_members_endpt,
         sharing_list_file_members_batch_endpt,
         sharing_list_file_members_continue_endpt,
@@ -3187,10 +2922,10 @@ var Endpoints;
         sharing_mount_folder_endpt,
         sharing_relinquish_file_membership_endpt,
         sharing_relinquish_folder_membership_endpt,
-        sharing_remove_file_member_endpt,
         sharing_remove_file_member_2_endpt,
         sharing_remove_folder_member_endpt,
         sharing_revoke_shared_link_endpt,
+        sharing_set_access_inheritance_endpt,
         sharing_share_folder_endpt,
         sharing_transfer_folder_endpt,
         sharing_unmount_folder_endpt,
@@ -3201,7 +2936,6 @@ var Endpoints;
         sharing_update_folder_policy_endpt,
         team_devices_list_member_devices_endpt,
         team_devices_list_members_devices_endpt,
-        team_devices_list_team_devices_endpt,
         team_devices_revoke_device_session_endpt,
         team_devices_revoke_device_session_batch_endpt,
         team_features_get_values_endpt,
@@ -3220,7 +2954,6 @@ var Endpoints;
         team_groups_update_endpt,
         team_linked_apps_list_member_linked_apps_endpt,
         team_linked_apps_list_members_linked_apps_endpt,
-        team_linked_apps_list_team_linked_apps_endpt,
         team_linked_apps_revoke_linked_app_endpt,
         team_linked_apps_revoke_linked_app_batch_endpt,
         team_member_space_limits_excluded_users_add_endpt,
@@ -3245,10 +2978,6 @@ var Endpoints;
         team_members_unsuspend_endpt,
         team_namespaces_list_endpt,
         team_namespaces_list_continue_endpt,
-        team_properties_template_add_endpt,
-        team_properties_template_get_endpt,
-        team_properties_template_list_endpt,
-        team_properties_template_update_endpt,
         team_reports_get_activity_endpt,
         team_reports_get_devices_endpt,
         team_reports_get_membership_endpt,
@@ -3262,6 +2991,7 @@ var Endpoints;
         team_team_folder_list_continue_endpt,
         team_team_folder_permanently_delete_endpt,
         team_team_folder_rename_endpt,
+        team_team_folder_update_sync_settings_endpt,
         team_token_get_authenticated_admin_endpt,
         team_log_get_events_endpt,
         team_log_get_events_continue_endpt,
