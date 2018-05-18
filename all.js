@@ -3770,7 +3770,7 @@ var EndpointSelector = (function (_super) {
             }
         });
         return d.div({ 'id': 'sidebar' }, d.p({ style: { marginLeft: '35px', marginTop: '12px' } }, d.a({ onClick: function () { return window.location.href = developerPage; } }, d.img({
-            src: 'https://cf.dropboxstatic.com/static/images/icons/blue_dropbox_glyph-vflJ8-C5d.png',
+            src: 'https://cfl.dropboxstatic.com/static/images/logo_catalog/blue_dropbox_glyph_m1-vflZvZxbS.png',
             width: 36,
             className: 'home-icon'
         }))), d.div({ id: 'endpoint-list' }, namespaces.sort().map(function (ns) {
