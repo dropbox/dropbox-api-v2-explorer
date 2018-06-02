@@ -214,7 +214,7 @@ const HTTPCodeViewer = (): CodeViewer => {
                           body: string): react.ReactElement<{}> =>
         syntaxHighlight(syntax, d.span(null,
             'POST ' + endpt.getPathname() + "\n",
-            'Host: https://' + endpt.getHostname() + "\n",
+            'Host: ' + endpt.getHostname() + "\n",
             'User-Agent: api-explorer-client\n',
             utils.Dict.map(headers, (key: string, value: string) => d.span({key: key},
                 key + ": " + value + "\n"
