@@ -3101,7 +3101,7 @@ var TokenInput = (function (_super) {
                 redirect_uri: utils.currentURL(),
                 state: state
             };
-            var urlWithParams = 'https://www.dropbox.com/1/oauth2/authorize?';
+            var urlWithParams = 'https://www.dropbox.com/oauth2/authorize?';
             for (var key in params) {
                 urlWithParams += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
             }
