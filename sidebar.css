@@ -274,6 +274,11 @@ table {
     padding-right: 20px;
 }
 
+#parameter-list .struct-param-actions button {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 #auth-switch {
     float: right;
     padding-right: 20px;

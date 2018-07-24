@@ -3209,6 +3209,20 @@ var StructValueHandler = (function (_super) {
     function StructValueHandler(param, parent) {
         var _this = this;
         _super.call(this);
+        this.add = function () {
+            if (!_this.param.optional) {
+                throw new Error('Add is only support for optional parameter.');
+            }
+            _this.current();
+            _this.update();
+        };
+        this.reset = function () {
+            if (!_this.param.optional) {
+                throw new Error('Reset is only support for optional parameter.');
+            }
+            _this.parent.updateChildValue(_this.param.name, _this.param.defaultValue());
+            _this.update();
+        };
         this.current = function () { return _this.parent.getOrCreate(_this.param.name, {}); };
         this.update = function () { return _this.parent.update(); };
         this.param = param;
@@ -3414,15 +3428,36 @@ var StructParamInput = (function (_super) {
     function StructParamInput(props) {
         var _this = this;
         _super.call(this, props);
-        this.renderItems = function () {
-            return _this.props.param.fields.map(function (p) {
-                return ParamClassChooser.getParamInput(p, {
-                    key: _this.props.key + '_' + _this.props.param.name + '_' + p.name,
-                    handler: _this.props.handler.getChildHandler(p),
-                    param: p
-                });
-            });
+        this.add = function () {
+            _this.props.handler.add();
+            _this.setState({ 'display': true });
         };
+        this.reset = function () {
+            _this.props.handler.reset();
+            _this.setState({ 'display': false });
+        };
+        this.renderItems = function () {
+            var ret = [];
+            if (_this.state.display || !_this.props.param.optional) {
+                for (var _i = 0, _a = _this.props.param.fields; _i < _a.length; _i++) {
+                    var p = _a[_i];
+                    var input = ParamClassChooser.getParamInput(p, {
+                        key: _this.props.key + '_' + _this.props.param.name + '_' + p.name,
+                        handler: _this.props.handler.getChildHandler(p),
+                        param: p
+                    });
+                    ret.push(input);
+                }
+            }
+            if (_this.props.param.optional) {
+                var button = _this.state.display
+                    ? d.button({ onClick: _this.reset }, 'Clear')
+                    : d.button({ onClick: _this.add }, 'Add');
+                ret.push(d.tr({ className: 'struct-param-actions' }, d.td(null, button)));
+            }
+            return ret;
+        };
+        this.state = { 'display': !props.param.optional };
     }
     StructParamInput.prototype.render = function () {
         return d.tr(null, this.props.param.getNameColumn(), d.td(null, d.table(null, d.tbody(null, this.renderItems()))));
@@ -4180,15 +4215,23 @@ var Parameter = (function () {
             var nameArgs = _this.optional ? { 'style': { 'color': '#999' } } : {};
             return d.td(nameArgs, displayName);
         };
+        this.defaultValue = function () {
+            if (_this.optional) {
+                return null;
+            }
+            else {
+                return _this.defaultValueRequired();
+            }
+        };
         /* Each subclass will implement these abstract methods differently.
             - getValue should parse the value in the string and return the (typed) value for that
               parameter. For example, integer parameters will use parseInt here.
-            - defaultValue should return the initial value if the endpoint is required (e.g.
+            - defaultValueRequired should return the initial value if the endpoint is required (e.g.
               0 for integers, '' for strings).
             - innerReact determines how to render the input field for a parameter.
          */
         this.getValue = function (s) { return s; };
-        this.defaultValue = function () { return ""; };
+        this.defaultValueRequired = function () { return ""; };
         this.innerReact = function (props) { return null; };
         this.name = name;
         this.optional = optional;
@@ -4224,7 +4267,7 @@ var IntParam = (function (_super) {
         _super.call(this, name, optional);
         this.innerReact = function (props) { return exports.parameterInput(props); };
         this.getValue = function (s) { return (s === '') ? _this.defaultValue() : parseInt(s, 10); };
-        this.defaultValue = function () { return 0; };
+        this.defaultValueRequired = function () { return 0; };
     }
     return IntParam;
 })(Parameter);
@@ -4239,7 +4282,7 @@ var FloatParam = (function (_super) {
         _super.call(this, name, optional);
         this.innerReact = function (props) { return exports.parameterInput(props); };
         this.getValue = function (s) { return (s === '') ? _this.defaultValue() : parseFloat(s); };
-        this.defaultValue = function () { return 0; };
+        this.defaultValueRequired = function () { return 0; };
     }
     return FloatParam;
 })(Parameter);
@@ -4250,7 +4293,7 @@ var VoidParam = (function (_super) {
     __extends(VoidParam, _super);
     function VoidParam(name) {
         _super.call(this, name, true);
-        this.defaultValue = function () { return null; };
+        this.defaultValueRequired = function () { return 0; };
         this.getValue = function (s) { return null; };
     }
     return VoidParam;
@@ -4262,7 +4305,7 @@ var SelectorParam = (function (_super) {
         var _this = this;
         if (selected === void 0) { selected = null; }
         _super.call(this, name, optional);
-        this.defaultValue = function () { return _this.choices[0]; };
+        this.defaultValueRequired = function () { return _this.choices[0]; };
         this.getValue = function (s) { return s; };
         this.innerReact = function (props) {
             if (_this.selected != null) {
@@ -4328,7 +4371,7 @@ var StructParam = (function (_super) {
                 }
             });
         };
-        this.defaultValue = function () {
+        this.defaultValueRequired = function () {
             var toReturn = {};
             _this.populateFields(toReturn);
             return toReturn;
@@ -4351,10 +4394,7 @@ var UnionParam = (function (_super) {
             return new SelectorParam(_this.getSelectorName(), _this.optional, choices, selected);
         };
         this.getSelectorName = function () { return _this.name; };
-        this.defaultValue = function () {
-            if (_this.optional) {
-                return null;
-            }
+        this.defaultValueRequired = function () {
             var param = _this.fields[0];
             var toReturn = { '.tag': param.name };
             if (param instanceof StructParam) {
@@ -4387,7 +4427,7 @@ var ListParam = (function (_super) {
         _super.call(this, name, optional);
         this.createItem = function (index) { return _this.creator(index.toString()); };
         this.defaultValue = function () {
-            return _this.optional ? null : [];
+            return [];
         };
         this.creator = creator;
     }
