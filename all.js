@@ -4330,6 +4330,7 @@ var BoolParam = (function (_super) {
     __extends(BoolParam, _super);
     function BoolParam(name, optional) {
         _super.call(this, name, optional, ['false', 'true']);
+        this.defaultValueRequired = function () { return false; };
         this.getValue = function (s) { return s === 'true'; };
     }
     return BoolParam;
