@@ -2329,7 +2329,7 @@ var Endpoints;
         owner: "teams-and-groups",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.ListParam("new_members", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")])]); }), new Utils.BoolParam("force_async", true));
+    }, new Utils.ListParam("new_members", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]), new Utils.BoolParam("is_directory_restricted", true)]); }), new Utils.BoolParam("force_async", true));
     var team_members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get", {
         style: "rpc",
         api_group: "None",
@@ -2469,7 +2469,7 @@ var Endpoints;
         owner: "identity",
         takes_path_root: "False",
         is_web_alpha: "False"
-    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.TextParam("new_email", true), new Utils.TextParam("new_external_id", true), new Utils.TextParam("new_given_name", true), new Utils.TextParam("new_surname", true), new Utils.TextParam("new_persistent_id", true));
+    }, new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.TextParam("new_email", true), new Utils.TextParam("new_external_id", true), new Utils.TextParam("new_given_name", true), new Utils.TextParam("new_surname", true), new Utils.TextParam("new_persistent_id", true), new Utils.BoolParam("new_is_directory_restricted", true));
     var team_members_suspend_endpt = new Utils.Endpoint("team", "members/suspend", {
         style: "rpc",
         api_group: "None",
