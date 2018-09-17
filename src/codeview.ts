@@ -8,9 +8,10 @@ import utils = require('./utils');
 const ce = react.createElement;
 const d = react.DOM;
 
-type Renderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict) => react.ReactElement<{}>
-type UploadRenderer = (endpoint: utils.Endpoint, token: string,
-                       paramVals: utils.Dict, file: File) => react.ReactElement<{}>
+type Renderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
+                 headerVals: utils.Header[]) => react.ReactElement<{}>
+type UploadRenderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
+                       headerVals: utils.Header[], file: File) => react.ReactElement<{}>
 
 /* Something which I wish I had more time to fix: in this file, "upload" and "download" have the wrong
    meanings. Specifically, here, "upload" means a call with a file attached, and "download" means a
@@ -57,7 +58,7 @@ const pythonStringify = (val: any): string => {
     } else {
         return JSON.stringify(val);
     }
-}
+};
 
 // Representation of a dict, or null if the passed-in dict is also null
 const dictToPython = (name: string, dc: utils.Dict): react.HTMLElement => d.span(null,
@@ -75,7 +76,7 @@ const shellEscape = (val: any, inQuotes: boolean = false): string => {
     const toReturn = JSON.stringify(val).replace(/'/g, "'\\''");
     if (inQuotes) return toReturn.replace(/\\/g, '\\\\').replace(/"/g, '\\\"');
     else return toReturn;
-}
+};
 
 // Generates the functions that make up the Python Requests code viewer
 const RequestsCodeViewer = (): CodeViewer => {
@@ -93,20 +94,17 @@ const RequestsCodeViewer = (): CodeViewer => {
         syntaxHighlight(syntax, d.span(null,
             preamble(endpt), dictToPython('headers', headers), dataReader, call));
 
-    const requestsRPCLike = (endpt: utils.Endpoint, token: string,
-                             paramVals: utils.Dict): react.ReactElement<{}> =>
-        requestsTemplate(endpt, utils.RPCLikeHeaders(token), dictToPython('data', paramVals),
+    const requestsRPCLike: Renderer = (endpt, token, paramVals, headerVals) =>
+        requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals), dictToPython('data', paramVals),
             'r = requests.post(url, headers=headers, data=json.dumps(data))');
 
-    const requestsUploadLike = (endpt: utils.Endpoint, token: string, paramVals: utils.Dict,
-                                file: File): react.ReactElement<{}> =>
-        requestsTemplate(endpt, utils.uploadLikeHeaders(token, JSON.stringify(paramVals)),
+    const requestsUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) =>
+        requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
             'data = open(' + JSON.stringify(file.name) + ', "rb").read()\n\n',
             'r = requests.post(url, headers=headers, data=data)');
 
-    const requestsDownloadLike = (endpt: utils.Endpoint, token: string,
-                                  paramVals: utils.Dict): react.ReactElement<{}> =>
-        requestsTemplate(endpt, utils.getHeaders(endpt, token, JSON.stringify(paramVals)),
+    const requestsDownloadLike: Renderer = (endpt, token, paramVals, headerVals) =>
+        requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
             '', 'r = requests.post(url, headers=headers)');
 
     return {
@@ -116,7 +114,7 @@ const RequestsCodeViewer = (): CodeViewer => {
         renderUploadLike:   requestsUploadLike,
         renderDownloadLike: requestsDownloadLike
     };
-}
+};
 
 // Python's httplib library (which is also the urllib backend)
 const HttplibCodeViewer = (): CodeViewer => {
@@ -137,24 +135,21 @@ const HttplibCodeViewer = (): CodeViewer => {
             dictToPython('headers', headers),
             dataReader,
             'c = httplib.HTTPSConnection("' + endpt.getHostname() + '")\n',
-            'c.request("POST", "' + endpt.getPathname() + '", ' + dataArg + ', headers)\n',
+            'c.request("POST", "' + endpt.getPathName() + '", ' + dataArg + ', headers)\n',
             'r = c.getresponse()'
         )
     );
 
-    const httplibRPCLike = (endpt: utils.Endpoint, token: string,
-                            paramVals: utils.Dict): react.ReactElement<{}> =>
-        httplibTemplate(endpt, utils.RPCLikeHeaders(token),
+    const httplibRPCLike: Renderer = (endpt, token, paramVals, headerVals) =>
+        httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals),
                         dictToPython('params', paramVals), 'json.dumps(params)');
 
-    const httplibUploadLike = (endpt: utils.Endpoint, token: string, paramVals: utils.Dict,
-                               file: File): react.ReactElement<{}> =>
-        httplibTemplate(endpt, utils.uploadLikeHeaders(token, JSON.stringify(paramVals)),
+    const httplibUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) =>
+        httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
             'data = open(' + JSON.stringify(file.name) + ', "rb")\n\n', 'data');
 
-    const httplibDownloadLike = (endpt: utils.Endpoint, token: string,
-                                 paramVals: utils.Dict): react.ReactElement<{}> =>
-        httplibTemplate(endpt, utils.getHeaders(endpt, token, JSON.stringify(paramVals)), '', '""');
+    const httplibDownloadLike: Renderer = (endpt, token, paramVals, headerVals) =>
+        httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), '', '""');
 
     return {
         syntax:             syntax,
@@ -163,7 +158,7 @@ const HttplibCodeViewer = (): CodeViewer => {
         renderUploadLike:   httplibUploadLike,
         renderDownloadLike: httplibDownloadLike
     };
-}
+};
 
 const CurlCodeViewer = (): CodeViewer => {
     const syntax = 'bash';
@@ -182,21 +177,18 @@ const CurlCodeViewer = (): CodeViewer => {
                           data: string): react.ReactElement<{}> =>
         syntaxHighlight(syntax, d.span(null, urlArea(endpt), makeHeaders(headers), data));
 
-    const curlRPCLike = (endpt: utils.Endpoint, token: string, paramVals: utils.Dict):
-            react.ReactElement<{}> =>
-        curlTemplate(endpt, utils.RPCLikeHeaders(token),
+    const curlRPCLike: Renderer = (endpt, token, paramVals, headerVals) =>
+        curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals),
                      "\\\n  --data '" + shellEscape(paramVals) + "'");
 
-    const curlUploadLike = (endpt: utils.Endpoint, token: string,
-                            paramVals: utils.Dict, file: File): react.ReactElement<{}> => {
-        const headers = utils.uploadLikeHeaders(token, shellEscape(paramVals, false));
+    const curlUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) => {
+        const headers = utils.getHeaders(endpt, token, headerVals, shellEscape(paramVals, false));
         return curlTemplate(endpt, headers,
             "\\\n  --data-binary @'" + file.name.replace(/'/g, "'\\''") + "'");
-    }
+    };
 
-    const curlDownloadLike = (endpt: utils.Endpoint, token: string,
-                              paramVals: utils.Dict): react.ReactElement<{}> =>
-        curlTemplate(endpt, utils.getHeaders(endpt, token, shellEscape(paramVals, false)), '');
+    const curlDownloadLike: Renderer = (endpt, token, paramVals, headerVals) =>
+        curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals, shellEscape(paramVals, false)), '');
 
     return {
         syntax:             syntax,
@@ -205,7 +197,7 @@ const CurlCodeViewer = (): CodeViewer => {
         renderUploadLike:   curlUploadLike,
         renderDownloadLike: curlDownloadLike
     };
-}
+};
 
 const HTTPCodeViewer = (): CodeViewer => {
     const syntax = 'http';
@@ -213,7 +205,7 @@ const HTTPCodeViewer = (): CodeViewer => {
     const httpTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
                           body: string): react.ReactElement<{}> =>
         syntaxHighlight(syntax, d.span(null,
-            'POST ' + endpt.getPathname() + "\n",
+            'POST ' + endpt.getPathName() + "\n",
             'Host: https://' + endpt.getHostname() + "\n",
             'User-Agent: api-explorer-client\n',
             utils.Dict.map(headers, (key: string, value: string) => d.span({key: key},
@@ -223,30 +215,27 @@ const HTTPCodeViewer = (): CodeViewer => {
         )
     );
 
-    const httpRPCLike = (endpt: utils.Endpoint, token: string, paramVals: utils.Dict):
-                        react.ReactElement<{}> => {
+    const httpRPCLike: Renderer = (endpt, token, paramVals, headerVals) => {
         const body = JSON.stringify(paramVals, null, 4);
-        const headers = utils.RPCLikeHeaders(token);
+        const headers = utils.getHeaders(endpt, token, headerVals);
 
         // TODO: figure out how to determine the UTF-8 encoded length
         //headers['Content-Length'] = ...
 
         return httpTemplate(endpt, headers, "\n" + body);
-    }
+    };
 
-    const httpUploadLike = (endpt: utils.Endpoint, token: string, paramVals: utils.Dict,
-                            file: File) => {
-        const headers = utils.uploadLikeHeaders(token, JSON.stringify(paramVals));
+    const httpUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) => {
+        const headers = utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals));
         headers['Content-Length'] = file.size;
         return httpTemplate(endpt, headers,
                             "\n--- (content of " + file.name + " goes here) ---");
-    }
+    };
 
-    const httpDownloadLike = (endpt: utils.Endpoint, token: string, paramVals: utils.Dict):
-                             react.ReactElement<{}> => {
-        const headers = utils.getHeaders(endpt, token, JSON.stringify(paramVals))
+    const httpDownloadLike: Renderer = (endpt, token, paramVals, headerVals) => {
+        const headers = utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals));
         return httpTemplate(endpt, headers, '');
-    }
+    };
 
     return {
         syntax:             syntax,
@@ -255,14 +244,14 @@ const HTTPCodeViewer = (): CodeViewer => {
         renderUploadLike:   httpUploadLike,
         renderDownloadLike: httpDownloadLike
     }
-}
+};
 
 export const formats: utils.Dict = {
     'curl': CurlCodeViewer(),
     'requests': RequestsCodeViewer(),
     'httplib': HttplibCodeViewer(),
     'http': HTTPCodeViewer()
-}
+};
 
 export const getSelector = (onChange: (e: react.FormEvent) => void): react.HTMLElement => d.select(
     {onChange: onChange},
@@ -270,13 +259,14 @@ export const getSelector = (onChange: (e: react.FormEvent) => void): react.HTMLE
         d.option({key: key, value: key}, cv.description))
 );
 
-export const render = (cv: CodeViewer, endpt: utils.Endpoint, token: string,
-                       paramVals: utils.Dict, file: File): react.ReactElement<{}> => {
-    if (endpt.kind === utils.EndpointKind.RPCLike) {
-        return cv.renderRPCLike(endpt, token, paramVals);
+export const render = (cv: CodeViewer, endpt: utils.Endpoint,
+                       token: string, paramVals: utils.Dict,
+                       headerVals: utils.Header[], file: File): react.ReactElement<{}> => {
+    if (endpt.getEndpointKind() === utils.EndpointKind.RPCLike) {
+        return cv.renderRPCLike(endpt, token, paramVals, headerVals);
     } else if (file !== null) {
-        return cv.renderUploadLike(endpt, token, paramVals, file);
+        return cv.renderUploadLike(endpt, token, paramVals, headerVals, file);
     } else {
-        return cv.renderDownloadLike(endpt, token, paramVals);
+        return cv.renderDownloadLike(endpt, token, paramVals, headerVals);
     }
-}
+};
