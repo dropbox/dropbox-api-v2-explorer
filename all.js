@@ -622,7 +622,7 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("id", false), new Utils.TextParam("title", true), new Utils.TextParam("destination", true), new Utils.UnionParam("deadline", true, [new Utils.VoidParam("no_update"), new Utils.StructParam("update", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always")])])]), new Utils.BoolParam("open", true));
-    var files_copy_endpt = new Utils.Endpoint("files", "copy", {
+    var files_copy_v2_endpt = new Utils.Endpoint("files", "copy_v2", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -692,7 +692,7 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("copy_reference", false), new Utils.TextParam("path", false));
-    var files_create_folder_endpt = new Utils.Endpoint("files", "create_folder", {
+    var files_create_folder_v2_endpt = new Utils.Endpoint("files", "create_folder_v2", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -734,7 +734,7 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("async_job_id", false));
-    var files_delete_endpt = new Utils.Endpoint("files", "delete", {
+    var files_delete_v2_endpt = new Utils.Endpoint("files", "delete_v2", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -958,7 +958,7 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("path"), new Utils.VoidParam("id")]), new Utils.IntParam("limit", true));
-    var files_move_endpt = new Utils.Endpoint("files", "move", {
+    var files_move_v2_endpt = new Utils.Endpoint("files", "move_v2", {
         style: "rpc",
         api_group: "None",
         is_preview: "False",
@@ -1084,7 +1084,7 @@ var Endpoints;
         takes_path_root: "False",
         is_web_alpha: "False"
     }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, function (index) { return new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]); })]); }), new Utils.BoolParam("strict_conflict", true));
-    var files_upload_session_append_endpt = new Utils.Endpoint("files", "upload_session/append", {
+    var files_upload_session_append_v2_endpt = new Utils.Endpoint("files", "upload_session/append_v2", {
         style: "upload",
         api_group: "None",
         is_preview: "False",
@@ -2884,15 +2884,15 @@ var Endpoints;
         file_requests_get_endpt,
         file_requests_list_endpt,
         file_requests_update_endpt,
-        files_copy_endpt,
+        files_copy_v2_endpt,
         files_copy_batch_endpt,
         files_copy_batch_check_endpt,
         files_copy_reference_get_endpt,
         files_copy_reference_save_endpt,
-        files_create_folder_endpt,
+        files_create_folder_v2_endpt,
         files_create_folder_batch_endpt,
         files_create_folder_batch_check_endpt,
-        files_delete_endpt,
+        files_delete_v2_endpt,
         files_delete_batch_endpt,
         files_delete_batch_check_endpt,
         files_download_endpt,
@@ -2908,7 +2908,7 @@ var Endpoints;
         files_list_folder_get_latest_cursor_endpt,
         files_list_folder_longpoll_endpt,
         files_list_revisions_endpt,
-        files_move_endpt,
+        files_move_v2_endpt,
         files_move_batch_endpt,
         files_move_batch_check_endpt,
         files_permanently_delete_endpt,
@@ -2917,7 +2917,7 @@ var Endpoints;
         files_save_url_check_job_status_endpt,
         files_search_endpt,
         files_upload_endpt,
-        files_upload_session_append_endpt,
+        files_upload_session_append_v2_endpt,
         files_upload_session_finish_endpt,
         files_upload_session_finish_batch_endpt,
         files_upload_session_finish_batch_check_endpt,
@@ -4587,7 +4587,7 @@ exports.getDownloadName = function (ept, paramVals) {
     if (paramVals !== null && 'path' in paramVals) {
         var toReturn = paramVals['path'].split('/').pop();
         if (ept.name === 'get_thumbnail') {
-            var format = ('format' in paramVals) ? paramVals['format'] : 'jpeg';
+            var format = ('format' in paramVals) ? paramVals['format']['.tag'] : 'jpeg';
             toReturn = toReturn.substr(0, toReturn.lastIndexOf('.')) + '.' + format;
         }
         return toReturn;
