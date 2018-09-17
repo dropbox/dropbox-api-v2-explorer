@@ -13,9 +13,21 @@ import apicalls = require('./apicalls');
 import codeview = require('./codeview');
 import ReactElement = __React.ReactElement;
 import HTMLAttributes = __React.HTMLAttributes;
+import {SelectorParam} from "./utils";
+import {Parameter} from "./utils";
+import {VoidParam} from "./utils";
+import {StructParam} from "./utils";
+import {Dict} from "./utils";
+import {UnionParam} from "./utils";
+import {FileParam} from "./utils";
+import {ListParam} from "./utils";
+import {List} from "./utils";
+import {RootUnionParam} from "./utils";
+import {Header} from "./utils";
+import {Endpoint} from "./utils";
 
 // A few definitions to make code less verbose
-type ValueHandler = (key: string, value: any) => void;
+
 interface FileElement extends HTMLElement {
     files: File[]
 }
@@ -23,7 +35,8 @@ interface FileElement extends HTMLElement {
 const ce = react.createElement;
 const  d = react.DOM;
 
-const developerPage = 'https://www.dropbox.com/developers-preview';
+const developerPage = 'https://www.dropbox.com/developers';
+const displayNone = {style: {display: 'none'}};
 
 /* Element for text field in page table.
  */
@@ -31,6 +44,59 @@ const tableText = (text: string): HTMLAttributes => {
     return d.td({className: 'label'},
         d.div({className: 'text'}, text)
     );
+};
+
+/* Map between client id and associated permission type.
+ */
+const clientIdMap: Dict = {
+    'vyjzkx2chlpsooc': 'Team Information',
+    'pq2bj4ll002gohi': 'Team Auditing',
+    'j3zzv20pgxds87u': 'Team Member File Access',
+    'oq1ywlcgrto51qk': 'Team Member Management'
+};
+
+/* Get client id from local storage. If doesn't exist. Use default value instead.
+ */
+const getClientId = (): string => {
+    var clientId = utils.getClientId();
+
+    if (clientId != null) {
+        return clientId;
+    }
+
+    return utils.getAuthType() == utils.AuthType.User
+        ? 'cg750anjts67v15'
+        : 'vyjzkx2chlpsooc'
+};
+
+/* The dropdown menu to select app permission type for business endpoints. For each
+business endpoint. Only certain permission type would work and this component maps each
+permission type to associated client id.
+ */
+class AppPermissionInputProps {
+    handler: (e: react.FormEvent) => void;
+}
+class AppPermissionInput extends react.Component<AppPermissionInputProps, void> {
+    constructor(props: AppPermissionInputProps) { super(props); }
+
+    public render() {
+        var options: react.HTMLElement[] = [];
+        var clientId = getClientId();
+
+        for (let id in clientIdMap) {
+            var value = clientIdMap[id];
+            var selected = id == clientId;
+
+            options.push(d.option({selected: selected}, value))
+        }
+
+        return d.tr(null,
+            tableText('App Permission'),
+            d.td(null,
+                d.select({style: {'margin-top': '5px'}, onChange: this.props.handler}, options)
+            )
+        )
+    }
 }
 
 /* The TokenInput area governs the authentication token used to issue requests. The user can enter
@@ -38,29 +104,36 @@ const tableText = (text: string): HTMLAttributes => {
  */
 interface TokenInputProps {
     showToken:    boolean;
-    toggleShow:   () => void
+    toggleShow:   () => void,
+    callback:     (value: string) => void
 }
 class TokenInput extends react.Component<TokenInputProps, void> {
     constructor(props: TokenInputProps) { super(props); }
 
-    handleEdit = (event: react.FormEvent): void =>
-        utils.putToken((<HTMLInputElement>event.target).value);
+    handleEdit = (event: react.FormEvent): void => {
+        let value: string = (<HTMLInputElement>event.target).value;
+        this.props.callback(value);
+    };
 
     // This function handles the initial part of the OAuth2 token flow for the user.
     retrieveAuth = () => {
+        const clientId = getClientId();
+
         const state = utils.getHashDict()['__ept__'] + '!' + utils.createCsrfToken();
-        const params: utils.Dict = {
+        const params: Dict = {
             response_type: 'token',
-            client_id:     'cg750anjts67v15',
+            client_id:     clientId,
             redirect_uri:  utils.currentURL(),
             state:         state,
-        }
-        let urlWithParams = 'https://www.dropbox.com/1/oauth2/authorize?';
+        };
+
+        let urlWithParams = 'https://www.dropbox.com/oauth2/authorize?';
         for (let key in params) {
             urlWithParams += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
         }
         window.location.assign(urlWithParams);
-    }
+    };
+
     public render() {
         return d.tr(null,
             tableText('Access Token'),
@@ -83,17 +156,318 @@ class TokenInput extends react.Component<TokenInputProps, void> {
     }
 }
 
-// The ParamInput area handles the input field of a single parameter to an endpoint.
-interface ParamInputProps {
-    key:      string;
-    onChange: ValueHandler;
-    param:    utils.Parameter
+/* Input component for single parameter.
+   A value handler is responsible for value update and signal for specific parameter.
+   Every time a field value gets updated, the update method of its corresponding value
+   handler should be called.
+ */
+
+class ValueHandler {
+    // Signal react render.
+    update = (): void => null;
+
+    // Update value for current parameter.
+    updateValue = (value: any): void => null;
 }
-class ParamInput extends react.Component<ParamInputProps, any> {
-    constructor(props: ParamInputProps) {
-        super(props);
-        this.state = {text: ''};
+
+/*  Type of value handler which can contain child value handlers.
+ */
+class ParentValueHandler extends ValueHandler {
+    // Create a child value handler based on parameter type.
+    getChildHandler = (param: Parameter): ValueHandler => {
+        if (param instanceof FileParam) {
+            return new FileValueHandler(<FileParam>param, <RootValueHandler>this);
+        }
+        else if (param instanceof RootUnionParam) {
+            return new RootUnionValueHandler(<RootUnionParam>param, <RootValueHandler>this);
+        }
+        else if (param instanceof UnionParam) {
+            return new UnionValueHandler(<UnionParam>param, this);
+        }
+        else if (param instanceof StructParam) {
+            return new StructValueHandler(<StructParam>param, this);
+        }
+        else if (param instanceof ListParam) {
+            return new ListValueHandler(<ListParam>param, this);
+        }
+        else {
+            return new ChildValueHandler<Parameter, ParentValueHandler>(param, this);
+        }
+    };
+
+    getOrCreate = (name: string, defaultValue: any): any => {
+        let dict: Dict = this.current();
+        if (name in dict) {
+            return dict[name];
+        }
+        else {
+            dict[name] = defaultValue;
+            return dict[name];
+        }
+    };
+
+    hasChild = (name: string): boolean => {
+        let dict:Dict = this.current();
+
+        if (name in dict) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+
+    value = (key: string): any => {
+        let dict: Dict = this.current();
+        if (key in dict) {
+            return dict[key];
+        }
+        else {
+            return null;
+        }
+    };
+
+    updateChildValue = (name: string, value: any): void => {
+        let dict:Dict = this.current();
+
+        if (value == null) {
+            delete dict[name];
+        }
+        else {
+            dict[name] = value;
+        }
+    };
+
+    current = (): Dict|List => { throw new Error('Not implemented.') };
+}
+
+/* Value handler for struct type.
+ */
+class StructValueHandler extends ParentValueHandler {
+    param: StructParam;
+    parent: ParentValueHandler;
+
+    constructor(param: StructParam, parent: ParentValueHandler) {
+        super();
+        this.param = param;
+        this.parent = parent;
     }
+
+    add = (): void => {
+        if (!this.param.optional) {
+            throw new Error('Add is only support for optional parameter.')
+        }
+
+        this.current();
+        this.update();
+    };
+
+    reset = (): void => {
+        if (!this.param.optional) {
+            throw new Error('Reset is only support for optional parameter.')
+        }
+
+        this.parent.updateChildValue(this.param.name, this.param.defaultValue());
+        this.update();
+    };
+
+    current = (): Dict => this.parent.getOrCreate(this.param.name, {});
+    update = (): void => this.parent.update();
+}
+
+/* Value handler for union type.
+ */
+class UnionValueHandler extends StructValueHandler {
+    constructor(param: UnionParam, parent: ParentValueHandler) {
+        super(param, parent);
+    }
+
+    getTag = (): string => {
+        if (this.parent.hasChild(this.param.name)) {
+            return this.value('.tag');
+        }
+        else {
+            return null;
+        }
+    };
+
+    updateTag = (tag: string): void => {
+        this.parent.updateChildValue(this.param.name, this.param.optional ? null : {});
+
+        if (tag != null) {
+            this.updateChildValue('.tag', tag);
+        }
+    };
+
+    getTagHandler = (): TagValueHandler => {
+        return new TagValueHandler(this);
+    }
+}
+
+/* Special case when root type is a union.
+ */
+class RootUnionValueHandler extends UnionValueHandler {
+    constructor(param: RootUnionParam, handler: RootValueHandler) {
+        super(param, handler);
+    }
+
+    getTag = (): string => {
+        return this.value('.tag')
+    };
+
+    updateTag = (tag: string): void => {
+        let dict: Dict = this.current();
+
+        for (let name in dict) {
+            delete dict[name];
+        }
+
+        if (tag != null) {
+            dict['.tag'] = tag;
+        }
+    };
+
+    current = (): Dict => this.parent.current();
+
+    update = (): void => this.parent.update();
+
+    getTagHandler = (): TagValueHandler => {
+        return new TagValueHandler(this);
+    }
+}
+
+/* Value handler for list type.
+ */
+class ListValueHandler extends ParentValueHandler {
+    param: ListParam;
+    parent: ParentValueHandler;
+
+    constructor(param: ListParam, parent: ParentValueHandler) {
+        super();
+        this.param = param;
+        this.parent = parent;
+    }
+
+    addItem = (): void => {
+        let list: List = this.current();
+        let param: Parameter = this.param.createItem(0);
+        list.push(param.defaultValue());
+        this.update();
+    };
+
+    reset = (): void => {
+        this.parent.updateChildValue(this.param.name, this.param.defaultValue());
+        this.update();
+    };
+
+    getOrCreate = (name: string, defaultValue: any): any => {
+        return this.current()[+name];
+    };
+
+    hasChild = (name: string) => {
+        return true;
+    };
+
+    value = (key: string): any => {
+        return this.current()[+name];
+    };
+
+    updateChildValue = (name: string, value: any): void => {
+        this.current()[+name] = value;
+    };
+
+
+    current = (): List  => this.parent.getOrCreate(this.param.name, []);
+    update = (): void => this.parent.update();
+}
+
+/* Value handler for primitive types.
+ */
+class ChildValueHandler<T extends Parameter, S extends ParentValueHandler> extends ValueHandler {
+    param: T;
+    parent: S;
+
+    constructor(param: T, parent: S) {
+        super();
+        this.param = param;
+        this.parent = parent;
+    }
+
+    updateValue = (value: any): void => {
+        this.parent.updateChildValue(this.param.name, value);
+    };
+
+    update = (): void => this.parent.update();
+}
+
+/* Value handler for file parameter.
+ */
+class FileValueHandler extends ChildValueHandler<FileParam, RootValueHandler> {
+    constructor(param: FileParam, parent: RootValueHandler) {
+        super(param, parent);
+    }
+
+    // Update value of current parameter.
+    updateValue = (value: any): void => {
+        this.parent.updateFile(value);
+    }
+}
+
+/* Value handler for union tag.
+ */
+class TagValueHandler extends ChildValueHandler<Parameter, UnionValueHandler> {
+    constructor(parent: UnionValueHandler) {
+        super(null, parent);
+    }
+
+    updateValue = (value: any): void => {
+        this.parent.updateTag(value);
+    }
+}
+
+/* Value handler for root.
+ */
+class RootValueHandler extends ParentValueHandler {
+    paramVals: Dict;
+    fileVals: Dict;
+    callback: (params: Dict, file: Dict) => void;
+
+    constructor(paramVals: Dict, fileVals: Dict, callback: (params: Dict, files: Dict) => void) {
+        super();
+        this.paramVals = paramVals;
+        this.fileVals= fileVals;
+        this.callback = callback;
+    }
+
+    current = ():Dict => this.paramVals;
+    update = (): void => this.callback(this.paramVals, this.fileVals);
+    updateFile = (value: string) => this.fileVals['file'] = value;
+}
+
+class ParamInput<P> extends react.Component<P, any>{
+    constructor(props: P) {
+        super(props);
+    }
+
+    public render(): react.ReactElement<any> {
+        throw new Error('Not implemented.')
+    }
+}
+
+// The ParamInput area handles the input field of a single parameter to an endpoint.
+interface SingleParamInputProps {
+    key:      string;
+    handler:  ValueHandler;
+    param:    Parameter
+}
+
+/* Input component for single parameter.
+ */
+class SingleParamInput extends ParamInput<SingleParamInputProps> {
+    constructor(props: SingleParamInputProps) {
+        super(props);
+    }
+
     // When the field is edited, its value is parsed and the state is updated.
     handleEdit = (event: Event) => {
         let valueToReturn: any = null;
@@ -103,35 +477,19 @@ class ParamInput extends react.Component<ParamInputProps, any> {
             if (fileTarget.files.length > 0) valueToReturn = fileTarget.files[0];
         } else {
             const target: HTMLInputElement = <HTMLInputElement>event.target;
-            this.setState({text: target.value});
             /* If valueToReturn is left as null, it signals an optional value that should be
-               deleted from the dict of param values.
+             deleted from the dict of param values.
              */
             if (target.value !== '' || !this.props.param.optional) {
                 valueToReturn = this.props.param.getValue(target.value);
             }
         }
-        this.props.onChange(this.props.param.name, valueToReturn);
-    }
+        this.props.handler.updateValue(valueToReturn);
+        this.props.handler.update();
+    };
 
-    shouldComponentUpdate = (_: ParamInputProps, newState: utils.Dict) =>
-        this.state.text !== newState['text'];
-
-    /* Since different kinds of parameters have to render differently, this render method is a
-       wrapper to the parameter's own method.
-    */
     public render() {
-        return this.props.param.asReact({onChange: this.handleEdit});
-    }
-}
-
-/* Input component for single parameter.
- */
-class SingleParamInput extends react.Component<ParamInputProps, any> {
-    public render() {
-        return d.tbody(null,
-            ce(ParamInput, this.props)
-        );
+       return this.props.param.asReact({onChange: this.handleEdit}, this.props.key);
     }
 }
 
@@ -139,56 +497,212 @@ class SingleParamInput extends react.Component<ParamInputProps, any> {
    field, structs are treated as just a list of parameters. This means we currently can't really
    signal optional structs to the user. Moreover, nested structs are currently not possible.
  */
-interface StructInputProps {
+interface StructParamInputProps {
     key:             string;
-    onChange:        ValueHandler;
+    handler:         StructValueHandler;
     param:           utils.StructParam;
-    componentEdited: ValueHandler
 }
-class StructParamInput extends react.Component<StructInputProps, any> {
-    constructor(props: StructInputProps) {
+class StructParamInput extends ParamInput<StructParamInputProps> {
+    constructor(props: StructParamInputProps) {
         super(props);
-        this.state = {fields: this.props.param.defaultValue()};
+        this.state = {'display': !props.param.optional};
     }
-    // Updates the whole struct
-    componentEdited = (name: string, value: any) => {
-        let newFields: utils.Dict = this.state.fields;
-        if (value === null) delete newFields[name];
-        else newFields[name] = value;
-        this.setState({fields: newFields});
-        this.props.onChange(this.props.param.name, newFields);
-    }
-    // Updates a specific field
-    fieldEdited = (param: utils.Parameter, event: Event) => {
-        const target: HTMLInputElement = <HTMLInputElement>event.target;
-        // If valueToReturn is null, it signifies that the value should be removed from the list
-        const valueToReturn: any = (target.value !== '' || !param.optional)?
-            param.getValue(target.value) : null;
-        this.props.componentEdited(param.name, valueToReturn);
-    }
+
+    add = () => {
+        this.props.handler.add();
+        this.setState({'display': true});
+    };
+
+    reset = () => {
+        this.props.handler.reset();
+        this.setState({'display': false});
+    };
+
     public render() {
-        return d.tbody(null,
-            utils.Dict.map(this.props.param.fields, (name: string, value: utils.Parameter) =>
-                ce(ParamInput, {
-                    key:      this.props.param.name + '_' + name,
-                    onChange: this.componentEdited,
-                    param:    value
-                })
+        return d.tr(null,
+            this.props.param.getNameColumn(),
+            d.td(null,
+                d.table(null,
+                    d.tbody(null, this.renderItems())
+                )
             )
-        );
+        )
+    }
+
+    renderItems = (): react.ReactElement<any>[] => {
+        let ret: react.ReactElement<any>[] = [];
+
+        if (this.state.display || !this.props.param.optional) {
+            for (let p of this.props.param.fields) {
+                let input = ParamClassChooser.getParamInput(p, {
+                    key: this.props.key + '_' + this.props.param.name + '_' + p.name,
+                    handler: this.props.handler.getChildHandler(p),
+                    param: p
+                });
+
+                ret.push(input)
+            }
+        }
+
+        if (this.props.param.optional) {
+            let button = this.state.display
+                ? d.button({onClick: this.reset}, 'Clear')
+                : d.button({onClick: this.add}, 'Add');
+
+            ret.push(d.tr({className: 'struct-param-actions'},
+                d.td(null, button)
+            ));
+        }
+
+        return ret;
+    }
+}
+
+interface UnionParamInputProps {
+    key:             string;
+    handler:         UnionValueHandler;
+    param:           utils.UnionParam;
+}
+class UnionParamInput extends ParamInput<UnionParamInputProps> {
+    constructor(props: UnionParamInputProps) {
+        super(props);
+    }
+
+    getParam = (): StructParam => {
+        let tag: string = this.props.handler.getTag();
+        let fields: Parameter[] = null;
+        if (tag == null) {
+            fields = [];
+        }
+        else {
+            let param: Parameter = this.props.param.fields.filter(t => t.name == tag)[0];
+
+            if (param instanceof StructParam) {
+                fields = (<StructParam>param).fields;
+            }
+            else if (param instanceof VoidParam) {
+                fields = [];
+            }
+            else {
+                fields = [param];
+            }
+        }
+
+        return new StructParam(this.props.param.name, false, fields);
+    };
+
+    public render(): react.ReactElement<any> {
+        let selectParamProps: SingleParamInputProps = {
+            key:  this.props.key + '_selector',
+            handler: this.props.handler.getTagHandler(),
+            param: this.props.param.getSelectorParam(this.props.handler.getTag())
+        };
+
+        let param = this.getParam();
+
+        if (param.fields.length == 0) {
+            return ce(SingleParamInput, selectParamProps);
+        }
+
+        let structParam = new StructParamInput({
+            key:      this.props.key + '_' + param.name,
+            handler:  this.props.handler,
+            param:    param
+        });
+
+        return d.tr(null,
+            this.props.param.getNameColumn(),
+            d.td(null,
+                d.table(null,
+                    d.tbody(null, [ce(SingleParamInput, selectParamProps)].concat(structParam.renderItems()))
+                )
+            )
+        )
+    }
+}
+
+interface ListParamInputProps {
+    key:        string;
+    handler:    ListValueHandler;
+    param:      utils.ListParam;
+}
+class ListParamInput extends ParamInput<ListParamInputProps> {
+
+    constructor(props: ListParamInputProps) {
+        super(props);
+        this.state = {'count': 0};
+    }
+
+    addItem = (): void => {
+        this.props.handler.addItem();
+        this.setState({'count': this.state.count + 1});
+    };
+
+    reset = (): void => {
+        this.props.handler.reset();
+        this.setState({'count': 0});
+    };
+
+    public render() {
+        return d.tr(null,
+            this.props.param.getNameColumn(),
+            d.td(null,
+                d.table(null,
+                    d.tbody(null, this.renderItems())
+                )
+           )
+        )
+    }
+
+    renderItems = (): react.ReactElement<any>[] => {
+        let ret: react.ReactElement<any>[] = [];
+        for (let i = 0; i < this.state.count; i++) {
+            let param: Parameter = this.props.param.createItem(i);
+            let item: react.ReactElement<any> = ParamClassChooser.getParamInput(param, {
+                key: this.props.key + '_' + this.props.param.name + '_' + i.toString(),
+                handler: this.props.handler.getChildHandler(param),
+                param: param
+            });
+
+            ret.push(item);
+        }
+
+        ret.push(d.tr({className: 'list-param-actions'},
+            d.td(null,
+                d.button({onClick: this.addItem}, 'Add'),
+                d.button({onClick: this.reset}, 'Clear')
+            )
+        ));
+
+        return ret;
     }
 }
 
 // Picks the correct React class for a parameter, depending on whether it's a struct.
-const paramClassChooser = (param: utils.Parameter) => param.isStructParam?
-    StructParamInput : SingleParamInput;
+class ParamClassChooser {
+    public static getParamInput(param: Parameter, props: any): react.ReactElement<any> {
+        if (param instanceof utils.UnionParam) {
+            return ce(UnionParamInput, <UnionParamInputProps>props);
+        }
+        else if (param instanceof utils.StructParam) {
+            return ce(StructParamInput, <StructParamInputProps>props)
+        }
+        else if (param instanceof utils.ListParam) {
+            return ce(ListParamInput, <ListParamInputProps>props)
+        }
+        else {
+            return ce(SingleParamInput, <SingleParamInputProps>props);
+        }
+    }
+}
 
 /* The code view section of the API Explorer. This component manages a selector which chooses what
    format to display the code in, as well as the div that contains the code view itself.
  */
 interface CodeAreaProps {
-    ept:       utils.Endpoint;
-    paramVals: utils.Dict;
+    ept:        Endpoint;
+    paramVals:  Dict;
+    headerVals: Header[],
     __file__:  File,
     token:     string
 }
@@ -200,13 +714,13 @@ class CodeArea extends react.Component<CodeAreaProps, any> {
     changeFormat = (event: react.FormEvent) => {
         const newFormat = (<HTMLInputElement>event.target).value;
         this.setState({formatter: codeview.formats[newFormat]});
-    }
+    };
 
     public render() {
         return d.span({id: 'code-area'},
             d.p(null, 'View request as ', codeview.getSelector(this.changeFormat)),
             d.span(null, codeview.render(this.state.formatter, this.props.ept, this.props.token,
-                                         this.props.paramVals, this.props.__file__))
+                                         this.props.paramVals, this.props.headerVals, this.props.__file__))
         );
     }
 }
@@ -217,9 +731,9 @@ class CodeArea extends react.Component<CodeAreaProps, any> {
    submitted; and any error messages.
  */
 interface RequestAreaProps {
-    currEpt:    utils.Endpoint;
-    APICaller:  (paramsData: string, ept: utils.Endpoint, token: string,
-                 responseFn: apicalls.Callback, file: File) => void;
+    currEpt:    Endpoint;
+    APICaller:  (paramsData: string, ept: Endpoint, token: string,
+                 headers: Header[], responseFn: apicalls.Callback, file: File) => void;
     inProgress: boolean
 }
 class RequestArea extends react.Component<RequestAreaProps, any> {
@@ -227,56 +741,88 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
         super(props);
         this.state = {
             paramVals:   utils.initialValues(this.props.currEpt),
-            __file__:    null, // a signal that no file has been chosen
+            headerVals:  [],
+            fileVals:    {'file': null}, // a signal that no file has been chosen
             errMsg:      null,
             showToken:   true,
-            showCode: false
+            showCode:    false,
+            showHeaders: false
         };
     }
-    updateParamValues = (key: string, value: any) => {
-        if (key === '__file__') {
-            this.setState({__file__: value});
-        } else {
-            let newVals: utils.Dict = this.state.paramVals;
-            // null is used as a signal to delete the value
-            if (value === null) delete newVals[key];
-            else newVals[key] = value;
-            this.setState({paramVals: newVals});
-        }
-    }
+    updateParamValues = (paramVals: Dict, fileVals: Dict) => {
+        this.setState({paramVals: paramVals, fileVals: fileVals});
+    };
+
+    updateHeaderValues = (headerVals: Header[]) => {
+        this.setState({headerVals: headerVals});
+    };
+
+    updateTokenValue = (tokenValue: string) => {
+        // This is called only to trigger live update. Use utils.getToken
+        // to get latest token.
+        utils.putToken(tokenValue);
+        this.forceUpdate();
+    };
+
     /* Called when a new endpoint is chosen or the user updates the token. If a new endpoint is
        chosen, we should initialize its parameter values; if a new token is chosen, any error
        message about the token no longer applies.
      */
     componentWillReceiveProps = (newProps: RequestAreaProps) => {
         if (newProps.currEpt !== this.props.currEpt) {
-            this.setState({paramVals: utils.initialValues(newProps.currEpt)});
+            this.updateParamValues(utils.initialValues(newProps.currEpt), {'file': null});
         }
-        this.setState({__file__: null, errMsg:null});
-    }
+
+        this.setState({errMsg:null});
+    };
+
     /* Submits a call to the API. This function handles the display logic (e.g. whether or not to
        display an error message for a missing token), and the APICaller prop actually sends the
        request.
      */
     submit = () => {
         const token = utils.getToken();
-        if (token == null || token === '') {
+        var currEpt = this.props.currEpt;
+        var authType = currEpt.getAuthType();
+
+        if (authType == utils.AuthType.App) {
+            this.setState({
+                errMsg: "Error: Making API call for app auth endpoint is not supported. Please run the code using credential of your own app."
+            });
+        }
+        else if (authType != utils.AuthType.None && (token == null || token === '')) {
             this.setState({
                     errMsg: 'Error: missing token. Please enter a token above or click the "Get Token" button.'
             });
-        } else {
-            this.setState({errMsg: null});
-            const responseFn = apicalls.chooseCallback(this.props.currEpt.kind,
-                utils.getDownloadName(this.props.currEpt, this.state.paramVals));
-            this.props.APICaller(JSON.stringify(this.state.paramVals), this.props.currEpt,
-                                token, responseFn, this.state.__file__);
         }
-    }
+        else {
+            this.setState({errMsg: null});
+            const responseFn = apicalls.chooseCallback(currEpt.getEndpointKind(),
+                utils.getDownloadName(currEpt, this.state.paramVals));
+            this.props.APICaller(JSON.stringify(this.state.paramVals), currEpt,
+                                token, this.state.headerVals, responseFn, this.state.fileVals['file']);
+        }
+    };
+
     // Toggles whether the token is hidden, or visible on the screen.
     showOrHide = () => this.setState({showToken: !this.state.showToken});
 
-    // Toggles whether code block is visiable.
+    // Toggles whether code block is visible.
     showOrHideCode = () => this.setState({showCode: !this.state.showCode});
+
+    // Toggles whether header block is visible.
+    showOrHideHeaders = () => this.setState({showHeaders: !this.state.showHeaders});
+
+    // Update client id when app permission change.
+    updateClientId = (e: react.FormEvent): void => {
+        var value: string = (<HTMLOptionElement>(e.target)).value;
+        for (let id in clientIdMap) {
+            if (clientIdMap[id] == value) {
+                utils.putClientId(id);
+                return;
+            }
+        }
+    };
 
     public render() {
         let errMsg: any = [];
@@ -285,15 +831,21 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
             errMsg = [d.span({style: {color: 'red'}}, this.state.errMsg)];
         }
 
-        var name = this.props.currEpt.name.replace('/', '-')
-        var documentation = `${developerPage}/documentation/http#documentation-${this.props.currEpt.ns}-${name}`
+        var name = this.props.currEpt.name.replace('/', '-');
+        var documentation = `${developerPage}/documentation/http/documentation#${this.props.currEpt.ns}-${name}`;
+        var handler = new RootValueHandler(this.state.paramVals, this.state.fileVals, this.updateParamValues);
+        var headerHandler = new RequestHeaderRootHandler(this.state.headerVals, this.updateHeaderValues);
 
         return d.span({id: 'request-area'},
             d.table({className: 'page-table'},
                 d.tbody(null,
+                    utils.getAuthType() == utils.AuthType.Team
+                        ? ce(AppPermissionInput, {handler: this.updateClientId})
+                        : null,
                     ce(TokenInput, {
                         toggleShow:   this.showOrHide,
-                        showToken:    this.state.showToken
+                        showToken:    this.state.showToken,
+                        callback:     this.updateTokenValue
                     }),
                     d.tr(null,
                         tableText('Request'),
@@ -304,14 +856,16 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                                 )
                             ),
                             d.table({id: 'parameter-list'},
-                                this.props.currEpt.params.map((param: utils.Parameter) =>
-                                    ce(paramClassChooser(param), {
-                                        key:      this.props.currEpt.name + param.name,
-                                        onChange: this.updateParamValues,
-                                        param:    param
-                                    }))
+                                d.tbody(null,
+                                    this.props.currEpt.params.map((param: Parameter) =>
+                                        ParamClassChooser.getParamInput(param, {
+                                            key:      this.props.currEpt.name + param.name,
+                                            handler:  handler.getChildHandler(param),
+                                            param:    param
+                                    })))
                             ),
                             d.div(null,
+                                d.button({onClick: this.showOrHideHeaders}, this.state.showHeaders ? 'Hide Headers' : 'Show Headers'),
                                 d.button({onClick: this.showOrHideCode}, this.state.showCode ? 'Hide Code' : 'Show Code'),
                                 d.button({onClick: this.submit, disabled: this.props.inProgress}, 'Submit Call'),
                                 d.img({
@@ -323,15 +877,24 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                             )
                         )
                     ),
-                    d.tr({hidden: !this.state.showCode},
+                    d.tr(this.state.showHeaders ? null : displayNone,
+                        tableText('Headers'),
+                        d.td(null,
+                            d.div({id: 'request-headers'},
+                                ce(RequestHeaderArea, { handler: headerHandler })
+                            )
+                        )
+                    ),
+                    d.tr(this.state.showCode ? null : displayNone,
                         tableText('Code'),
                         d.td(null,
                             d.div({id: 'request-container'},
                                 ce(CodeArea, {
-                                    ept:       this.props.currEpt,
-                                    paramVals: this.state.paramVals,
-                                    __file__:  this.state.__file__,
-                                    token:     this.state.showToken? utils.getToken() : '<access-token>'
+                                    ept:        this.props.currEpt,
+                                    paramVals:  this.state.paramVals,
+                                    headerVals: this.state.headerVals,
+                                    __file__:   this.state.fileVals['file'],
+                                    token:      this.state.showToken? utils.getToken() : '<access-token>'
                                 })
                             )
                         )
@@ -342,13 +905,104 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
     }
 }
 
+interface RequestHeaderAreaProps {
+    handler: RequestHeaderRootHandler
+}
+
+class RequestHeaderArea extends react.Component<RequestHeaderAreaProps, any> {
+    constructor(props: RequestHeaderAreaProps) {
+        super(props);
+    }
+
+    public render() {
+        var handler = this.props.handler;
+
+        return d.span({id: 'request-header-area'},
+            d.div(null, d.button({onClick: handler.add}, 'Add Header')),
+            d.table(null,
+                d.tbody(null,
+                    handler.getHeaders().map(
+                        (header: Header) => ce(RequestHeaderInput, {
+                            header: header,
+                            handler: new RequestHeaderHandler(handler)
+                        })
+                    )
+                )
+            )
+        )
+    }
+}
+
+class RequestHeaderRootHandler {
+    headers: Header[];
+    callBack: (headers: Header[]) => void;
+
+    constructor(headers: Header[], callback: (headers: Header[]) => void) {
+        this.headers = headers;
+        this.callBack = callback;
+    }
+
+    remove = (header: Header): void => {
+        var index = this.headers.indexOf(header);
+        this.headers.splice(index, 1);
+        this.callBack(this.headers);
+    };
+
+    add = (): void => {
+        this.headers.push(new Header());
+        this.callBack(this.headers);
+    };
+
+    update = (): void => {
+        this.callBack(this.headers);
+    };
+
+    getHeaders = (): Header[] => {
+        return this.headers;
+    }
+}
+
+class RequestHeaderHandler {
+    parentHandler: RequestHeaderRootHandler;
+
+    constructor(parentHandler: RequestHeaderRootHandler) {
+        this.parentHandler = parentHandler;
+    }
+
+    onChange = (header: Header, removed: boolean) => {
+        if (removed) {
+            this.parentHandler.remove(header);
+        }
+        else {
+            this.parentHandler.update();
+        }
+    };
+}
+
+
+interface RequestHeaderInputProps {
+    header: Header,
+    handler: RequestHeaderHandler
+}
+
+class RequestHeaderInput extends react.Component<RequestHeaderInputProps, any> {
+
+    constructor(props: RequestHeaderInputProps) {
+        super(props);
+    }
+
+    public render() {
+        return this.props.header.asReact(this.props.handler.onChange);
+    }
+}
+
 /* A small component governing an endpoint on the sidebar, to bold it when it's selected and
    handle the logic when it is clicked.
  */
 interface EndpointChoiceProps {
     key:         string;
-    ept:         utils.Endpoint;
-    handleClick: (ept: utils.Endpoint) => void;
+    ept:         Endpoint;
+    handleClick: (ept: Endpoint) => void;
     isSelected:  boolean
 }
 class EndpointChoice extends react.Component<EndpointChoiceProps, void> {
@@ -367,18 +1021,40 @@ class EndpointChoice extends react.Component<EndpointChoiceProps, void> {
    information of which one is currently selected.
  */
 interface EndpointSelectorProps {
-    eptChanged: (ept: utils.Endpoint) => void;
-    currEpt:    string
+    eptChanged: (ept: Endpoint) => void;
+    currEpt: Endpoint
 }
 class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
     constructor(props: EndpointSelectorProps) { super(props); }
 
+    filter = (ept: Endpoint): boolean => {
+        if (ept.params.length > 0 && ept.params.indexOf(null) >= 0) {
+            // Skip not implemented endpoints.
+            return true;
+        }
+
+        var eptAuthType = ept.getAuthType() == utils.AuthType.Team
+            ? utils.AuthType.Team
+            : utils.AuthType.User;
+
+        if (eptAuthType != utils.getAuthType()) {
+            // Skip endpoints with different auth type.
+            return true;
+        }
+
+        return false
+    };
+
     // Renders the logo and the list of endpoints
     public render() {
-        var groups: {[ns: string]: utils.Endpoint[]} = {};
+        var groups: {[ns: string]: Endpoint[]} = {};
         var namespaces: string[] = [];
 
-        endpoints.endpointList.forEach((ept: utils.Endpoint) => {
+        endpoints.endpointList.forEach((ept: Endpoint) => {
+            if (this.filter(ept)) {
+                return;
+            }
+
             if (groups[ept.ns] == undefined) {
                 groups[ept.ns] = [ept];
                 namespaces.push(ept.ns);
@@ -392,7 +1068,7 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
             d.p({style: {marginLeft: '35px', marginTop: '12px'}},
                 d.a({onClick: () => window.location.href = developerPage},
                     d.img({
-                        src:       'https://cf.dropboxstatic.com/static/images/icons/blue_dropbox_glyph-vflJ8-C5d.png',
+                        src:       'https://cfl.dropboxstatic.com/static/images/logo_catalog/blue_dropbox_glyph_m1-vflZvZxbS.png',
                         width:     36,
                         className: 'home-icon'
                     })
@@ -402,12 +1078,12 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
                 namespaces.sort().map((ns: string) =>
                     d.div(null,
                         d.li(null, ns),
-                        groups[ns].map((ept: utils.Endpoint) =>
+                        groups[ns].map((ept: Endpoint) =>
                             ce(EndpointChoice, {
                                 key:         ept.name,
                                 ept:         ept,
                                 handleClick: this.props.eptChanged,
-                                isSelected:  this.props.currEpt == ept.name
+                                isSelected:  this.props.currEpt == ept
                                 }
                             )
                         )
@@ -432,8 +1108,8 @@ class ResponseArea extends react.Component<ResponseAreaProps, any> {
 
     public render() {
         return d.span({id: 'response-area'},
-            d.table({className: 'page-table', hidden: this.props.hide},
-                d.tbody(null,
+            d.table({className: 'page-table'},
+                d.tbody(this.props.hide ? displayNone : null,
                     d.tr(null,
                         tableText('Response'),
                         d.td(null,
@@ -453,7 +1129,7 @@ class ResponseArea extends react.Component<ResponseAreaProps, any> {
    page and the error pages).
  */
 interface APIExplorerProps {
-    initEpt:   utils.Endpoint
+    initEpt:   Endpoint
 }
 class APIExplorer extends react.Component<APIExplorerProps, any> {
     constructor(props: APIExplorerProps) {
@@ -471,8 +1147,8 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
         responseText: ''
     });
 
-    APICaller = (paramsData: string, endpt: utils.Endpoint, token: string,
-                 responseFn: apicalls.Callback, file: File) => {
+    APICaller = (paramsData: string, endpt: Endpoint, token: string,
+                 headers: Header[], responseFn: apicalls.Callback, file: File) => {
         this.setState({inProgress: true});
 
         const responseFn_wrapper: apicalls.Callback = (component: any, resp: XMLHttpRequest) => {
@@ -480,8 +1156,8 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
             responseFn(component, resp);
         };
 
-        apicalls.APIWrapper(paramsData, endpt, token, responseFn_wrapper, this, file);
-    }
+        apicalls.APIWrapper(paramsData, endpt, token, headers, responseFn_wrapper, this, file);
+    };
 
     public render() {
         // This button pops up only on download
@@ -492,22 +1168,24 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
             }, d.button(null, 'Download ' + this.state.downloadFilename)) :
             null;
 
-        return ce(MainPage, {
+        var props: MainPageProps = {
             currEpt:  this.state.ept,
-            header:   <react.ReactNode>d.span(null, 'Dropbox API Explorer • ' + this.state.ept.name),
+            header:   d.span(null, 'Dropbox API Explorer • ' + this.state.ept.name),
             messages: [
                 ce(RequestArea, {
                     currEpt:    this.state.ept,
                     APICaller:  this.APICaller,
-                    inProgress: this.state.inProgress
+                    inProgress: this.state.inProgress,
                 }),
                 ce(ResponseArea, {
                     hide: this.state.inProgress || this.state.responseText == '',
                     responseText: this.state.responseText,
                     downloadButton: downloadButton
                 })
-            ].map(t => <react.ReactNode>t)
-        });
+            ]
+        };
+
+        return ce(MainPage, props)
     }
 }
 
@@ -515,20 +1193,29 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
    sidebar and main content page.
  */
 interface MainPageProps {
-    currEpt:  utils.Endpoint;
-    header:   react.ReactNode;
-    messages: react.ReactNode[];
+    currEpt:  Endpoint;
+    header:   react.ReactElement<any>;
+    messages: react.ReactElement<any>[];
 }
 class MainPage extends react.Component<MainPageProps, void> {
     constructor(props: MainPageProps) { super(props); }
 
+    getAuthSwitch = (): react.HTMLElement => {
+        if (utils.getAuthType() == utils.AuthType.User) {
+            return d.a({id: 'auth-switch', href: utils.currentURL() + 'team/' }, 'Switch to Business endpoints');
+        }
+        else {
+            return d.a({id: 'auth-switch', href: '../'}, 'Switch to User endpoints')
+        }
+    };
+
     public render() {
         return d.span(null,
             ce(EndpointSelector, {
-                eptChanged: (endpt: utils.Endpoint) => window.location.hash = '#' + endpt.name,
-                currEpt:    this.props.currEpt.name
+                eptChanged: (endpt: Endpoint) => window.location.hash = '#' + endpt.getFullName(),
+                currEpt:    this.props.currEpt
             }),
-            d.h1({id: 'header'}, this.props.header),
+            d.h1({id: 'header'}, this.props.header, this.getAuthSwitch()),
             d.div({id: 'page-content'},
                 this.props.messages
             )
@@ -547,7 +1234,7 @@ class TextPage extends react.Component<TextPageProps, void> {
 
     public render() {
         return ce(MainPage, {
-            currEpt:  new utils.Endpoint('', '', null),
+            currEpt:  new Endpoint('', '', null),
             header:   d.span(null, 'Dropbox API Explorer'),
             messages: [this.props.message]
         })
@@ -625,16 +1312,16 @@ const renderGivenHash = (hash: string): void => {
             react.render(ce(APIExplorer, {initEpt: currEpt}), document.body);
         }
     }
-}
+};
 
 const checkCsrf = (state: string): string => {
     if (state === null) return null;
-    const div = state.indexOf('!')
+    const div = state.indexOf('!');
     if (div < 0) return null;
     const csrfToken = state.substring(div+1);
     if (!utils.checkCsrfToken(csrfToken)) return null;
     return state.substring(0, div);  // The part before the CSRF token.
-}
+};
 
 /* Things that need to be initialized at the start.
     1. Set up the listener for hash changes.
@@ -646,11 +1333,11 @@ const main = (): void => {
     window.onhashchange = (e: any) => {
         //first one works everywhere but IE, second one works everywhere but Firefox 40
         renderGivenHash(e.newURL ? e.newURL.split('#')[1] : window.location.hash.slice(1));
-    }
+    };
 
     const hashes = utils.getHashDict();
     if ('state' in hashes) { // completing token flow, and checking the state is OK
-        const state = checkCsrf(hashes['state'])
+        const state = checkCsrf(hashes['state']);
         if (state === null) {
             window.location.hash = '#auth_error!';
         } else {
@@ -662,6 +1349,6 @@ const main = (): void => {
     } else { // no endpoint selected: render the intro page
         react.render(introPage, document.body);
     }
-}
+};
 
 main();
