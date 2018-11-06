@@ -559,7 +559,7 @@ export const getDownloadName = (ept: Endpoint, paramVals: Dict): string => {
     if (paramVals !== null && 'path' in paramVals) {
         let toReturn = paramVals['path'].split('/').pop();
         if (ept.name === 'get_thumbnail') {
-            const format = ('format' in paramVals)? paramVals['format']['.tag'] : 'jpeg'
+            const format = ('format' in paramVals)? paramVals['format']['.tag'] : 'jpeg';
             toReturn = toReturn.substr(0, toReturn.lastIndexOf('.')) + '.' + format;
         }
         return toReturn;

@@ -16,6 +16,8 @@ gulp.task('build-ts', function() {
     .add('src/main.ts')
     .add('typings/tsd.d.ts')
     .plugin('tsify', {
+      typescript: require('typescript'),
+        // Use our version of typescript instead of the one specified by tsify's own dependencies.
       sortOutput: true,
       noEmitOnError: true
     })

@@ -1,0 +1,6 @@
+[submodule "codegen/spec"]
+	path = codegen/spec
+	url = https://github.com/dropbox/dropbox-api-spec.git
+[submodule "codegen/stone"]
+	path = codegen/stone
+	url = https://github.com/dropbox/stone.git
