@@ -16,6 +16,10 @@ Initial setup (and every time you do a "git pull"):
 1. `# npm install`
 2. `# ./node_modules/.bin/tsd install`  (for Typescript definition files)
 
+Generate endpoint definition from stone spec:
+- `cd codegen`
+- `./run_codegen.sh`
+
 Building:
 - `# npm run build`  (builds once; output goes in "build/")
 - `# npm run watch`  (builds continuously; server available at http://localhost:8042)
