@@ -6,13 +6,13 @@
     "watch": "gulp watch"
   },
   "devDependencies": {
-    "browserify": "11.0.1",
+    "browserify": "16.2.3",
     "browserify-shim": "3.8.10",
     "gulp": "3.9.1",
     "gulp-connect": "5.6.1",
     "gulp-sourcemaps": "1.5.2",
-    "tsd": "0.6.3",
-    "tsify": "0.13.2",
+    "tsify": "4.0.0",
+    "typings": "2.1.1",
     "typescript": "1.6.2",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0"

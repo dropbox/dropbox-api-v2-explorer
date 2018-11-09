@@ -14,7 +14,7 @@ var staticPath = 'src/**/*.+(html|css|jpeg)';
 gulp.task('build-ts', function() {
   var b = browserify({debug: true})
     .add('src/main.ts')
-    .add('typings/tsd.d.ts')
+    .add('typings/index.d.ts')
     .plugin('tsify', {
       typescript: require('typescript'),
         // Use our version of typescript instead of the one specified by tsify's own dependencies.
