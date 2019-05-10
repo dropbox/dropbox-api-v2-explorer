@@ -14,7 +14,7 @@ Run `git submodule init` followed by a `git submodule update` to pull in the spe
 
 Initial setup (and every time you do a "git pull"):
 1. `# npm install`
-2. `# ./node_modules/.bin/tsd install`  (for Typescript definition files)
+2. `# ./node_modules/.bin/typings install`  (for Typescript definition files)
 
 Generate endpoint definition from stone spec:
 - `cd codegen`
