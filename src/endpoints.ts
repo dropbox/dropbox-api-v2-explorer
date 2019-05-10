@@ -89,7 +89,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.ListParam("property_template_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
+        new Utils.ListParam("property_template_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */)
     );
     const file_properties_properties_search_endpt = new Utils.Endpoint("file_properties", "properties/search",
         {
@@ -107,7 +107,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.ListParam("queries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("query", false), new Utils.UnionParam("mode", false, [new Utils.TextParam("field_name", false)]), new Utils.UnionParam("logical_operator", true, [new Utils.VoidParam("or_operator")])])),
-        new Utils.UnionParam("template_filter", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)), new Utils.VoidParam("filter_none")])
+        new Utils.UnionParam("template_filter", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */), new Utils.VoidParam("filter_none")])
     );
     const file_properties_properties_search_continue_endpt = new Utils.Endpoint("file_properties", "properties/search/continue",
         {
@@ -392,7 +392,7 @@ module Endpoints {
         },
         new Utils.TextParam("id", false),
         new Utils.TextParam("title", true),
-        new Utils.TextParam("destination", true),
+        null /* not implemented yet */,
         new Utils.UnionParam("deadline", true, [new Utils.VoidParam("no_update"), new Utils.StructParam("update", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always")])])]),
         new Utils.BoolParam("open", true)
     );
@@ -522,7 +522,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("paths", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
+        new Utils.ListParam("paths", false, (index: string): Utils.Parameter => null /* not implemented yet */),
         new Utils.BoolParam("autorename", true),
         new Utils.BoolParam("force_async", true)
     );
@@ -559,7 +559,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.TextParam("parent_rev", true)
+        null /* not implemented yet */
     );
     const files_delete_batch_endpt = new Utils.Endpoint("files", "delete_batch",
         {
@@ -576,7 +576,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.TextParam("parent_rev", true)]))
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), null /* not implemented yet */]))
     );
     const files_delete_batch_check_endpt = new Utils.Endpoint("files", "delete_batch/check",
         {
@@ -611,7 +611,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.TextParam("rev", true)
+        null /* not implemented yet */
     );
     const files_download_zip_endpt = new Utils.Endpoint("files", "download_zip",
         {
@@ -649,7 +649,7 @@ module Endpoints {
         new Utils.BoolParam("include_media_info", true),
         new Utils.BoolParam("include_deleted", true),
         new Utils.BoolParam("include_has_explicit_shared_members", true),
-        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
+        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */)])
     );
     const files_get_preview_endpt = new Utils.Endpoint("files", "get_preview",
         {
@@ -667,7 +667,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.TextParam("rev", true)
+        null /* not implemented yet */
     );
     const files_get_temporary_link_endpt = new Utils.Endpoint("files", "get_temporary_link",
         {
@@ -701,7 +701,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.StructParam("commit_info", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]),
+        new Utils.StructParam("commit_info", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), null /* not implemented yet */, new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]),
         new Utils.FloatParam("duration", true)
     );
     const files_get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail",
@@ -764,7 +764,7 @@ module Endpoints {
         new Utils.BoolParam("include_mounted_folders", true),
         new Utils.IntParam("limit", true),
         new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]),
-        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
+        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */)])
     );
     const files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue",
         {
@@ -806,7 +806,7 @@ module Endpoints {
         new Utils.BoolParam("include_mounted_folders", true),
         new Utils.IntParam("limit", true),
         new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]),
-        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
+        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */)])
     );
     const files_list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll",
         {
@@ -919,7 +919,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.TextParam("parent_rev", true)
+        null /* not implemented yet */
     );
     const files_restore_endpt = new Utils.Endpoint("files", "restore",
         {
@@ -1014,7 +1014,7 @@ module Endpoints {
         new Utils.TextParam("path", false),
         new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]),
         new Utils.BoolParam("autorename", true),
-        new Utils.TextParam("client_modified", true),
+        null /* not implemented yet */,
         new Utils.BoolParam("mute", true),
         new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])),
         new Utils.BoolParam("strict_conflict", true)
@@ -1055,7 +1055,7 @@ module Endpoints {
         },
         new Utils.FileParam(),
         new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]),
-        new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])
+        new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), null /* not implemented yet */, new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])
     );
     const files_upload_session_finish_batch_endpt = new Utils.Endpoint("files", "upload_session/finish_batch",
         {
@@ -1072,7 +1072,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])]))
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), null /* not implemented yet */, new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])]))
     );
     const files_upload_session_finish_batch_check_endpt = new Utils.Endpoint("files", "upload_session/finish_batch/check",
         {
@@ -1510,7 +1510,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)])
+        new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), null /* not implemented yet */])
     );
     const sharing_get_file_metadata_endpt = new Utils.Endpoint("sharing", "get_file_metadata",
         {
@@ -1545,7 +1545,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("files", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
+        new Utils.ListParam("files", false, (index: string): Utils.Parameter => null /* not implemented yet */),
         new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("unshare"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link")]))
     );
     const sharing_get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata",
@@ -1582,7 +1582,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("url", false),
-        new Utils.TextParam("path", true),
+        null /* not implemented yet */,
         new Utils.TextParam("link_password", true)
     );
     const sharing_get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata",
@@ -1601,7 +1601,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("url", false),
-        new Utils.TextParam("path", true),
+        null /* not implemented yet */,
         new Utils.TextParam("link_password", true)
     );
     const sharing_list_file_members_endpt = new Utils.Endpoint("sharing", "list_file_members",
@@ -1639,7 +1639,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("files", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
+        new Utils.ListParam("files", false, (index: string): Utils.Parameter => null /* not implemented yet */),
         new Utils.IntParam("limit", true)
     );
     const sharing_list_file_members_continue_endpt = new Utils.Endpoint("sharing", "list_file_members/continue",
@@ -1815,7 +1815,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.TextParam("path", true),
+        null /* not implemented yet */,
         new Utils.TextParam("cursor", true),
         new Utils.BoolParam("direct_only", true)
     );
@@ -1835,7 +1835,7 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.TextParam("url", false),
-        new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]),
+        new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), null /* not implemented yet */]),
         new Utils.BoolParam("remove_expiration", true)
     );
     const sharing_mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder",
@@ -2220,7 +2220,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
@@ -2236,12 +2236,12 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("group_name", false),
-        new Utils.TextParam("group_external_id", true),
+        null /* not implemented yet */,
         new Utils.UnionParam("group_management_type", true, [new Utils.VoidParam("user_managed"), new Utils.VoidParam("company_managed"), new Utils.VoidParam("system_managed")])
     );
     const team_groups_delete_endpt = new Utils.Endpoint("team", "groups/delete",
@@ -2255,7 +2255,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2272,11 +2272,11 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.RootUnionParam('', false, [new Utils.ListParam("group_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)), new Utils.ListParam("group_external_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
+        new Utils.RootUnionParam('', false, [new Utils.ListParam("group_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */), new Utils.ListParam("group_external_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
     );
     const team_groups_job_status_get_endpt = new Utils.Endpoint("team", "groups/job_status/get",
         {
@@ -2289,7 +2289,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2306,7 +2306,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2323,7 +2323,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2340,7 +2340,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2359,7 +2359,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2377,7 +2377,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2394,7 +2394,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2413,7 +2413,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2433,14 +2433,14 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]),
         new Utils.BoolParam("return_members", true),
         new Utils.TextParam("new_group_name", true),
-        new Utils.TextParam("new_group_external_id", true),
+        null /* not implemented yet */,
         new Utils.UnionParam("new_group_management_type", true, [new Utils.VoidParam("user_managed"), new Utils.VoidParam("company_managed"), new Utils.VoidParam("system_managed")])
     );
     const team_linked_apps_list_member_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_member_linked_apps",
@@ -2643,11 +2643,11 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]), new Utils.BoolParam("is_directory_restricted", true)])),
+        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), null /* not implemented yet */, null /* not implemented yet */, null /* not implemented yet */, new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]), new Utils.BoolParam("is_directory_restricted", true)])),
         new Utils.BoolParam("force_async", true)
     );
     const team_members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get",
@@ -2661,7 +2661,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2678,7 +2678,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2695,7 +2695,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2713,7 +2713,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2730,7 +2730,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2749,7 +2749,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2783,7 +2783,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2804,7 +2804,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2821,7 +2821,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "onboarding-intent",
+            owner: "commit-platform",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2838,7 +2838,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2861,10 +2861,10 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
-        new Utils.TextParam("new_email", true),
-        new Utils.TextParam("new_external_id", true),
-        new Utils.TextParam("new_given_name", true),
-        new Utils.TextParam("new_surname", true),
+        null /* not implemented yet */,
+        null /* not implemented yet */,
+        null /* not implemented yet */,
+        null /* not implemented yet */,
         new Utils.TextParam("new_persistent_id", true),
         new Utils.BoolParam("new_is_directory_restricted", true)
     );
@@ -2879,7 +2879,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2897,7 +2897,7 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2952,8 +2952,8 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.TextParam("start_date", true),
-        new Utils.TextParam("end_date", true)
+        null /* not implemented yet */,
+        null /* not implemented yet */
     );
     const team_reports_get_devices_endpt = new Utils.Endpoint("team", "reports/get_devices",
         {
@@ -2970,8 +2970,8 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.TextParam("start_date", true),
-        new Utils.TextParam("end_date", true)
+        null /* not implemented yet */,
+        null /* not implemented yet */
     );
     const team_reports_get_membership_endpt = new Utils.Endpoint("team", "reports/get_membership",
         {
@@ -2984,12 +2984,12 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "teams-and-groups",
+            owner: "team-lifecycle",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.TextParam("start_date", true),
-        new Utils.TextParam("end_date", true)
+        null /* not implemented yet */,
+        null /* not implemented yet */
     );
     const team_reports_get_storage_endpt = new Utils.Endpoint("team", "reports/get_storage",
         {
@@ -3006,8 +3006,8 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.TextParam("start_date", true),
-        new Utils.TextParam("end_date", true)
+        null /* not implemented yet */,
+        null /* not implemented yet */
     );
     const team_team_folder_activate_endpt = new Utils.Endpoint("team", "team_folder/activate",
         {
@@ -3094,7 +3094,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("team_folder_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
+        new Utils.ListParam("team_folder_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */)
     );
     const team_team_folder_list_endpt = new Utils.Endpoint("team", "team_folder/list",
         {
@@ -3216,8 +3216,8 @@ module Endpoints {
             is_web_alpha: "False",
         },
         new Utils.IntParam("limit", true),
-        new Utils.TextParam("account_id", true),
-        new Utils.StructParam("time", true, [new Utils.TextParam("start_time", true), new Utils.TextParam("end_time", true)]),
+        null /* not implemented yet */,
+        new Utils.StructParam("time", true, [null /* not implemented yet */, null /* not implemented yet */]),
         new Utils.UnionParam("category", true, [new Utils.VoidParam("apps"), new Utils.VoidParam("comments"), new Utils.VoidParam("devices"), new Utils.VoidParam("domains"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("reports"), new Utils.VoidParam("sharing"), new Utils.VoidParam("showcase"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa")])
     );
     const team_log_get_events_continue_endpt = new Utils.Endpoint("team_log", "get_events/continue",
@@ -3269,7 +3269,7 @@ module Endpoints {
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("account_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
+        new Utils.ListParam("account_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */)
     );
     const users_get_current_account_endpt = new Utils.Endpoint("users", "get_current_account",
         {

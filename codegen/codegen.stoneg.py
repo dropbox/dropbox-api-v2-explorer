@@ -67,8 +67,11 @@ class APIEndpointGenerator(CodeBackend):
             else:
                 return map(self.parameter_constructor, route.arg_data_type.all_fields)
 
+        def is_empty_type(arg_type):
+            return is_void_type(arg_type) or len(arg_type.all_fields) == 0
+
         # Right now, this is just upload_session_start
-        if is_void_type(route.arg_data_type) and 'style' in route.attrs and route.attrs['style'] == 'upload':
+        if is_empty_type(route.arg_data_type) and 'style' in route.attrs and route.attrs['style'] == 'upload':
             self.emit('const {0} = new Utils.Endpoint("{1}", "{2}",'.format(
                 self._var_name(route, namespace),
                 namespace.name,
@@ -91,7 +94,7 @@ class APIEndpointGenerator(CodeBackend):
                 self.emit('new Utils.FileParam(),')
                 self.generate_multiline_list(get_param_list(), delim=('',''))
             self.emit(');')
-        elif not is_void_type(route.arg_data_type): # not upload style, and has params
+        elif not is_empty_type(route.arg_data_type): # not upload style, and has params
             self.emit('const {0} = new Utils.Endpoint("{1}", "{2}",'.format(
                 self._var_name(route, namespace),
                 namespace.name,
