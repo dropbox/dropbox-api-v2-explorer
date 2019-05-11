@@ -125,6 +125,7 @@ class TokenInput extends react.Component<TokenInputProps, void> {
             client_id:     clientId,
             redirect_uri:  utils.currentURL(),
             state:         state,
+            token_access_type: 'online',
         };
 
         let urlWithParams = 'https://www.dropbox.com/oauth2/authorize?';
