@@ -5,6 +5,7 @@ import Utils = require('./utils');
 module Endpoints {
     const auth_token_from_oauth1_endpt = new Utils.Endpoint("auth", "token/from_oauth1",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -15,6 +16,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -23,6 +25,7 @@ module Endpoints {
     );
     const auth_token_revoke_endpt = new Utils.Endpoint("auth", "token/revoke",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -33,12 +36,51 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
     );
+    const contacts_delete_manual_contacts_endpt = new Utils.Endpoint("contacts", "delete_manual_contacts",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-peeps",
+            host: "api",
+            allow_app_folder_app: "False",
+            owner: "teams-and-groups",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        }
+    );
+    const contacts_delete_manual_contacts_batch_endpt = new Utils.Endpoint("contacts", "delete_manual_contacts_batch",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-peeps",
+            host: "api",
+            allow_app_folder_app: "False",
+            owner: "teams-and-groups",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.ListParam("email_addresses", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
+    );
     const file_properties_properties_add_endpt = new Utils.Endpoint("file_properties", "properties/add",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -47,8 +89,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -57,6 +100,7 @@ module Endpoints {
     );
     const file_properties_properties_overwrite_endpt = new Utils.Endpoint("file_properties", "properties/overwrite",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -65,8 +109,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -75,6 +120,7 @@ module Endpoints {
     );
     const file_properties_properties_remove_endpt = new Utils.Endpoint("file_properties", "properties/remove",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -83,16 +129,18 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.ListParam("property_template_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */)
+        new Utils.ListParam("property_template_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
     );
     const file_properties_properties_search_endpt = new Utils.Endpoint("file_properties", "properties/search",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -103,14 +151,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.ListParam("queries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("query", false), new Utils.UnionParam("mode", false, [new Utils.TextParam("field_name", false)]), new Utils.UnionParam("logical_operator", true, [new Utils.VoidParam("or_operator")])])),
-        new Utils.UnionParam("template_filter", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */), new Utils.VoidParam("filter_none")])
+        new Utils.UnionParam("template_filter", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)), new Utils.VoidParam("filter_none")])
     );
     const file_properties_properties_search_continue_endpt = new Utils.Endpoint("file_properties", "properties/search/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -121,6 +171,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -128,6 +179,7 @@ module Endpoints {
     );
     const file_properties_properties_update_endpt = new Utils.Endpoint("file_properties", "properties/update",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -136,8 +188,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -146,6 +199,7 @@ module Endpoints {
     );
     const file_properties_templates_add_for_team_endpt = new Utils.Endpoint("file_properties", "templates/add_for_team",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -156,6 +210,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -165,6 +220,7 @@ module Endpoints {
     );
     const file_properties_templates_add_for_user_endpt = new Utils.Endpoint("file_properties", "templates/add_for_user",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -175,6 +231,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -184,6 +241,7 @@ module Endpoints {
     );
     const file_properties_templates_get_for_team_endpt = new Utils.Endpoint("file_properties", "templates/get_for_team",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -194,6 +252,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -201,6 +260,7 @@ module Endpoints {
     );
     const file_properties_templates_get_for_user_endpt = new Utils.Endpoint("file_properties", "templates/get_for_user",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -211,6 +271,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -218,6 +279,7 @@ module Endpoints {
     );
     const file_properties_templates_list_for_team_endpt = new Utils.Endpoint("file_properties", "templates/list_for_team",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -228,12 +290,14 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
     );
     const file_properties_templates_list_for_user_endpt = new Utils.Endpoint("file_properties", "templates/list_for_user",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -244,12 +308,14 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
     );
     const file_properties_templates_remove_for_team_endpt = new Utils.Endpoint("file_properties", "templates/remove_for_team",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -258,8 +324,9 @@ module Endpoints {
             auth: "team",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -267,6 +334,7 @@ module Endpoints {
     );
     const file_properties_templates_remove_for_user_endpt = new Utils.Endpoint("file_properties", "templates/remove_for_user",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -275,8 +343,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -284,6 +353,7 @@ module Endpoints {
     );
     const file_properties_templates_update_for_team_endpt = new Utils.Endpoint("file_properties", "templates/update_for_team",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -294,6 +364,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -304,6 +375,7 @@ module Endpoints {
     );
     const file_properties_templates_update_for_user_endpt = new Utils.Endpoint("file_properties", "templates/update_for_user",
         {
+            generated: "False",
             style: "rpc",
             api_group: "properties",
             is_preview: "False",
@@ -314,6 +386,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -322,8 +395,9 @@ module Endpoints {
         new Utils.TextParam("description", true),
         new Utils.ListParam("add_fields", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("description", false), new Utils.UnionParam("type", false, [new Utils.VoidParam("string")])]))
     );
-    const file_requests_create_endpt = new Utils.Endpoint("file_requests", "create",
+    const file_requests_count_endpt = new Utils.Endpoint("file_requests", "count",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -333,7 +407,26 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "True",
-            owner: "api-platform",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        }
+    );
+    const file_requests_create_endpt = new Utils.Endpoint("file_requests", "create",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -342,8 +435,9 @@ module Endpoints {
         new Utils.StructParam("deadline", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always")])]),
         new Utils.BoolParam("open", true)
     );
-    const file_requests_get_endpt = new Utils.Endpoint("file_requests", "get",
+    const file_requests_delete_endpt = new Utils.Endpoint("file_requests", "delete",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -353,341 +447,53 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "True",
-            owner: "api-platform",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.ListParam("ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
+    );
+    const file_requests_delete_all_closed_endpt = new Utils.Endpoint("file_requests", "delete_all_closed",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        }
+    );
+    const file_requests_get_endpt = new Utils.Endpoint("file_requests", "get",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("id", false)
     );
-    const file_requests_list_endpt = new Utils.Endpoint("file_requests", "list",
+    const file_requests_list_v2_endpt = new Utils.Endpoint("file_requests", "list_v2",
         {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        }
-    );
-    const file_requests_update_endpt = new Utils.Endpoint("file_requests", "update",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("id", false),
-        new Utils.TextParam("title", true),
-        null /* not implemented yet */,
-        new Utils.UnionParam("deadline", true, [new Utils.VoidParam("no_update"), new Utils.StructParam("update", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always")])])]),
-        new Utils.BoolParam("open", true)
-    );
-    const files_copy_v2_endpt = new Utils.Endpoint("files", "copy_v2",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("from_path", false),
-        new Utils.TextParam("to_path", false),
-        new Utils.BoolParam("allow_shared_folder", true),
-        new Utils.BoolParam("autorename", true),
-        new Utils.BoolParam("allow_ownership_transfer", true)
-    );
-    const files_copy_batch_endpt = new Utils.Endpoint("files", "copy_batch",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false)])),
-        new Utils.BoolParam("allow_shared_folder", true),
-        new Utils.BoolParam("autorename", true),
-        new Utils.BoolParam("allow_ownership_transfer", true)
-    );
-    const files_copy_batch_check_endpt = new Utils.Endpoint("files", "copy_batch/check",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const files_copy_reference_get_endpt = new Utils.Endpoint("files", "copy_reference/get",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false)
-    );
-    const files_copy_reference_save_endpt = new Utils.Endpoint("files", "copy_reference/save",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("copy_reference", false),
-        new Utils.TextParam("path", false)
-    );
-    const files_create_folder_v2_endpt = new Utils.Endpoint("files", "create_folder_v2",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false),
-        new Utils.BoolParam("autorename", true)
-    );
-    const files_create_folder_batch_endpt = new Utils.Endpoint("files", "create_folder_batch",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.ListParam("paths", false, (index: string): Utils.Parameter => null /* not implemented yet */),
-        new Utils.BoolParam("autorename", true),
-        new Utils.BoolParam("force_async", true)
-    );
-    const files_create_folder_batch_check_endpt = new Utils.Endpoint("files", "create_folder_batch/check",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const files_delete_v2_endpt = new Utils.Endpoint("files", "delete_v2",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false),
-        null /* not implemented yet */
-    );
-    const files_delete_batch_endpt = new Utils.Endpoint("files", "delete_batch",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), null /* not implemented yet */]))
-    );
-    const files_delete_batch_check_endpt = new Utils.Endpoint("files", "delete_batch/check",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const files_download_endpt = new Utils.Endpoint("files", "download",
-        {
-            style: "download",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "whole_team",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "content",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false),
-        null /* not implemented yet */
-    );
-    const files_download_zip_endpt = new Utils.Endpoint("files", "download_zip",
-        {
-            style: "download",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "content",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false)
-    );
-    const files_get_metadata_endpt = new Utils.Endpoint("files", "get_metadata",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "whole_team",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "True",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false),
-        new Utils.BoolParam("include_media_info", true),
-        new Utils.BoolParam("include_deleted", true),
-        new Utils.BoolParam("include_has_explicit_shared_members", true),
-        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */)])
-    );
-    const files_get_preview_endpt = new Utils.Endpoint("files", "get_preview",
-        {
-            style: "download",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "whole_team",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "content",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false),
-        null /* not implemented yet */
-    );
-    const files_get_temporary_link_endpt = new Utils.Endpoint("files", "get_temporary_link",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "api-platform",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("path", false)
-    );
-    const files_get_temporary_upload_link_endpt = new Utils.Endpoint("files", "get_temporary_upload_link",
-        {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -697,15 +503,357 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "True",
-            owner: "partner-platform",
+            owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.StructParam("commit_info", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), null /* not implemented yet */, new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]),
-        new Utils.FloatParam("duration", true)
+        new Utils.IntParam("limit", true)
     );
-    const files_get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail",
+    const file_requests_list_endpt = new Utils.Endpoint("file_requests", "list",
         {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        }
+    );
+    const file_requests_list_continue_endpt = new Utils.Endpoint("file_requests", "list/continue",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "True",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("cursor", false)
+    );
+    const file_requests_update_endpt = new Utils.Endpoint("file_requests", "update",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("id", false),
+        new Utils.TextParam("title", true),
+        new Utils.TextParam("destination", true),
+        new Utils.UnionParam("deadline", true, [new Utils.VoidParam("no_update"), new Utils.StructParam("update", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always")])])]),
+        new Utils.BoolParam("open", true)
+    );
+    const files_copy_v2_endpt = new Utils.Endpoint("files", "copy_v2",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("from_path", false),
+        new Utils.TextParam("to_path", false),
+        new Utils.BoolParam("allow_shared_folder", true),
+        new Utils.BoolParam("autorename", true),
+        new Utils.BoolParam("allow_ownership_transfer", true)
+    );
+    const files_copy_batch_v2_endpt = new Utils.Endpoint("files", "copy_batch_v2",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false)])),
+        new Utils.BoolParam("autorename", true)
+    );
+    const files_copy_batch_check_v2_endpt = new Utils.Endpoint("files", "copy_batch/check_v2",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const files_copy_reference_get_endpt = new Utils.Endpoint("files", "copy_reference/get",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false)
+    );
+    const files_copy_reference_save_endpt = new Utils.Endpoint("files", "copy_reference/save",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("copy_reference", false),
+        new Utils.TextParam("path", false)
+    );
+    const files_create_folder_v2_endpt = new Utils.Endpoint("files", "create_folder_v2",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.BoolParam("autorename", true)
+    );
+    const files_create_folder_batch_endpt = new Utils.Endpoint("files", "create_folder_batch",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.ListParam("paths", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
+        new Utils.BoolParam("autorename", true),
+        new Utils.BoolParam("force_async", true)
+    );
+    const files_create_folder_batch_check_endpt = new Utils.Endpoint("files", "create_folder_batch/check",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const files_delete_v2_endpt = new Utils.Endpoint("files", "delete_v2",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.TextParam("parent_rev", true)
+    );
+    const files_delete_batch_endpt = new Utils.Endpoint("files", "delete_batch",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.TextParam("parent_rev", true)]))
+    );
+    const files_delete_batch_check_endpt = new Utils.Endpoint("files", "delete_batch/check",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const files_download_endpt = new Utils.Endpoint("files", "download",
+        {
+            generated: "False",
+            style: "download",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "whole_team",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "content",
+            allow_app_folder_app: "True",
+            owner: "storage-services-team",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.TextParam("rev", true)
+    );
+    const files_download_zip_endpt = new Utils.Endpoint("files", "download_zip",
+        {
+            generated: "False",
+            style: "download",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "content",
+            allow_app_folder_app: "True",
+            owner: "storage-services-team",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false)
+    );
+    const files_get_metadata_endpt = new Utils.Endpoint("files", "get_metadata",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "whole_team",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "True",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.BoolParam("include_media_info", true),
+        new Utils.BoolParam("include_deleted", true),
+        new Utils.BoolParam("include_has_explicit_shared_members", true),
+        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
+    );
+    const files_get_preview_endpt = new Utils.Endpoint("files", "get_preview",
+        {
+            generated: "False",
             style: "download",
             api_group: "None",
             is_preview: "False",
@@ -716,6 +864,66 @@ module Endpoints {
             host: "content",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.TextParam("rev", true)
+    );
+    const files_get_temporary_link_endpt = new Utils.Endpoint("files", "get_temporary_link",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", false)
+    );
+    const files_get_temporary_upload_link_endpt = new Utils.Endpoint("files", "get_temporary_upload_link",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "content-ecosystem",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.StructParam("commit_info", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]),
+        new Utils.FloatParam("duration", true)
+    );
+    const files_get_thumbnail_endpt = new Utils.Endpoint("files", "get_thumbnail",
+        {
+            generated: "False",
+            style: "download",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "whole_team",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "content",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -726,6 +934,7 @@ module Endpoints {
     );
     const files_get_thumbnail_batch_endpt = new Utils.Endpoint("files", "get_thumbnail_batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -736,6 +945,7 @@ module Endpoints {
             host: "content",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -743,6 +953,7 @@ module Endpoints {
     );
     const files_list_folder_endpt = new Utils.Endpoint("files", "list_folder",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -753,6 +964,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -764,10 +976,11 @@ module Endpoints {
         new Utils.BoolParam("include_mounted_folders", true),
         new Utils.IntParam("limit", true),
         new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]),
-        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */)])
+        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
     );
     const files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -778,6 +991,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -785,6 +999,7 @@ module Endpoints {
     );
     const files_list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -795,6 +1010,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -806,10 +1022,11 @@ module Endpoints {
         new Utils.BoolParam("include_mounted_folders", true),
         new Utils.IntParam("limit", true),
         new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]),
-        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => null /* not implemented yet */)])
+        new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
     );
     const files_list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -820,6 +1037,7 @@ module Endpoints {
             host: "notify",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -828,6 +1046,7 @@ module Endpoints {
     );
     const files_list_revisions_endpt = new Utils.Endpoint("files", "list_revisions",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -838,6 +1057,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -847,6 +1067,7 @@ module Endpoints {
     );
     const files_move_v2_endpt = new Utils.Endpoint("files", "move_v2",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -857,6 +1078,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -866,8 +1088,9 @@ module Endpoints {
         new Utils.BoolParam("autorename", true),
         new Utils.BoolParam("allow_ownership_transfer", true)
     );
-    const files_move_batch_endpt = new Utils.Endpoint("files", "move_batch",
+    const files_move_batch_v2_endpt = new Utils.Endpoint("files", "move_batch_v2",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -878,16 +1101,17 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false)])),
-        new Utils.BoolParam("allow_shared_folder", true),
         new Utils.BoolParam("autorename", true),
         new Utils.BoolParam("allow_ownership_transfer", true)
     );
-    const files_move_batch_check_endpt = new Utils.Endpoint("files", "move_batch/check",
+    const files_move_batch_endpt = new Utils.Endpoint("files", "move_batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -898,6 +1122,48 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("from_path", false), new Utils.TextParam("to_path", false)])),
+        new Utils.BoolParam("autorename", true),
+        new Utils.BoolParam("allow_shared_folder", true),
+        new Utils.BoolParam("allow_ownership_transfer", true)
+    );
+    const files_move_batch_check_v2_endpt = new Utils.Endpoint("files", "move_batch/check_v2",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const files_move_batch_check_endpt = new Utils.Endpoint("files", "move_batch/check",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -905,6 +1171,7 @@ module Endpoints {
     );
     const files_permanently_delete_endpt = new Utils.Endpoint("files", "permanently_delete",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -915,14 +1182,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        null /* not implemented yet */
+        new Utils.TextParam("parent_rev", true)
     );
     const files_restore_endpt = new Utils.Endpoint("files", "restore",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -933,6 +1202,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -941,6 +1211,7 @@ module Endpoints {
     );
     const files_save_url_endpt = new Utils.Endpoint("files", "save_url",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -951,6 +1222,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -959,6 +1231,7 @@ module Endpoints {
     );
     const files_save_url_check_job_status_endpt = new Utils.Endpoint("files", "save_url/check_job_status",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -969,6 +1242,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -976,6 +1250,7 @@ module Endpoints {
     );
     const files_search_endpt = new Utils.Endpoint("files", "search",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -986,6 +1261,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -997,6 +1273,7 @@ module Endpoints {
     );
     const files_upload_endpt = new Utils.Endpoint("files", "upload",
         {
+            generated: "False",
             style: "upload",
             api_group: "None",
             is_preview: "False",
@@ -1006,7 +1283,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "content",
             allow_app_folder_app: "True",
-            owner: "api-platform",
+            owner: "storage-services-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1014,13 +1292,14 @@ module Endpoints {
         new Utils.TextParam("path", false),
         new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]),
         new Utils.BoolParam("autorename", true),
-        null /* not implemented yet */,
+        new Utils.TextParam("client_modified", true),
         new Utils.BoolParam("mute", true),
         new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])),
         new Utils.BoolParam("strict_conflict", true)
     );
     const files_upload_session_append_v2_endpt = new Utils.Endpoint("files", "upload_session/append_v2",
         {
+            generated: "False",
             style: "upload",
             api_group: "None",
             is_preview: "False",
@@ -1030,7 +1309,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "content",
             allow_app_folder_app: "True",
-            owner: "api-platform",
+            owner: "storage-services-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1040,6 +1320,7 @@ module Endpoints {
     );
     const files_upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish",
         {
+            generated: "False",
             style: "upload",
             api_group: "None",
             is_preview: "False",
@@ -1049,16 +1330,18 @@ module Endpoints {
             cluster: "meta-api",
             host: "content",
             allow_app_folder_app: "True",
-            owner: "api-platform",
+            owner: "storage-services-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.FileParam(),
         new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]),
-        new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), null /* not implemented yet */, new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])
+        new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])
     );
     const files_upload_session_finish_batch_endpt = new Utils.Endpoint("files", "upload_session/finish_batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1069,13 +1352,15 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), null /* not implemented yet */, new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])]))
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])]))
     );
     const files_upload_session_finish_batch_check_endpt = new Utils.Endpoint("files", "upload_session/finish_batch/check",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1086,6 +1371,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1093,6 +1379,7 @@ module Endpoints {
     );
     const files_upload_session_start_endpt = new Utils.Endpoint("files", "upload_session/start",
         {
+            generated: "False",
             style: "upload",
             api_group: "None",
             is_preview: "False",
@@ -1102,7 +1389,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "content",
             allow_app_folder_app: "True",
-            owner: "api-platform",
+            owner: "storage-services-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1111,6 +1399,7 @@ module Endpoints {
     );
     const paper_docs_archive_endpt = new Utils.Endpoint("paper", "docs/archive",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1121,6 +1410,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1128,6 +1418,7 @@ module Endpoints {
     );
     const paper_docs_create_endpt = new Utils.Endpoint("paper", "docs/create",
         {
+            generated: "False",
             style: "upload",
             api_group: "None",
             is_preview: "False",
@@ -1138,6 +1429,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1147,6 +1439,7 @@ module Endpoints {
     );
     const paper_docs_download_endpt = new Utils.Endpoint("paper", "docs/download",
         {
+            generated: "False",
             style: "download",
             api_group: "None",
             is_preview: "False",
@@ -1157,6 +1450,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1165,6 +1459,7 @@ module Endpoints {
     );
     const paper_docs_folder_users_list_endpt = new Utils.Endpoint("paper", "docs/folder_users/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1175,6 +1470,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1183,6 +1479,7 @@ module Endpoints {
     );
     const paper_docs_folder_users_list_continue_endpt = new Utils.Endpoint("paper", "docs/folder_users/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1193,6 +1490,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1201,6 +1499,7 @@ module Endpoints {
     );
     const paper_docs_get_folder_info_endpt = new Utils.Endpoint("paper", "docs/get_folder_info",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1211,6 +1510,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1218,6 +1518,7 @@ module Endpoints {
     );
     const paper_docs_list_endpt = new Utils.Endpoint("paper", "docs/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1228,6 +1529,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1238,6 +1540,7 @@ module Endpoints {
     );
     const paper_docs_list_continue_endpt = new Utils.Endpoint("paper", "docs/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1248,6 +1551,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1255,6 +1559,7 @@ module Endpoints {
     );
     const paper_docs_permanently_delete_endpt = new Utils.Endpoint("paper", "docs/permanently_delete",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1265,6 +1570,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1272,6 +1578,7 @@ module Endpoints {
     );
     const paper_docs_sharing_policy_get_endpt = new Utils.Endpoint("paper", "docs/sharing_policy/get",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1282,6 +1589,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1289,6 +1597,7 @@ module Endpoints {
     );
     const paper_docs_sharing_policy_set_endpt = new Utils.Endpoint("paper", "docs/sharing_policy/set",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1299,6 +1608,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1307,6 +1617,7 @@ module Endpoints {
     );
     const paper_docs_update_endpt = new Utils.Endpoint("paper", "docs/update",
         {
+            generated: "False",
             style: "upload",
             api_group: "None",
             is_preview: "False",
@@ -1317,6 +1628,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1328,6 +1640,7 @@ module Endpoints {
     );
     const paper_docs_users_add_endpt = new Utils.Endpoint("paper", "docs/users/add",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1338,6 +1651,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1348,6 +1662,7 @@ module Endpoints {
     );
     const paper_docs_users_list_endpt = new Utils.Endpoint("paper", "docs/users/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1358,6 +1673,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1367,6 +1683,7 @@ module Endpoints {
     );
     const paper_docs_users_list_continue_endpt = new Utils.Endpoint("paper", "docs/users/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1377,6 +1694,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1385,6 +1703,7 @@ module Endpoints {
     );
     const paper_docs_users_remove_endpt = new Utils.Endpoint("paper", "docs/users/remove",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1395,6 +1714,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "paper-eng",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1403,6 +1723,7 @@ module Endpoints {
     );
     const sharing_add_file_member_endpt = new Utils.Endpoint("sharing", "add_file_member",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1411,8 +1732,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1425,6 +1747,7 @@ module Endpoints {
     );
     const sharing_add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1434,7 +1757,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1445,6 +1769,7 @@ module Endpoints {
     );
     const sharing_check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1454,7 +1779,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1462,6 +1788,7 @@ module Endpoints {
     );
     const sharing_check_remove_member_job_status_endpt = new Utils.Endpoint("sharing", "check_remove_member_job_status",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1471,7 +1798,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1479,6 +1807,7 @@ module Endpoints {
     );
     const sharing_check_share_job_status_endpt = new Utils.Endpoint("sharing", "check_share_job_status",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1488,7 +1817,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1496,6 +1826,7 @@ module Endpoints {
     );
     const sharing_create_shared_link_with_settings_endpt = new Utils.Endpoint("sharing", "create_shared_link_with_settings",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1506,14 +1837,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), null /* not implemented yet */])
+        new Utils.StructParam("settings", true, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)])
     );
     const sharing_get_file_metadata_endpt = new Utils.Endpoint("sharing", "get_file_metadata",
         {
+            generated: "False",
             style: "rpc",
             api_group: "truelink-alpha",
             is_preview: "False",
@@ -1522,8 +1855,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1532,6 +1866,7 @@ module Endpoints {
     );
     const sharing_get_file_metadata_batch_endpt = new Utils.Endpoint("sharing", "get_file_metadata/batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1540,16 +1875,18 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("files", false, (index: string): Utils.Parameter => null /* not implemented yet */),
+        new Utils.ListParam("files", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
         new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("unshare"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link")]))
     );
     const sharing_get_folder_metadata_endpt = new Utils.Endpoint("sharing", "get_folder_metadata",
         {
+            generated: "False",
             style: "rpc",
             api_group: "truelink-alpha",
             is_preview: "False",
@@ -1559,7 +1896,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1568,6 +1906,7 @@ module Endpoints {
     );
     const sharing_get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file",
         {
+            generated: "False",
             style: "download",
             api_group: "None",
             is_preview: "False",
@@ -1578,15 +1917,17 @@ module Endpoints {
             host: "content",
             allow_app_folder_app: "True",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("url", false),
-        null /* not implemented yet */,
+        new Utils.TextParam("path", true),
         new Utils.TextParam("link_password", true)
     );
     const sharing_get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1597,15 +1938,17 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("url", false),
-        null /* not implemented yet */,
+        new Utils.TextParam("path", true),
         new Utils.TextParam("link_password", true)
     );
     const sharing_list_file_members_endpt = new Utils.Endpoint("sharing", "list_file_members",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1614,8 +1957,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1626,6 +1970,7 @@ module Endpoints {
     );
     const sharing_list_file_members_batch_endpt = new Utils.Endpoint("sharing", "list_file_members/batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1634,16 +1979,18 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("files", false, (index: string): Utils.Parameter => null /* not implemented yet */),
+        new Utils.ListParam("files", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
         new Utils.IntParam("limit", true)
     );
     const sharing_list_file_members_continue_endpt = new Utils.Endpoint("sharing", "list_file_members/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1652,8 +1999,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1661,6 +2009,7 @@ module Endpoints {
     );
     const sharing_list_folder_members_endpt = new Utils.Endpoint("sharing", "list_folder_members",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1670,7 +2019,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1680,6 +2030,7 @@ module Endpoints {
     );
     const sharing_list_folder_members_continue_endpt = new Utils.Endpoint("sharing", "list_folder_members/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1689,7 +2040,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1697,6 +2049,7 @@ module Endpoints {
     );
     const sharing_list_folders_endpt = new Utils.Endpoint("sharing", "list_folders",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1706,7 +2059,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1715,6 +2069,7 @@ module Endpoints {
     );
     const sharing_list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1724,7 +2079,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1732,6 +2088,7 @@ module Endpoints {
     );
     const sharing_list_mountable_folders_endpt = new Utils.Endpoint("sharing", "list_mountable_folders",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1741,7 +2098,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1750,6 +2108,7 @@ module Endpoints {
     );
     const sharing_list_mountable_folders_continue_endpt = new Utils.Endpoint("sharing", "list_mountable_folders/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1759,7 +2118,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1767,6 +2127,7 @@ module Endpoints {
     );
     const sharing_list_received_files_endpt = new Utils.Endpoint("sharing", "list_received_files",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1775,8 +2136,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1785,61 +2147,7 @@ module Endpoints {
     );
     const sharing_list_received_files_continue_endpt = new Utils.Endpoint("sharing", "list_received_files/continue",
         {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "sharing",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("cursor", false)
-    );
-    const sharing_list_shared_links_endpt = new Utils.Endpoint("sharing", "list_shared_links",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "sharing",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        null /* not implemented yet */,
-        new Utils.TextParam("cursor", true),
-        new Utils.BoolParam("direct_only", true)
-    );
-    const sharing_modify_shared_link_settings_endpt = new Utils.Endpoint("sharing", "modify_shared_link_settings",
-        {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "None",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "sharing",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("url", false),
-        new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), null /* not implemented yet */]),
-        new Utils.BoolParam("remove_expiration", true)
-    );
-    const sharing_mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder",
-        {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1849,7 +2157,69 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("cursor", false)
+    );
+    const sharing_list_shared_links_endpt = new Utils.Endpoint("sharing", "list_shared_links",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("path", true),
+        new Utils.TextParam("cursor", true),
+        new Utils.BoolParam("direct_only", true)
+    );
+    const sharing_modify_shared_link_settings_endpt = new Utils.Endpoint("sharing", "modify_shared_link_settings",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "True",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("url", false),
+        new Utils.StructParam("settings", false, [new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true)]),
+        new Utils.BoolParam("remove_expiration", true)
+    );
+    const sharing_mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "None",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "False",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1857,6 +2227,7 @@ module Endpoints {
     );
     const sharing_relinquish_file_membership_endpt = new Utils.Endpoint("sharing", "relinquish_file_membership",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1865,8 +2236,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1874,6 +2246,7 @@ module Endpoints {
     );
     const sharing_relinquish_folder_membership_endpt = new Utils.Endpoint("sharing", "relinquish_folder_membership",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1883,7 +2256,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1892,24 +2266,7 @@ module Endpoints {
     );
     const sharing_remove_file_member_2_endpt = new Utils.Endpoint("sharing", "remove_file_member_2",
         {
-            style: "rpc",
-            api_group: "None",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "sharing",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("file", false),
-        new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)])
-    );
-    const sharing_remove_folder_member_endpt = new Utils.Endpoint("sharing", "remove_folder_member",
-        {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1919,7 +2276,28 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("file", false),
+        new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)])
+    );
+    const sharing_remove_folder_member_endpt = new Utils.Endpoint("sharing", "remove_folder_member",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "None",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "False",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1929,6 +2307,7 @@ module Endpoints {
     );
     const sharing_revoke_shared_link_endpt = new Utils.Endpoint("sharing", "revoke_shared_link",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1939,6 +2318,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1946,6 +2326,7 @@ module Endpoints {
     );
     const sharing_set_access_inheritance_endpt = new Utils.Endpoint("sharing", "set_access_inheritance",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1955,7 +2336,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1964,6 +2346,7 @@ module Endpoints {
     );
     const sharing_share_folder_endpt = new Utils.Endpoint("sharing", "share_folder",
         {
+            generated: "False",
             style: "rpc",
             api_group: "truelink-alpha",
             is_preview: "False",
@@ -1973,7 +2356,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -1985,10 +2369,11 @@ module Endpoints {
         new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled")]),
         new Utils.UnionParam("access_inheritance", true, [new Utils.VoidParam("inherit"), new Utils.VoidParam("no_inherit")]),
         new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")])),
-        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])])
+        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])])
     );
     const sharing_transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -1998,7 +2383,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2007,6 +2393,7 @@ module Endpoints {
     );
     const sharing_unmount_folder_endpt = new Utils.Endpoint("sharing", "unmount_folder",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2016,7 +2403,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2024,23 +2412,7 @@ module Endpoints {
     );
     const sharing_unshare_file_endpt = new Utils.Endpoint("sharing", "unshare_file",
         {
-            style: "rpc",
-            api_group: "truelink-alpha",
-            is_preview: "False",
-            select_admin_mode: "team_admin",
-            feature: "None",
-            auth: "user",
-            cluster: "meta-api",
-            host: "api",
-            allow_app_folder_app: "True",
-            owner: "sharing",
-            takes_path_root: "False",
-            is_web_alpha: "False",
-        },
-        new Utils.TextParam("file", false)
-    );
-    const sharing_unshare_folder_endpt = new Utils.Endpoint("sharing", "unshare_folder",
-        {
+            generated: "False",
             style: "rpc",
             api_group: "truelink-alpha",
             is_preview: "False",
@@ -2050,7 +2422,27 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "sharing",
+            scope: "None",
+            takes_path_root: "False",
+            is_web_alpha: "False",
+        },
+        new Utils.TextParam("file", false)
+    );
+    const sharing_unshare_folder_endpt = new Utils.Endpoint("sharing", "unshare_folder",
+        {
+            generated: "False",
+            style: "rpc",
+            api_group: "truelink-alpha",
+            is_preview: "False",
+            select_admin_mode: "team_admin",
+            feature: "None",
+            auth: "user",
+            cluster: "meta-api",
+            host: "api",
+            allow_app_folder_app: "False",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2059,6 +2451,7 @@ module Endpoints {
     );
     const sharing_update_file_member_endpt = new Utils.Endpoint("sharing", "update_file_member",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2067,8 +2460,9 @@ module Endpoints {
             auth: "user",
             cluster: "meta-api",
             host: "api",
-            allow_app_folder_app: "True",
+            allow_app_folder_app: "False",
             owner: "sharing",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2078,6 +2472,7 @@ module Endpoints {
     );
     const sharing_update_folder_member_endpt = new Utils.Endpoint("sharing", "update_folder_member",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2087,7 +2482,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2097,6 +2493,7 @@ module Endpoints {
     );
     const sharing_update_folder_policy_endpt = new Utils.Endpoint("sharing", "update_folder_policy",
         {
+            generated: "False",
             style: "rpc",
             api_group: "truelink-alpha",
             is_preview: "False",
@@ -2106,7 +2503,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2115,11 +2513,12 @@ module Endpoints {
         new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors")]),
         new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled")]),
         new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members")]),
-        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])]),
+        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])]),
         new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")]))
     );
     const team_devices_list_member_devices_endpt = new Utils.Endpoint("team", "devices/list_member_devices",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2129,7 +2528,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2140,6 +2540,7 @@ module Endpoints {
     );
     const team_devices_list_members_devices_endpt = new Utils.Endpoint("team", "devices/list_members_devices",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2149,7 +2550,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2160,6 +2562,7 @@ module Endpoints {
     );
     const team_devices_revoke_device_session_endpt = new Utils.Endpoint("team", "devices/revoke_device_session",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2169,7 +2572,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2177,6 +2581,7 @@ module Endpoints {
     );
     const team_devices_revoke_device_session_batch_endpt = new Utils.Endpoint("team", "devices/revoke_device_session_batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2186,7 +2591,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2194,6 +2600,7 @@ module Endpoints {
     );
     const team_features_get_values_endpt = new Utils.Endpoint("team", "features/get_values",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2204,6 +2611,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2211,6 +2619,7 @@ module Endpoints {
     );
     const team_get_info_endpt = new Utils.Endpoint("team", "get_info",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2221,12 +2630,14 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
     );
     const team_groups_create_endpt = new Utils.Endpoint("team", "groups/create",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2237,15 +2648,17 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.TextParam("group_name", false),
-        null /* not implemented yet */,
+        new Utils.TextParam("group_external_id", true),
         new Utils.UnionParam("group_management_type", true, [new Utils.VoidParam("user_managed"), new Utils.VoidParam("company_managed"), new Utils.VoidParam("system_managed")])
     );
     const team_groups_delete_endpt = new Utils.Endpoint("team", "groups/delete",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2256,6 +2669,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2263,6 +2677,7 @@ module Endpoints {
     );
     const team_groups_get_info_endpt = new Utils.Endpoint("team", "groups/get_info",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2273,13 +2688,15 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.RootUnionParam('', false, [new Utils.ListParam("group_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */), new Utils.ListParam("group_external_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
+        new Utils.RootUnionParam('', false, [new Utils.ListParam("group_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)), new Utils.ListParam("group_external_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])
     );
     const team_groups_job_status_get_endpt = new Utils.Endpoint("team", "groups/job_status/get",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2290,6 +2707,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2297,6 +2715,7 @@ module Endpoints {
     );
     const team_groups_list_endpt = new Utils.Endpoint("team", "groups/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2307,6 +2726,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2314,6 +2734,7 @@ module Endpoints {
     );
     const team_groups_list_continue_endpt = new Utils.Endpoint("team", "groups/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2324,6 +2745,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2331,6 +2753,7 @@ module Endpoints {
     );
     const team_groups_members_add_endpt = new Utils.Endpoint("team", "groups/members/add",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2341,6 +2764,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2350,6 +2774,7 @@ module Endpoints {
     );
     const team_groups_members_list_endpt = new Utils.Endpoint("team", "groups/members/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2360,6 +2785,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2368,6 +2794,7 @@ module Endpoints {
     );
     const team_groups_members_list_continue_endpt = new Utils.Endpoint("team", "groups/members/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2378,6 +2805,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2385,6 +2813,7 @@ module Endpoints {
     );
     const team_groups_members_remove_endpt = new Utils.Endpoint("team", "groups/members/remove",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2395,6 +2824,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2404,6 +2834,7 @@ module Endpoints {
     );
     const team_groups_members_set_access_type_endpt = new Utils.Endpoint("team", "groups/members/set_access_type",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2414,6 +2845,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2424,6 +2856,7 @@ module Endpoints {
     );
     const team_groups_update_endpt = new Utils.Endpoint("team", "groups/update",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2434,17 +2867,19 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.UnionParam("group", false, [new Utils.TextParam("group_id", false), new Utils.TextParam("group_external_id", false)]),
         new Utils.BoolParam("return_members", true),
         new Utils.TextParam("new_group_name", true),
-        null /* not implemented yet */,
+        new Utils.TextParam("new_group_external_id", true),
         new Utils.UnionParam("new_group_management_type", true, [new Utils.VoidParam("user_managed"), new Utils.VoidParam("company_managed"), new Utils.VoidParam("system_managed")])
     );
     const team_linked_apps_list_member_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_member_linked_apps",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2454,7 +2889,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2462,6 +2898,7 @@ module Endpoints {
     );
     const team_linked_apps_list_members_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_members_linked_apps",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2471,7 +2908,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2479,6 +2917,7 @@ module Endpoints {
     );
     const team_linked_apps_revoke_linked_app_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2488,7 +2927,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2498,6 +2938,7 @@ module Endpoints {
     );
     const team_linked_apps_revoke_linked_app_batch_endpt = new Utils.Endpoint("team", "linked_apps/revoke_linked_app_batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2507,7 +2948,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2515,6 +2957,7 @@ module Endpoints {
     );
     const team_member_space_limits_excluded_users_add_endpt = new Utils.Endpoint("team", "member_space_limits/excluded_users/add",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2524,7 +2967,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2532,6 +2976,7 @@ module Endpoints {
     );
     const team_member_space_limits_excluded_users_list_endpt = new Utils.Endpoint("team", "member_space_limits/excluded_users/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2541,7 +2986,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2549,6 +2995,7 @@ module Endpoints {
     );
     const team_member_space_limits_excluded_users_list_continue_endpt = new Utils.Endpoint("team", "member_space_limits/excluded_users/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2558,7 +3005,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2566,6 +3014,7 @@ module Endpoints {
     );
     const team_member_space_limits_excluded_users_remove_endpt = new Utils.Endpoint("team", "member_space_limits/excluded_users/remove",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2575,7 +3024,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2583,6 +3033,7 @@ module Endpoints {
     );
     const team_member_space_limits_get_custom_quota_endpt = new Utils.Endpoint("team", "member_space_limits/get_custom_quota",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2592,7 +3043,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2600,6 +3052,7 @@ module Endpoints {
     );
     const team_member_space_limits_remove_custom_quota_endpt = new Utils.Endpoint("team", "member_space_limits/remove_custom_quota",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2609,7 +3062,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2617,6 +3071,7 @@ module Endpoints {
     );
     const team_member_space_limits_set_custom_quota_endpt = new Utils.Endpoint("team", "member_space_limits/set_custom_quota",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "True",
@@ -2626,7 +3081,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2634,6 +3090,7 @@ module Endpoints {
     );
     const team_members_add_endpt = new Utils.Endpoint("team", "members/add",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2644,14 +3101,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), null /* not implemented yet */, null /* not implemented yet */, null /* not implemented yet */, new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]), new Utils.BoolParam("is_directory_restricted", true)])),
+        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]), new Utils.BoolParam("is_directory_restricted", true)])),
         new Utils.BoolParam("force_async", true)
     );
     const team_members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2662,6 +3121,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2669,6 +3129,7 @@ module Endpoints {
     );
     const team_members_get_info_endpt = new Utils.Endpoint("team", "members/get_info",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2679,6 +3140,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2686,6 +3148,7 @@ module Endpoints {
     );
     const team_members_list_endpt = new Utils.Endpoint("team", "members/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2696,6 +3159,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2704,6 +3168,7 @@ module Endpoints {
     );
     const team_members_list_continue_endpt = new Utils.Endpoint("team", "members/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2714,6 +3179,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2721,6 +3187,7 @@ module Endpoints {
     );
     const team_members_move_former_member_files_endpt = new Utils.Endpoint("team", "members/move_former_member_files",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2731,6 +3198,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2740,6 +3208,7 @@ module Endpoints {
     );
     const team_members_move_former_member_files_job_status_check_endpt = new Utils.Endpoint("team", "members/move_former_member_files/job_status/check",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2750,6 +3219,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2757,6 +3227,7 @@ module Endpoints {
     );
     const team_members_recover_endpt = new Utils.Endpoint("team", "members/recover",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2766,7 +3237,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2774,6 +3246,7 @@ module Endpoints {
     );
     const team_members_remove_endpt = new Utils.Endpoint("team", "members/remove",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2784,6 +3257,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2795,6 +3269,7 @@ module Endpoints {
     );
     const team_members_remove_job_status_get_endpt = new Utils.Endpoint("team", "members/remove/job_status/get",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2805,6 +3280,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2812,6 +3288,7 @@ module Endpoints {
     );
     const team_members_send_welcome_email_endpt = new Utils.Endpoint("team", "members/send_welcome_email",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2821,7 +3298,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "commit-platform",
+            owner: "try-commit-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2829,6 +3307,7 @@ module Endpoints {
     );
     const team_members_set_admin_permissions_endpt = new Utils.Endpoint("team", "members/set_admin_permissions",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2839,6 +3318,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2847,6 +3327,7 @@ module Endpoints {
     );
     const team_members_set_profile_endpt = new Utils.Endpoint("team", "members/set_profile",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2857,19 +3338,21 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "identity",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
-        null /* not implemented yet */,
-        null /* not implemented yet */,
-        null /* not implemented yet */,
-        null /* not implemented yet */,
+        new Utils.TextParam("new_email", true),
+        new Utils.TextParam("new_external_id", true),
+        new Utils.TextParam("new_given_name", true),
+        new Utils.TextParam("new_surname", true),
         new Utils.TextParam("new_persistent_id", true),
         new Utils.BoolParam("new_is_directory_restricted", true)
     );
     const team_members_suspend_endpt = new Utils.Endpoint("team", "members/suspend",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2880,6 +3363,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2888,6 +3372,7 @@ module Endpoints {
     );
     const team_members_unsuspend_endpt = new Utils.Endpoint("team", "members/unsuspend",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2898,6 +3383,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2905,6 +3391,7 @@ module Endpoints {
     );
     const team_namespaces_list_endpt = new Utils.Endpoint("team", "namespaces/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2914,7 +3401,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2922,6 +3410,7 @@ module Endpoints {
     );
     const team_namespaces_list_continue_endpt = new Utils.Endpoint("team", "namespaces/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2931,7 +3420,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -2939,6 +3429,7 @@ module Endpoints {
     );
     const team_reports_get_activity_endpt = new Utils.Endpoint("team", "reports/get_activity",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2949,14 +3440,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "audit-log-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        null /* not implemented yet */,
-        null /* not implemented yet */
+        new Utils.TextParam("start_date", true),
+        new Utils.TextParam("end_date", true)
     );
     const team_reports_get_devices_endpt = new Utils.Endpoint("team", "reports/get_devices",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2966,15 +3459,17 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "tools-and-insights",
+            owner: "super-admin-and-deployment",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        null /* not implemented yet */,
-        null /* not implemented yet */
+        new Utils.TextParam("start_date", true),
+        new Utils.TextParam("end_date", true)
     );
     const team_reports_get_membership_endpt = new Utils.Endpoint("team", "reports/get_membership",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -2985,14 +3480,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "team-lifecycle",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        null /* not implemented yet */,
-        null /* not implemented yet */
+        new Utils.TextParam("start_date", true),
+        new Utils.TextParam("end_date", true)
     );
     const team_reports_get_storage_endpt = new Utils.Endpoint("team", "reports/get_storage",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3003,14 +3500,16 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "identity",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        null /* not implemented yet */,
-        null /* not implemented yet */
+        new Utils.TextParam("start_date", true),
+        new Utils.TextParam("end_date", true)
     );
     const team_team_folder_activate_endpt = new Utils.Endpoint("team", "team_folder/activate",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3020,7 +3519,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3028,6 +3528,7 @@ module Endpoints {
     );
     const team_team_folder_archive_endpt = new Utils.Endpoint("team", "team_folder/archive",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3037,7 +3538,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3046,6 +3548,7 @@ module Endpoints {
     );
     const team_team_folder_archive_check_endpt = new Utils.Endpoint("team", "team_folder/archive/check",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3055,7 +3558,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3063,6 +3567,7 @@ module Endpoints {
     );
     const team_team_folder_create_endpt = new Utils.Endpoint("team", "team_folder/create",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3072,7 +3577,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3081,6 +3587,7 @@ module Endpoints {
     );
     const team_team_folder_get_info_endpt = new Utils.Endpoint("team", "team_folder/get_info",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3090,14 +3597,16 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("team_folder_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */)
+        new Utils.ListParam("team_folder_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
     );
     const team_team_folder_list_endpt = new Utils.Endpoint("team", "team_folder/list",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3107,7 +3616,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3115,6 +3625,7 @@ module Endpoints {
     );
     const team_team_folder_list_continue_endpt = new Utils.Endpoint("team", "team_folder/list/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3124,7 +3635,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3132,6 +3644,7 @@ module Endpoints {
     );
     const team_team_folder_permanently_delete_endpt = new Utils.Endpoint("team", "team_folder/permanently_delete",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3141,7 +3654,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3149,6 +3663,7 @@ module Endpoints {
     );
     const team_team_folder_rename_endpt = new Utils.Endpoint("team", "team_folder/rename",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3158,7 +3673,8 @@ module Endpoints {
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3167,16 +3683,18 @@ module Endpoints {
     );
     const team_team_folder_update_sync_settings_endpt = new Utils.Endpoint("team", "team_folder/update_sync_settings",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
-            is_preview: "True",
+            is_preview: "False",
             select_admin_mode: "None",
             feature: "None",
             auth: "team",
             cluster: "meta-api",
             host: "api",
             allow_app_folder_app: "False",
-            owner: "company-dropbox-team",
+            owner: "shared-spaces",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3186,6 +3704,7 @@ module Endpoints {
     );
     const team_token_get_authenticated_admin_endpt = new Utils.Endpoint("team", "token/get_authenticated_admin",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3196,12 +3715,14 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
     );
     const team_log_get_events_endpt = new Utils.Endpoint("team_log", "get_events",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3212,16 +3733,18 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "audit-log-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
         new Utils.IntParam("limit", true),
-        null /* not implemented yet */,
-        new Utils.StructParam("time", true, [null /* not implemented yet */, null /* not implemented yet */]),
-        new Utils.UnionParam("category", true, [new Utils.VoidParam("apps"), new Utils.VoidParam("comments"), new Utils.VoidParam("devices"), new Utils.VoidParam("domains"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("reports"), new Utils.VoidParam("sharing"), new Utils.VoidParam("showcase"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa")])
+        new Utils.TextParam("account_id", true),
+        new Utils.StructParam("time", true, [new Utils.TextParam("start_time", true), new Utils.TextParam("end_time", true)]),
+        new Utils.UnionParam("category", true, [new Utils.VoidParam("apps"), new Utils.VoidParam("comments"), new Utils.VoidParam("devices"), new Utils.VoidParam("domains"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("reports"), new Utils.VoidParam("sharing"), new Utils.VoidParam("showcase"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa"), new Utils.VoidParam("trusted_teams")])
     );
     const team_log_get_events_continue_endpt = new Utils.Endpoint("team_log", "get_events/continue",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3232,6 +3755,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "False",
             owner: "audit-log-team",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3239,6 +3763,7 @@ module Endpoints {
     );
     const users_get_account_endpt = new Utils.Endpoint("users", "get_account",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3249,6 +3774,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
@@ -3256,6 +3782,7 @@ module Endpoints {
     );
     const users_get_account_batch_endpt = new Utils.Endpoint("users", "get_account_batch",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3266,13 +3793,15 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         },
-        new Utils.ListParam("account_ids", false, (index: string): Utils.Parameter => null /* not implemented yet */)
+        new Utils.ListParam("account_ids", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
     );
     const users_get_current_account_endpt = new Utils.Endpoint("users", "get_current_account",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3283,12 +3812,14 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "api-platform",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
     );
     const users_get_space_usage_endpt = new Utils.Endpoint("users", "get_space_usage",
         {
+            generated: "False",
             style: "rpc",
             api_group: "None",
             is_preview: "False",
@@ -3299,6 +3830,7 @@ module Endpoints {
             host: "api",
             allow_app_folder_app: "True",
             owner: "identity",
+            scope: "None",
             takes_path_root: "False",
             is_web_alpha: "False",
         }
@@ -3306,6 +3838,8 @@ module Endpoints {
 
     export const endpointList: Utils.Endpoint[] = [auth_token_from_oauth1_endpt,
                                                    auth_token_revoke_endpt,
+                                                   contacts_delete_manual_contacts_endpt,
+                                                   contacts_delete_manual_contacts_batch_endpt,
                                                    file_properties_properties_add_endpt,
                                                    file_properties_properties_overwrite_endpt,
                                                    file_properties_properties_remove_endpt,
@@ -3322,13 +3856,18 @@ module Endpoints {
                                                    file_properties_templates_remove_for_user_endpt,
                                                    file_properties_templates_update_for_team_endpt,
                                                    file_properties_templates_update_for_user_endpt,
+                                                   file_requests_count_endpt,
                                                    file_requests_create_endpt,
+                                                   file_requests_delete_endpt,
+                                                   file_requests_delete_all_closed_endpt,
                                                    file_requests_get_endpt,
+                                                   file_requests_list_v2_endpt,
                                                    file_requests_list_endpt,
+                                                   file_requests_list_continue_endpt,
                                                    file_requests_update_endpt,
                                                    files_copy_v2_endpt,
-                                                   files_copy_batch_endpt,
-                                                   files_copy_batch_check_endpt,
+                                                   files_copy_batch_v2_endpt,
+                                                   files_copy_batch_check_v2_endpt,
                                                    files_copy_reference_get_endpt,
                                                    files_copy_reference_save_endpt,
                                                    files_create_folder_v2_endpt,
@@ -3351,7 +3890,9 @@ module Endpoints {
                                                    files_list_folder_longpoll_endpt,
                                                    files_list_revisions_endpt,
                                                    files_move_v2_endpt,
+                                                   files_move_batch_v2_endpt,
                                                    files_move_batch_endpt,
+                                                   files_move_batch_check_v2_endpt,
                                                    files_move_batch_check_endpt,
                                                    files_permanently_delete_endpt,
                                                    files_restore_endpt,
