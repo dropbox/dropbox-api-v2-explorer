@@ -1,0 +1,294 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,600,700&subset=latin,latin-ext");
+
+body,
+input,
+table,
+textarea,
+select,
+button,
+.normal {
+    font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, sans-serif;
+    font-size: 12.5px;
+    color: #3D464D;
+    font-weight: normal;
+}
+
+input {
+    height: 28px;
+    border-radius: 3px;
+    box-shadow: 0px 3px 3px #eee;
+    border: 1px solid #bfbfbf;
+    color: #444;
+    padding: 4px;
+}
+
+input, select {
+    margin-right: 5px;
+}
+
+body {
+    background-color: #fff;
+    min-height: 100%;
+    margin: auto;
+    padding-top: 20px;
+    width: 1310px;
+}
+
+a, a * {
+    cursor: pointer;
+    outline: none;
+}
+
+a {
+    color: #2895F1;
+    text-decoration: none;
+}
+
+p, h1, h2, h3, h4, h5 {
+    margin: 0 0 1em 0;
+    line-height: 1.6em;
+}
+
+h1 {
+    font-size: 18pt;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+
+h2 {
+  padding-top: 3px;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  font-size: 10pt;
+}
+
+h3 {
+  padding: 0;
+  margin: 0;
+  font-size: 10pt;
+}
+
+h4 {
+  margin: 0 0 0.5em 0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+h5 {
+  margin: 0 0 0.5em 0;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+button {
+    margin-right: 5px;
+    border-radius: 3px;
+    padding: 4px 10px 4px;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: visible;
+    text-decoration: none;
+    background: #007ee5;
+    background: -o-linear-gradient(top, #168add 0%,#007ee5 100%);
+    background: -ms-linear-gradient(top, #168add 0%,#007ee5 100%);
+    background: -moz-linear-gradient(top, #168add 0%,#007ee5 100%);
+    background: -webkit-linear-gradient(top, #168add 0%,#007ee5 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #168add), color-stop(100%, #007ee5));
+    background: linear-gradient(to bottom, #168add 0%,#007ee5 100%);
+    border: 1px solid #0c6ebe;
+    color: white;
+}
+
+button:hover {
+    background: #007ee5;
+    background: -o-linear-gradient(top, #168eef 0%,#007ee5 100%);
+    background: -ms-linear-gradient(top, #168eef 0%,#007ee5 100%);
+    background: -moz-linear-gradient(top, #168eef 0%,#007ee5 100%);
+    background: -webkit-linear-gradient(top, #168eef 0%,#007ee5 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #168eef), color-stop(100%, #007ee5));
+    background: linear-gradient(to bottom, #168eef 0%,#007ee5 100%);
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+form {
+  padding: 0;
+  margin: 0;
+}
+
+label {
+  cursor: default;
+}
+
+noscript {
+  font-size: 13px;
+  font-weight: normal;
+}
+
+pre {
+    float: left;
+    border: 1px solid #D0D4D9;
+    border-radius: 3px;
+    white-space: pre-wrap;
+}
+
+#sidebar {
+    top:0;
+    bottom:0;
+    left:0;
+    width: 250px;
+    height: 1000px;
+    float: left;
+    overflow: hidden;
+    padding-right: 40px;
+    padding-bottom: 100px;
+}
+
+P.blocktext {
+    margin-left: auto;
+    margin-right: auto;
+    width: 125px;
+}
+
+#request-container, #response-container {
+    overflow: hidden;
+}
+
+#code-area{
+    margin-right: 10%;
+    margin-top: 0%;
+}
+
+
+#request-area, #response-area {
+    float: left;
+    width: 1000px;
+}
+
+#page-content {
+    padding-left: 240px;
+}
+
+#endpoint-list {
+    height: inherit;
+    overflow: hidden;
+
+    margin-left: 25px;
+    margin-top: 30px;
+}
+
+#endpoint-list:hover {
+    overflow-y: auto;
+}
+
+#endpoint-list li {
+    margin-top: 10px;
+    list-style: none;
+}
+
+#endpoint-list li:first-child {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.page-table {
+    width: 100%;
+}
+
+.page-table td {
+    vertical-align: top;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.page-table tr {
+    border-bottom: 1px solid #d3e9fb;
+}
+
+.page-table .label {
+    color: #8a8a8a;
+    text-align: left;
+    width: 150px;
+}
+
+.page-table .detail-text {
+    line-height: 19px;
+    color: #8a8a8a;
+    margin: 0 2px;
+    max-width: 600px;
+}
+
+.page-table .text {
+    padding: 5px 2px;
+}
+
+.page-table .align-right {
+    display: inline-block;
+    float: right;
+}
+
+#token-input {
+    width: 460px;
+}
+
+#parameter-list {
+    margin-bottom: 10px;
+}
+
+#parameter-list tr {
+    border-bottom: solid 1px #e5e5e5;
+}
+
+#parameter-list td {
+    vertical-align: middle;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#parameter-list .parameter-input {
+    height: 22px;
+}
+
+#parameter-list .parameter-input[type="file"] {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+#parameter-list table tr:last-child {
+    border-bottom: 0;
+}
+
+#parameter-list .list-param-actions button {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#parameter-list .struct-param-actions button {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#auth-switch {
+    float: right;
+    padding-right: 20px;
+    font-size: 13px;
+}
+
+.header-name {
+    height: 26px
+}
+
+.header-value {
+    height: 26px
+}
