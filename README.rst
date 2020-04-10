@@ -15,7 +15,7 @@ Contributions to this SDK are always welcome and encouraged!
 See the `CONTRIBUTING <http://github.com/dropbox/dropbox-api-v2-explorer/blob/master/CONTRIBUTING.rst>`_ doc for more information
 
 
-Testing	License
--------	-------
+License
+-------
 
 MIT - See the `LICENSE <http://github.com/dropbox/dropbox-api-v2-explorer/blob/master/LICENSE>`_ for more information
