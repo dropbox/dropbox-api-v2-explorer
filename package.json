@@ -6,24 +6,20 @@
     "watch": "gulp watch"
   },
   "devDependencies": {
-    "browserify": "16.2.3",
-    "browserify-shim": "3.8.10",
-    "gulp": "3.9.1",
-    "gulp-connect": "5.6.1",
-    "gulp-sourcemaps": "1.5.2",
-    "tsify": "4.0.0",
-    "typings": "2.1.1",
-    "typescript": "1.6.2",
-    "vinyl-buffer": "1.0.0",
-    "vinyl-source-stream": "1.1.0"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {
-    "react": "global:React",
-    "highlight.js": "global:hljs"
+    "@types/highlight.js": "^9.12.3",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "*",
+    "browserify": "^16.5.1",
+    "gulp": "^4.0.2",
+    "gulp-connect": "^5.7.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "highlight.js": "^9.18.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "tsify": "^4.0.1",
+    "typescript": "^3.8.3",
+    "vinyl": "^2.2.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
   }
 }

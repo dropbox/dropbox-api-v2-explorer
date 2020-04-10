@@ -8,13 +8,12 @@ var connect = require('gulp-connect');
 var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
 
-var tsPath = '+(src|typings)/**/*.ts';
+var tsPath = '+(src)/**/*.ts';
 var staticPath = 'src/**/*.+(html|css|jpeg)';
 
 gulp.task('build-ts', function() {
   var b = browserify({debug: true})
     .add('src/main.ts')
-    .add('typings/index.d.ts')
     .plugin('tsify', {
       typescript: require('typescript'),
         // Use our version of typescript instead of the one specified by tsify's own dependencies.
@@ -39,14 +38,14 @@ gulp.task('build-static', function() {
     .pipe(connect.reload());
 })
 
-gulp.task('default', ['build-ts', 'build-static'])
+gulp.task('default', gulp.series('build-ts', 'build-static'))
 
-gulp.task('watch', ['build-ts', 'build-static'], function() {
+gulp.task('watch', gulp.series('build-ts', 'build-static', function() {
   connect.server({
     root: 'build',
     port: 8042,
     livereload: true,
   });
-  gulp.watch(tsPath, ['build-ts']);
-  gulp.watch(staticPath, ['build-static']);
-});
+  gulp.watch(tsPath, gulp.series('build-ts'));
+  gulp.watch(staticPath, gulp.series('build-static'));
+}));

@@ -10,13 +10,14 @@
    - Functions to generate the headers for a given API call
  */
 
-import react = require('react');
-import hljs = require('highlight.js');
-import cookie = require('./cookie');
+import * as react from 'react';
+import * as reactDom from 'react-dom';
+import * as hljs from 'highlight.js';
+import * as cookie from './cookie';
 
-type MappingFn = (key: string, value: any, i: number) => react.ClassicElement<{}>;
+type MappingFn = (key: string, value: any, i: number) => react.DetailedReactHTMLElement<any, any>;
 
-const d = react.DOM;
+const ce = react.createElement;
 
 const allowedHeaders = [
     'Dropbox-Api-Select-User',
@@ -34,9 +35,9 @@ export class Dict {
        These are used, for example, to convert a dict of HTTP headers into its representation
        in code view.
      */
-    static _map = (dc: Dict, f: MappingFn): react.ClassicElement<{}>[] =>
+    static _map = (dc: Dict, f: MappingFn): react.DetailedReactHTMLElement<any, any>[] =>
         Object.keys(dc).map((key: string, i: number) => f(key, dc[key], i));
-    static map = (dc: Dict, f: (key: string, value: any) => any): react.ClassicElement<{}>[] =>
+    static map = (dc: Dict, f: (key: string, value: any) => any): react.DetailedReactHTMLElement<any, any>[] =>
         Object.keys(dc).map((key: string) => f(key, dc[key]));
 }
 
@@ -166,7 +167,7 @@ export class Header {
         this.value = '';
     }
 
-    asReact(onChangeHandler: (header: Header, removed: boolean)=> void): react.HTMLElement {
+    asReact(onChangeHandler: (header: Header, removed: boolean)=> void): react.DetailedReactHTMLElement<any, any> {
         var updateName = (event: react.FormEvent): void => {
             this.name = (<HTMLInputElement>event.target).value;
             onChangeHandler(this, false);
@@ -177,15 +178,15 @@ export class Header {
             onChangeHandler(this, false);
         };
 
-        return d.tr(null,
-            d.td(null,
-                d.select({ value: this.name, onChange: updateName, className: 'header-name'},
-                    allowedHeaders.map((name: string) => d.option({ key: name, value: name }, name)
+        return ce('tr', null,
+            ce('td', null,
+                ce('select', { value: this.name, onChange: updateName, className: 'header-name'},
+                    allowedHeaders.map((name: string) => ce('option', { key: name, value: name }, name)
                     )
                 )
             ),
-            d.td(null,
-                d.input({
+            ce('td', null,
+                ce('input', {
                     type:         'text',
                     className:    'header-value',
                     onChange:     updateValue,
@@ -193,8 +194,8 @@ export class Header {
                     value:       this.value
                 })
             ),
-            d.td(null,
-                d.button({onClick: () => onChangeHandler(this, true)}, 'Remove')
+            ce('td', null,
+                ce('button', {onClick: () => onChangeHandler(this, true)}, 'Remove')
             )
         );
     }
@@ -211,7 +212,7 @@ export class Parameter {
         this.optional = optional;
     }
 
-    getNameColumn = (): react.HTMLElement => {
+    getNameColumn = (): react.DetailedReactHTMLElement<any, any> => {
         if (!isNaN(+this.name)) {
             // Don't show name column for list parameter item.
             return null;
@@ -220,7 +221,7 @@ export class Parameter {
         let displayName: string = (this.name !== '__file__')? this.name : 'File to upload';
             if (this.optional) displayName += ' (optional)';
         let nameArgs: Dict = this.optional? {'style': {'color': '#999'}} : {};
-        return d.td(nameArgs, displayName);
+        return ce('td', nameArgs, displayName);
     };
 
     defaultValue = (): any => {
@@ -235,10 +236,10 @@ export class Parameter {
     /* Renders the parameter's input field, using another method which depends on the
        parameter's subclass.
      */
-    asReact(props: Dict, key: string): react.HTMLElement {
-        return d.tr({key: key},
+    asReact(props: Dict, key: string): react.DetailedReactHTMLElement<any, any> {
+        return ce('tr', {key: key},
             this.getNameColumn(),
-            d.td(null,
+            ce('td', null,
                 this.innerReact(props)
             )
         );
@@ -259,19 +260,22 @@ export class Parameter {
 
 export const parameterInput = (props: Dict) => {
     props['className'] = 'parameter-input';
-    return d.input(props);
+    return react.createElement(
+        'input',
+        props
+    );
 };
 
 // A parameter whose value is a string.
 export class TextParam extends Parameter {
     constructor(name: string, optional: boolean) {super(name, optional); }
-    innerReact = (props: Dict): react.HTMLElement => parameterInput(props);
+    innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => parameterInput(props);
 }
 
 // A parameter whose value is an integer.
 export class IntParam extends Parameter {
     constructor(name: string, optional: boolean) { super(name, optional);}
-    innerReact = (props: Dict): react.HTMLElement => parameterInput(props);
+    innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => parameterInput(props);
     getValue = (s: string): number => (s === '')? this.defaultValue() : parseInt(s, 10);
     defaultValueRequired = (): number => 0;
 }
@@ -281,7 +285,7 @@ export class IntParam extends Parameter {
  */
 export class FloatParam extends Parameter {
     constructor(name: string, optional: boolean) { super(name, optional); }
-    innerReact = (props: Dict): react.HTMLElement => parameterInput(props);
+    innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => parameterInput(props);
     getValue = (s: string): number => (s === '')? this.defaultValue() : parseFloat(s);
     defaultValueRequired = (): number => 0;
 }
@@ -315,13 +319,13 @@ export class SelectorParam extends Parameter {
     defaultValueRequired = (): any => this.choices[0];
     getValue = (s: string): any => s;
 
-    innerReact = (props: Dict): react.HTMLElement => {
+    innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => {
         if (this.selected != null) {
             props['value'] = this.selected;
         }
 
-        return d.select(props,
-            this.choices.map((choice:string) => d.option({
+        return ce('select', props,
+            this.choices.map((choice:string) => ce('option', {
                 key: choice,
                 value: choice
             }, choice))
@@ -351,7 +355,7 @@ export class FileParam extends Parameter {
         super('__file__', false);
     }
 
-    innerReact = (props: Dict): react.HTMLElement => {
+    innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => {
         props['type'] = 'file';
         return parameterInput(props);
     }
@@ -585,12 +589,12 @@ const isJson = (s: string): boolean => {
 export const prettyJson = (s: string): string => JSON.stringify(JSON.parse(s), null, 2);
 
 // common message for error handling
-export const errorHandler = (stat: number, response: string): react.HTMLElement => {
-    if (isJson(response)) return d.code(null, prettyJson(response));
-    else return d.span(null,
-        d.h4(null, "Error: " + stat),
-        d.code(null, response)
-    );
+export const errorHandler = (stat: number, response: string): react.DetailedReactHTMLElement<any, any> => {
+    if (isJson(response)) return ce('code', {className: null, children: null}, prettyJson(response));
+    else return react.createElement('span', null, [
+        react.createElement('h4', null, "Error: " + stat),
+        react.createElement('code', null, response)
+    ]);
 };
 
     
@@ -613,13 +617,13 @@ export class Highlight extends react.Component<HltProps, {}> {
     componentDidUpdate = () => this.highlightCode();
 
     highlightCode = () => [].forEach.call(
-        react.findDOMNode(this).querySelectorAll('pre code'),
+        (<Element>reactDom.findDOMNode(this)).querySelectorAll('pre code'),
             (node: Node) => hljs.highlightBlock(node)
     );
 
     public render() {
-        return d.pre({className: this.props.className},
-            d.code({className: this.props.className},
+        return react.createElement('pre', {className: this.props.className},
+            react.createElement('code', {className: this.props.className},
             this.props.children)
         );
     }

@@ -5,14 +5,14 @@
    the property types of the class, and then we declare the class itself.
  */
 
-import react = require('react');
-
-import endpoints = require('./endpoints');
-import utils = require('./utils');
-import apicalls = require('./apicalls');
-import codeview = require('./codeview');
-import ReactElement = __React.ReactElement;
-import HTMLAttributes = __React.HTMLAttributes;
+import * as react from 'react';
+import * as reactDom from 'react-dom';
+import * as endpoints from './endpoints';
+import * as utils from './utils';
+import * as apicalls from './apicalls';
+import * as codeview from './codeview';
+import ReactElement = react.ReactElement;
+import HTMLAttributes = react.HTMLAttributes;
 import {SelectorParam} from "./utils";
 import {Parameter} from "./utils";
 import {VoidParam} from "./utils";
@@ -33,16 +33,15 @@ interface FileElement extends HTMLElement {
 }
 
 const ce = react.createElement;
-const  d = react.DOM;
 
 const developerPage = 'https://www.dropbox.com/developers';
 const displayNone = {style: {display: 'none'}};
 
 /* Element for text field in page table.
  */
-const tableText = (text: string): HTMLAttributes => {
-    return d.td({className: 'label'},
-        d.div({className: 'text'}, text)
+const tableText = (text: string): react.DetailedReactHTMLElement<any, any> => {
+    return ce('td', {className: 'label'},
+        ce('div', {className: 'text'}, text)
     );
 };
 
@@ -76,24 +75,23 @@ permission type to associated client id.
 class AppPermissionInputProps {
     handler: (e: react.FormEvent) => void;
 }
-class AppPermissionInput extends react.Component<AppPermissionInputProps, void> {
+class AppPermissionInput extends react.Component<AppPermissionInputProps, any> {
     constructor(props: AppPermissionInputProps) { super(props); }
 
     public render() {
-        var options: react.HTMLElement[] = [];
+        var options: react.DetailedReactHTMLElement<any, any>[] = [];
         var clientId = getClientId();
 
         for (let id in clientIdMap) {
-            var value = clientIdMap[id];
-            var selected = id == clientId;
-
-            options.push(d.option({selected: selected}, value))
+            var value : string = clientIdMap[id];
+            var selected : boolean = id == clientId;
+            options.push(ce('option', {selected: selected, className: null, children: null}, value))
         }
 
-        return d.tr(null,
+        return ce('tr', null,
             tableText('App Permission'),
-            d.td(null,
-                d.select({style: {'margin-top': '5px'}, onChange: this.props.handler}, options)
+            ce('td', null,
+                ce('select', {style: {'margin-top': '5px'}, onChange: this.props.handler}, options)
             )
         )
     }
@@ -107,7 +105,7 @@ interface TokenInputProps {
     toggleShow:   () => void,
     callback:     (value: string) => void
 }
-class TokenInput extends react.Component<TokenInputProps, void> {
+class TokenInput extends react.Component<TokenInputProps, any> {
     constructor(props: TokenInputProps) { super(props); }
 
     handleEdit = (event: react.FormEvent): void => {
@@ -136,19 +134,19 @@ class TokenInput extends react.Component<TokenInputProps, void> {
     };
 
     public render() {
-        return d.tr(null,
+        return ce('tr', null,
             tableText('Access Token'),
-            d.td(null,
-                d.input({
+            ce('td', null,
+                ce('input', {
                     type:         this.props.showToken? 'text' : 'password',
                     id:           'token-input',
                     defaultValue: utils.getToken(),
                     onChange:     this.handleEdit,
                     placeholder: 'If you don\'t have an access token, click the "Get Token" button to obtain one.'
                 }),
-                d.div({className: 'align-right'},
-                    d.button({onClick: this.retrieveAuth}, 'Get Token'),
-                    d.button({onClick: this.props.toggleShow},
+                ce('div', {className: 'align-right'},
+                    ce('button', {onClick: this.retrieveAuth}, 'Get Token'),
+                    ce('button', {onClick: this.props.toggleShow},
                         this.props.showToken? 'Hide Token' : 'Show Token'
                     )
                 )
@@ -177,10 +175,10 @@ class ParentValueHandler extends ValueHandler {
     // Create a child value handler based on parameter type.
     getChildHandler = (param: Parameter): ValueHandler => {
         if (param instanceof FileParam) {
-            return new FileValueHandler(<FileParam>param, <RootValueHandler>this);
+            return new FileValueHandler(<FileParam>param, <RootValueHandler><unknown>this);
         }
         else if (param instanceof RootUnionParam) {
-            return new RootUnionValueHandler(<RootUnionParam>param, <RootValueHandler>this);
+            return new RootUnionValueHandler(<RootUnionParam>param, <RootValueHandler><unknown>this);
         }
         else if (param instanceof UnionParam) {
             return new UnionValueHandler(<UnionParam>param, this);
@@ -450,7 +448,7 @@ class ParamInput<P> extends react.Component<P, any>{
         super(props);
     }
 
-    public render(): react.ReactElement<any> {
+    public render(): any {
         throw new Error('Not implemented.')
     }
 }
@@ -520,18 +518,18 @@ class StructParamInput extends ParamInput<StructParamInputProps> {
     };
 
     public render() {
-        return d.tr(null,
+        return ce('tr', null,
             this.props.param.getNameColumn(),
-            d.td(null,
-                d.table(null,
-                    d.tbody(null, this.renderItems())
+            ce('td', null,
+                ce('table', null,
+                    ce('tbody', null, this.renderItems())
                 )
             )
         )
     }
 
-    renderItems = (): react.ReactElement<any>[] => {
-        let ret: react.ReactElement<any>[] = [];
+    renderItems = (): react.DetailedReactHTMLElement<any, any>[] => {
+        let ret: react.DetailedReactHTMLElement<any, any>[] = [];
 
         if (this.state.display || !this.props.param.optional) {
             for (let p of this.props.param.fields) {
@@ -547,11 +545,11 @@ class StructParamInput extends ParamInput<StructParamInputProps> {
 
         if (this.props.param.optional) {
             let button = this.state.display
-                ? d.button({onClick: this.reset}, 'Clear')
-                : d.button({onClick: this.add}, 'Add');
+                ? ce('button', {onClick: this.reset}, 'Clear')
+                : ce('button', {onClick: this.add}, 'Add');
 
-            ret.push(d.tr({className: 'struct-param-actions'},
-                d.td(null, button)
+            ret.push(ce('tr', {className: 'struct-param-actions'},
+                ce('td', null, button)
             ));
         }
 
@@ -592,7 +590,7 @@ class UnionParamInput extends ParamInput<UnionParamInputProps> {
         return new StructParam(this.props.param.name, false, fields);
     };
 
-    public render(): react.ReactElement<any> {
+    public render() {
         let selectParamProps: SingleParamInputProps = {
             key:  this.props.key + '_selector',
             handler: this.props.handler.getTagHandler(),
@@ -611,11 +609,11 @@ class UnionParamInput extends ParamInput<UnionParamInputProps> {
             param:    param
         });
 
-        return d.tr(null,
+        return ce('tr', null,
             this.props.param.getNameColumn(),
-            d.td(null,
-                d.table(null,
-                    d.tbody(null, [ce(SingleParamInput, selectParamProps)].concat(structParam.renderItems()))
+            ce('td', null,
+                ce('table', null,
+                    ce('tbody', null, [<any>ce(SingleParamInput, selectParamProps)].concat(structParam.renderItems()))
                 )
             )
         )
@@ -645,21 +643,21 @@ class ListParamInput extends ParamInput<ListParamInputProps> {
     };
 
     public render() {
-        return d.tr(null,
+        return ce('tr', null,
             this.props.param.getNameColumn(),
-            d.td(null,
-                d.table(null,
-                    d.tbody(null, this.renderItems())
+            ce('td', null,
+                ce('table', null,
+                    ce('tbody', null, this.renderItems())
                 )
            )
         )
     }
 
-    renderItems = (): react.ReactElement<any>[] => {
-        let ret: react.ReactElement<any>[] = [];
+    renderItems = (): react.DetailedReactHTMLElement<any, any>[] => {
+        let ret: react.DetailedReactHTMLElement<any, any>[] = [];
         for (let i = 0; i < this.state.count; i++) {
             let param: Parameter = this.props.param.createItem(i);
-            let item: react.ReactElement<any> = ParamClassChooser.getParamInput(param, {
+            let item: react.DetailedReactHTMLElement<any, any> = ParamClassChooser.getParamInput(param, {
                 key: this.props.key + '_' + this.props.param.name + '_' + i.toString(),
                 handler: this.props.handler.getChildHandler(param),
                 param: param
@@ -668,10 +666,10 @@ class ListParamInput extends ParamInput<ListParamInputProps> {
             ret.push(item);
         }
 
-        ret.push(d.tr({className: 'list-param-actions'},
-            d.td(null,
-                d.button({onClick: this.addItem}, 'Add'),
-                d.button({onClick: this.reset}, 'Clear')
+        ret.push(ce('tr', {className: 'list-param-actions'},
+            ce('td', null,
+                ce('button', {onClick: this.addItem}, 'Add'),
+                ce('button', {onClick: this.reset}, 'Clear')
             )
         ));
 
@@ -681,7 +679,7 @@ class ListParamInput extends ParamInput<ListParamInputProps> {
 
 // Picks the correct React class for a parameter, depending on whether it's a struct.
 class ParamClassChooser {
-    public static getParamInput(param: Parameter, props: any): react.ReactElement<any> {
+    public static getParamInput(param: Parameter, props: any): any {
         if (param instanceof utils.UnionParam) {
             return ce(UnionParamInput, <UnionParamInputProps>props);
         }
@@ -718,9 +716,9 @@ class CodeArea extends react.Component<CodeAreaProps, any> {
     };
 
     public render() {
-        return d.span({id: 'code-area'},
-            d.p(null, 'View request as ', codeview.getSelector(this.changeFormat)),
-            d.span(null, codeview.render(this.state.formatter, this.props.ept, this.props.token,
+        return ce('span', {id: 'code-area'},
+            ce('p', null, 'View request as ', codeview.getSelector(this.changeFormat)),
+            ce('span', null, codeview.render(this.state.formatter, this.props.ept, this.props.token,
                                          this.props.paramVals, this.props.headerVals, this.props.__file__))
         );
     }
@@ -829,7 +827,7 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
         let errMsg: any = [];
 
         if (this.state.errMsg != null) {
-            errMsg = [d.span({style: {color: 'red'}}, this.state.errMsg)];
+            errMsg = [ce('span', {style: {color: 'red'}}, this.state.errMsg)];
         }
 
         var name = this.props.currEpt.name.replace('/', '-');
@@ -837,9 +835,9 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
         var handler = new RootValueHandler(this.state.paramVals, this.state.fileVals, this.updateParamValues);
         var headerHandler = new RequestHeaderRootHandler(this.state.headerVals, this.updateHeaderValues);
 
-        return d.span({id: 'request-area'},
-            d.table({className: 'page-table'},
-                d.tbody(null,
+        return ce('span', {id: 'request-area'},
+            ce('table', {className: 'page-table'},
+                ce('tbody', null,
                     utils.getAuthType() == utils.AuthType.Team
                         ? ce(AppPermissionInput, {handler: this.updateClientId})
                         : null,
@@ -848,16 +846,16 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                         showToken:    this.state.showToken,
                         callback:     this.updateTokenValue
                     }),
-                    d.tr(null,
+                    ce('tr', null,
                         tableText('Request'),
-                        d.td(null,
-                            d.div({className: 'align-right'},
-                                d.a({href: documentation},
+                        ce('td', null,
+                            ce('div', {className: 'align-right'},
+                                ce('a', {href: documentation},
                                     'Documentation'
                                 )
                             ),
-                            d.table({id: 'parameter-list'},
-                                d.tbody(null,
+                            ce('table', {id: 'parameter-list'},
+                                ce('body', null,
                                     this.props.currEpt.params.map((param: Parameter) =>
                                         ParamClassChooser.getParamInput(param, {
                                             key:      this.props.currEpt.name + param.name,
@@ -865,11 +863,11 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                                             param:    param
                                     })))
                             ),
-                            d.div(null,
-                                d.button({onClick: this.showOrHideHeaders}, this.state.showHeaders ? 'Hide Headers' : 'Show Headers'),
-                                d.button({onClick: this.showOrHideCode}, this.state.showCode ? 'Hide Code' : 'Show Code'),
-                                d.button({onClick: this.submit, disabled: this.props.inProgress}, 'Submit Call'),
-                                d.img({
+                            ce('div', null,
+                                ce('button', {onClick: this.showOrHideHeaders}, this.state.showHeaders ? 'Hide Headers' : 'Show Headers'),
+                                ce('button', {onClick: this.showOrHideCode}, this.state.showCode ? 'Hide Code' : 'Show Code'),
+                                ce('button', {onClick: this.submit, disabled: this.props.inProgress}, 'Submit Call'),
+                                ce('img', {
                                     src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
                                     hidden: !this.props.inProgress,
                                     style: {position: 'relative', top: '2px', left: '10px'}
@@ -878,18 +876,18 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                             )
                         )
                     ),
-                    d.tr(this.state.showHeaders ? null : displayNone,
+                    ce('tr', this.state.showHeaders ? null : displayNone,
                         tableText('Headers'),
-                        d.td(null,
-                            d.div({id: 'request-headers'},
+                        ce('td', null,
+                            ce('div', {id: 'request-headers'},
                                 ce(RequestHeaderArea, { handler: headerHandler })
                             )
                         )
                     ),
-                    d.tr(this.state.showCode ? null : displayNone,
+                    ce('tr', this.state.showCode ? null : displayNone,
                         tableText('Code'),
-                        d.td(null,
-                            d.div({id: 'request-container'},
+                        ce('td', null,
+                            ce('div', {id: 'request-container'},
                                 ce(CodeArea, {
                                     ept:        this.props.currEpt,
                                     paramVals:  this.state.paramVals,
@@ -918,10 +916,10 @@ class RequestHeaderArea extends react.Component<RequestHeaderAreaProps, any> {
     public render() {
         var handler = this.props.handler;
 
-        return d.span({id: 'request-header-area'},
-            d.div(null, d.button({onClick: handler.add}, 'Add Header')),
-            d.table(null,
-                d.tbody(null,
+        return ce('span', {id: 'request-header-area'},
+            ce('div', null, ce('button', {onClick: handler.add}, 'Add Header')),
+            ce('table', null,
+                ce('tbody', null,
                     handler.getHeaders().map(
                         (header: Header) => ce(RequestHeaderInput, {
                             header: header,
@@ -1006,14 +1004,14 @@ interface EndpointChoiceProps {
     handleClick: (ept: Endpoint) => void;
     isSelected:  boolean
 }
-class EndpointChoice extends react.Component<EndpointChoiceProps, void> {
+class EndpointChoice extends react.Component<EndpointChoiceProps, any> {
     constructor(props: EndpointChoiceProps) { super(props); }
     onClick = () => this.props.handleClick(this.props.ept);
 
     public render() {
         return (this.props.isSelected)?
-            d.li(null, d.b(null, this.props.ept.name), d.br(null)) :
-            d.li(null, d.a({onClick: this.onClick}, this.props.ept.name), d.br(null)
+            ce('li', null, ce('b', null, this.props.ept.name), ce('br', null)) :
+            ce('li', null, ce('a', {onClick: this.onClick}, this.props.ept.name), ce('br', null)
         );
     }
 }
@@ -1025,7 +1023,7 @@ interface EndpointSelectorProps {
     eptChanged: (ept: Endpoint) => void;
     currEpt: Endpoint
 }
-class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
+class EndpointSelector extends react.Component<EndpointSelectorProps, any> {
     constructor(props: EndpointSelectorProps) { super(props); }
 
     filter = (ept: Endpoint): boolean => {
@@ -1065,20 +1063,20 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
             }
         });
 
-        return d.div({'id': 'sidebar'},
-            d.p({style: {marginLeft: '35px', marginTop: '12px'}},
-                d.a({onClick: () => window.location.href = developerPage},
-                    d.img({
+        return ce('div', {'id': 'sidebar'},
+            ce('p', {style: {marginLeft: '35px', marginTop: '12px'}},
+                ce('a', {onClick: () => window.location.href = developerPage},
+                    ce('img', {
                         src:       'https://cfl.dropboxstatic.com/static/images/logo_catalog/blue_dropbox_glyph_m1-vflZvZxbS.png',
                         width:     36,
                         className: 'home-icon'
                     })
                 )
             ),
-            d.div({id: 'endpoint-list'},
+            ce('div', {id: 'endpoint-list'},
                 namespaces.sort().map((ns: string) =>
-                    d.div(null,
-                        d.li(null, ns),
+                    ce('div', null,
+                        ce('li', null, ns),
                         groups[ns].map((ept: Endpoint) =>
                             ce(EndpointChoice, {
                                 key:         ept.name,
@@ -1100,7 +1098,7 @@ class EndpointSelector extends react.Component<EndpointSelectorProps, void> {
 interface ResponseAreaProps {
     hide: boolean;
     responseText: string;
-    downloadButton: react.HTMLElement;
+    downloadButton: any;
 }
 class ResponseArea extends react.Component<ResponseAreaProps, any> {
     constructor(props: ResponseAreaProps) {
@@ -1108,16 +1106,16 @@ class ResponseArea extends react.Component<ResponseAreaProps, any> {
     }
 
     public render() {
-        return d.span({id: 'response-area'},
-            d.table({className: 'page-table'},
-                d.tbody(this.props.hide ? displayNone : null,
-                    d.tr(null,
+        return ce('span', {id: 'response-area'},
+            ce('table', {className: 'page-table'},
+                ce('tbody', this.props.hide ? displayNone : null,
+                    ce('tr', null,
                         tableText('Response'),
-                        d.td(null,
-                            d.div({id: 'response-container'},
-                                ce(utils.Highlight, {className: 'json'}, this.props.responseText)
+                        ce('td', null,
+                            ce('div', {id: 'response-container'},
+                                ce(utils.Highlight, {className: 'json', children: null}, this.props.responseText)
                             ),
-                            d.div(null, this.props.downloadButton)
+                            ce('div', null, this.props.downloadButton)
                         )
                     )
                 )
@@ -1162,16 +1160,16 @@ class APIExplorer extends react.Component<APIExplorerProps, any> {
 
     public render() {
         // This button pops up only on download
-        const downloadButton: react.HTMLElement = (this.state.downloadURL !== '')?
-            d.a({
+        const downloadButton = (this.state.downloadURL !== '')?
+            ce('a', {
                 href:     this.state.downloadURL,
                 download: this.state.downloadFilename
-            }, d.button(null, 'Download ' + this.state.downloadFilename)) :
+            }, ce('button', null, 'Download ' + this.state.downloadFilename)) :
             null;
 
         var props: MainPageProps = {
             currEpt:  this.state.ept,
-            header:   d.span(null, 'Dropbox API Explorer • ' + this.state.ept.name),
+            header:   ce('span', null, 'Dropbox API Explorer • ' + this.state.ept.name),
             messages: [
                 ce(RequestArea, {
                     currEpt:    this.state.ept,
@@ -1198,26 +1196,26 @@ interface MainPageProps {
     header:   react.ReactElement<any>;
     messages: react.ReactElement<any>[];
 }
-class MainPage extends react.Component<MainPageProps, void> {
+class MainPage extends react.Component<MainPageProps, any> {
     constructor(props: MainPageProps) { super(props); }
 
-    getAuthSwitch = (): react.HTMLElement => {
+    getAuthSwitch = (): react.DetailedReactHTMLElement<any, any> => {
         if (utils.getAuthType() == utils.AuthType.User) {
-            return d.a({id: 'auth-switch', href: utils.currentURL() + 'team/' }, 'Switch to Business endpoints');
+            return ce('a', {id: 'auth-switch', href: utils.currentURL() + 'team/' }, 'Switch to Business endpoints');
         }
         else {
-            return d.a({id: 'auth-switch', href: '../'}, 'Switch to User endpoints')
+            return ce('a', {id: 'auth-switch', href: '../'}, 'Switch to User endpoints');
         }
     };
 
     public render() {
-        return d.span(null,
+        return ce('span', null,
             ce(EndpointSelector, {
                 eptChanged: (endpt: Endpoint) => window.location.hash = '#' + endpt.getFullName(),
                 currEpt:    this.props.currEpt
             }),
-            d.h1({id: 'header'}, this.props.header, this.getAuthSwitch()),
-            d.div({id: 'page-content'},
+            ce('h1', {id: 'header'}, this.props.header, this.getAuthSwitch()),
+            ce('div', {id: 'page-content'},
                 this.props.messages
             )
         );
@@ -1228,15 +1226,15 @@ class MainPage extends react.Component<MainPageProps, void> {
    instance of TextPage.
  */
 interface TextPageProps {
-    message: react.HTMLElement;
+    message: react.DetailedReactHTMLElement<any, any>;
 }
-class TextPage extends react.Component<TextPageProps, void> {
+class TextPage extends react.Component<TextPageProps, any> {
     constructor(props: TextPageProps) { super(props); }
 
     public render() {
         return ce(MainPage, {
             currEpt:  new Endpoint('', '', null),
-            header:   d.span(null, 'Dropbox API Explorer'),
+            header:   ce('span', null, 'Dropbox API Explorer'),
             messages: [this.props.message]
         })
     }
@@ -1245,17 +1243,17 @@ class TextPage extends react.Component<TextPageProps, void> {
 // Introductory page, which people see when they first open the webpage
 const introPage: react.ReactElement<TextPageProps> = ce(TextPage, {
         message:
-            d.span(null,
-                d.p(null, 'Welcome to the Dropbox API Explorer!'),
-                d.p(null,
+            ce('span', null,
+                ce('p', null, 'Welcome to the Dropbox API Explorer!'),
+                ce('p', null,
                     'This API Explorer is a tool to help you learn about the ',
-                    d.a({href: developerPage}, 'Dropbox API v2'),
+                    ce('a', {href: developerPage}, 'Dropbox API v2'),
                     " and test your own examples. For each endpoint, you'll be able to submit an API call ",
                     'with your own parameters and see the code for that call, as well as the API response.'
                 ),
-                d.p(null,
+                ce('p', null,
                     'Click on an endpoint on your left to get started, or check out ',
-                    d.a({href: developerPage + '/documentation'},
+                    ce('a', {href: developerPage + '/documentation'},
                         'the documentation'),
                     ' for more information on the API.'
                 )
@@ -1268,14 +1266,14 @@ const introPage: react.ReactElement<TextPageProps> = ce(TextPage, {
  */
 const endpointNotFound: react.ReactElement<TextPageProps> = ce(TextPage, {
         message:
-            d.span(null,
-                d.p(null, 'Welcome to the Dropbox API Explorer!'),
-                d.p(null,
+            ce('span', null,
+                ce('p', null, 'Welcome to the Dropbox API Explorer!'),
+                ce('p', null,
                     "Unfortunately, there doesn't seem to be an endpoint called ",
-                    d.b(null, window.location.hash.substr(1)),
+                    ce('b', null, window.location.hash.substr(1)),
                     '. Try clicking on an endpoint on the left instead.'
                 ),
-                d.p(null, 'If you think you received this message in error, please get in contact with us.')
+                ce('p', null, 'If you think you received this message in error, please get in contact with us.')
             )}
 );
 
@@ -1284,13 +1282,13 @@ const endpointNotFound: react.ReactElement<TextPageProps> = ce(TextPage, {
  */
 const stateError: react.ReactElement<TextPageProps> = ce(TextPage, {
         message:
-            d.span(null,
-                d.p(null, ''),
-                d.p(null,
+            ce('span', null,
+                ce('p', null, ''),
+                ce('p', null,
                     'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ',
                     'If this error persists, you may be using an insecure network.'
                 ),
-                d.p(null, 'If you think you received this message in error, please get in contact with us.')
+                ce('p', null, 'If you think you received this message in error, please get in contact with us.')
             )}
 );
 
@@ -1300,17 +1298,17 @@ const stateError: react.ReactElement<TextPageProps> = ce(TextPage, {
  */
 const renderGivenHash = (hash: string): void => {
     if (hash === '' || hash === undefined) {
-        react.render(introPage, document.body);
+        reactDom.render(introPage, document.body);
     } else if (hash === 'xkcd') {
         window.location.href = 'https://xkcd.com/1481/';
     } else if (hash === 'auth_error!') {
-        react.render(stateError, document.body);
+        reactDom.render(stateError, document.body);
     } else {
         const currEpt = utils.getEndpoint(endpoints.endpointList, decodeURIComponent(hash));
         if (currEpt === null) {
-            react.render(endpointNotFound, document.body);
+            reactDom.render(endpointNotFound, document.body);
         } else {
-            react.render(ce(APIExplorer, {initEpt: currEpt}), document.body);
+            reactDom.render(ce(APIExplorer, {initEpt: currEpt}), document.body);
         }
     }
 };
@@ -1348,7 +1346,7 @@ const main = (): void => {
     } else if ('__ept__' in hashes) { // no token, but an endpoint selected
         renderGivenHash(hashes['__ept__']);
     } else { // no endpoint selected: render the intro page
-        react.render(introPage, document.body);
+        reactDom.render(introPage, document.body);
     }
 };
 

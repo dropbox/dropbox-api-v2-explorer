@@ -1,6 +1,6 @@
 // Automatically generated code; do not edit
 
-import Utils = require('./utils');
+import * as Utils from './utils';
 
 module Endpoints {
     const account_set_profile_photo_endpt = new Utils.Endpoint("account", "set_profile_photo",
