@@ -121,7 +121,7 @@ class TokenInput extends react.Component<TokenInputProps, any> {
         const params: Dict = {
             response_type: 'token',
             client_id:     clientId,
-            redirect_uri:  utils.currentURL(),
+            redirect_uri:  utils.strippedCurrentURL(),
             state:         state,
             token_access_type: 'online',
         };
