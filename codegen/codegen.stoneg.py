@@ -43,7 +43,7 @@ class APIEndpointGenerator(CodeBackend):
     def outputHeader(self):
         self.emit('// Automatically generated code; do not edit')
         self.emit()
-        self.emit("import Utils = require('./utils');")
+        self.emit("import * as Utils from './utils';")
         self.emit()
         self.emit('module Endpoints {')
 
