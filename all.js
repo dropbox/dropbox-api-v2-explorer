@@ -55053,7 +55053,7 @@ class TokenInput extends react.Component {
             const params = {
                 response_type: 'token',
                 client_id: clientId,
-                redirect_uri: utils.currentURL(),
+                redirect_uri: utils.strippedCurrentURL(),
                 state: state,
                 token_access_type: 'online',
             };
@@ -56369,6 +56369,15 @@ exports.getDownloadName = (ept, paramVals) => {
 };
 // Returns the current URL without any fragment
 exports.currentURL = () => window.location.href.split('#', 1)[0];
+exports.strippedCurrentURL = () => {
+    var currentUrl = exports.currentURL();
+    if (currentUrl.includes("?")) {
+        return currentUrl.substring(0, currentUrl.indexOf("?"));
+    }
+    else {
+        return currentUrl;
+    }
+};
 exports.arrayBufToString = (buf) => String.fromCharCode.apply(null, new Uint8Array(buf));
 const isJson = (s) => {
     try {
