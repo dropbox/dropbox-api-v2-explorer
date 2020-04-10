@@ -573,6 +573,15 @@ export const getDownloadName = (ept: Endpoint, paramVals: Dict): string => {
 // Returns the current URL without any fragment
 export const currentURL = (): string => window.location.href.split('#', 1)[0];
 
+export const strippedCurrentURL = (): string => {
+    var currentUrl = currentURL();
+    if(currentUrl.includes("?")){
+        return currentUrl.substring(0, currentUrl.indexOf("?"));
+    }else{
+        return currentUrl;
+    }
+};
+
 export const arrayBufToString = (buf: ArrayBuffer) =>
     String.fromCharCode.apply(null, new Uint8Array(buf));
 
