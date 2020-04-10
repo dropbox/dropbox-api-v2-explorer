@@ -2,12 +2,17 @@ name: Deploy To Github Pages
 on:
   push:
     branches: [ master ]
+  pull-request:
+    branches: [ master ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          submodules: 'recursive'
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
