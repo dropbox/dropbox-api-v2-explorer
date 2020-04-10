@@ -10,7 +10,7 @@ License: [MIT](License.txt)
 
 Make sure you have Node.js
 
-Run `git submodule init` followed by a `git submodule update` to pull in the spec and stone sub repos.
+Run `git submodule init` followed by a `git submodule update --recursive --remote` to pull in the spec and stone sub repos.
 
 Initial setup (and every time you do a "git pull"):
 1. `# npm install`
