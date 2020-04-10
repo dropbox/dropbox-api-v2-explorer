@@ -18,7 +18,7 @@ jobs:
           pip install stone
           npm install
           cd codegen
-          .run_codegen.sh
+          ./run_codegen.sh
           cd ..
           npm run build
       - name: Deploy 🚀
