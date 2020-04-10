@@ -2,11 +2,10 @@
    representing it as an HTTP request or code to generate that request.
  */
 
-import react = require('react');
-import utils = require('./utils');
+import * as react from 'react';
+import * as utils from './utils';
 
 const ce = react.createElement;
-const d = react.DOM;
 
 type Renderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
                  headerVals: utils.Header[]) => react.ReactElement<{}>
@@ -34,16 +33,16 @@ interface CodeViewer {
     renderDownloadLike: Renderer;
 }
 
-const syntaxHighlight = (syntax: string, text: react.HTMLElement): react.ReactElement<{}> =>
-        ce(utils.Highlight, {className: syntax}, text);
+const syntaxHighlight = (syntax: string, text: react.DetailedReactHTMLElement<any, any>): react.ReactElement<{}> =>
+        ce(utils.Highlight, {className: syntax, children: null}, text);
 
 // Applies f to each element of the dict, and then appends the separator to all but the last result.
 // Subsequent list elements are separated by newlines.
 const joinWithNewlines = (dc: utils.Dict, f: (k: string, v: string) => string, sep: string = ','):
-    react.ClassicElement<{}>[] => utils.Dict._map(dc, (k: string, v: string, i: number) => {
+react.DetailedReactHTMLElement<any, any>[] => utils.Dict._map(dc, (k: string, v: string, i: number) => {
         const maybeSep = (i === Object.keys(dc).length - 1)?
             "\n" : sep + "\n";
-        return d.span({key: "" + i}, f(k, v), maybeSep);
+        return ce('span', {key: "" + i}, f(k, v), maybeSep);
     }
 );
 
@@ -61,10 +60,10 @@ const pythonStringify = (val: any): string => {
 };
 
 // Representation of a dict, or null if the passed-in dict is also null
-const dictToPython = (name: string, dc: utils.Dict): react.HTMLElement => d.span(null,
+const dictToPython = (name: string, dc: utils.Dict): react.DetailedReactHTMLElement<any, any> => ce('span', null,
     name + ' = ',
     (dc === null)?
-    'None' : d.span(null,
+    'None' : ce('span', null,
         '{\n',
         joinWithNewlines(dc, (k: string, v: any) => '    "' + k + '": ' + pythonStringify(v)),
         '}'
@@ -83,15 +82,16 @@ const RequestsCodeViewer = (): CodeViewer => {
     const syntax = "python";
 
     // common among all three parts
-    const preamble = (endpt: utils.Endpoint): react.HTMLElement => d.span(null,
+    const preamble = (endpt: utils.Endpoint): react.DetailedReactHTMLElement<any, any> => ce('span', null, [
         'import requests\n', 'import json\n\n',
         'url = "' + endpt.getURL() + '"\n\n'
+        ]
     );
 
 
     const requestsTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
-                              dataReader: string|react.HTMLElement, call: string) =>
-        syntaxHighlight(syntax, d.span(null,
+                              dataReader: string|react.DetailedReactHTMLElement<any, any>, call: string) =>
+        syntaxHighlight(syntax, ce('span', null,
             preamble(endpt), dictToPython('headers', headers), dataReader, call));
 
     const requestsRPCLike: Renderer = (endpt, token, paramVals, headerVals) =>
@@ -120,7 +120,7 @@ const RequestsCodeViewer = (): CodeViewer => {
 const HttplibCodeViewer = (): CodeViewer => {
     const syntax = "python";
 
-    const preamble = d.span(null,
+    const preamble = ce('span', null,
         'import sys\nimport json\n',
         'if (3,0) <= sys.version_info < (4,0):\n',
         '    import http.client as httplib\n',
@@ -129,8 +129,8 @@ const HttplibCodeViewer = (): CodeViewer => {
     );
 
     const httplibTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
-                             dataReader: string|react.HTMLElement, dataArg: string): react.ReactElement<{}> =>
-        syntaxHighlight(syntax, d.span(null,
+                             dataReader: string|react.DetailedReactHTMLElement<any, any>, dataArg: string): react.ReactElement<{}> =>
+        syntaxHighlight(syntax, ce('span', null,
             preamble,
             dictToPython('headers', headers),
             dataReader,
@@ -164,18 +164,18 @@ const CurlCodeViewer = (): CodeViewer => {
     const syntax = 'bash';
     const urlArea = (endpt: utils.Endpoint) => 'curl -X POST ' + endpt.getURL() + ' \\\n';
 
-    const makeHeaders = (headers: utils.Dict): react.HTMLElement => d.span(null,
-        utils.Dict._map(headers, (k: string, v: string, i: number): react.HTMLElement => {
+    const makeHeaders = (headers: utils.Dict): react.DetailedReactHTMLElement<any, any> => ce('span', null,
+        utils.Dict._map(headers, (k: string, v: string, i: number): react.DetailedReactHTMLElement<any, any> => {
             let sep = '\\\n';
             if (i == Object.keys(headers).length - 1) sep = '';
-            return d.span({key: "" + i}, "  --header '" + k + ': ' + v + "' " + sep);
+            return ce('span', {key: "" + i}, "  --header '" + k + ': ' + v + "' " + sep);
         })
     );
 
     // The general model of the curl call, populated with the arguments.
     const curlTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
                           data: string): react.ReactElement<{}> =>
-        syntaxHighlight(syntax, d.span(null, urlArea(endpt), makeHeaders(headers), data));
+        syntaxHighlight(syntax, ce('span', null, urlArea(endpt), makeHeaders(headers), data));
 
     const curlRPCLike: Renderer = (endpt, token, paramVals, headerVals) =>
         curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals),
@@ -204,11 +204,11 @@ const HTTPCodeViewer = (): CodeViewer => {
 
     const httpTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
                           body: string): react.ReactElement<{}> =>
-        syntaxHighlight(syntax, d.span(null,
+        syntaxHighlight(syntax, ce('span', null,
             'POST ' + endpt.getPathName() + "\n",
             'Host: https://' + endpt.getHostname() + "\n",
             'User-Agent: api-explorer-client\n',
-            utils.Dict.map(headers, (key: string, value: string) => d.span({key: key},
+            utils.Dict.map(headers, (key: string, value: string) => ce('span', {key: key},
                 key + ": " + value + "\n"
             )),
             body
@@ -253,10 +253,10 @@ export const formats: utils.Dict = {
     'http': HTTPCodeViewer()
 };
 
-export const getSelector = (onChange: (e: react.FormEvent) => void): react.HTMLElement => d.select(
+export const getSelector = (onChange: (e: react.FormEvent) => void): react.DetailedReactHTMLElement<any, any> => ce('select', 
     {onChange: onChange},
     utils.Dict.map(formats, (key: string, cv: CodeViewer) =>
-        d.option({key: key, value: key}, cv.description))
+        ce('option', {key: key, value: key}, cv.description))
 );
 
 export const render = (cv: CodeViewer, endpt: utils.Endpoint,

@@ -1,7 +1,0 @@
-{
-  "name": "dropbox-api-v2-explorer",
-  "globalDependencies": {
-    "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#3b7f250dcf631f1c3c545e28d9ff25920c60b5f7",
-    "highlightjs": "github:DefinitelyTyped/DefinitelyTyped/highlightjs/highlightjs.d.ts#5f480287834a2615274eea31574b713e64decf17"
-  }
-}

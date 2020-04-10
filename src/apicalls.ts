@@ -2,8 +2,8 @@
    helper functions.
  */
 
-import react = require('react');
-import utils = require('./utils');
+import * as react from 'react';
+import * as utils from './utils';
 
 export type Callback = (component: react.Component<any, any>, req: XMLHttpRequest) => void;
 
@@ -84,7 +84,13 @@ const endRequest = (component: any) => {
 const utf8Encode = (data: string, request: XMLHttpRequest) => {
     let blob: Blob = new Blob([data]);
     let reader: FileReader = new FileReader();
-    reader.onloadend = () => request.send(new Uint8Array(reader.result));
+    var sendable_blob: Uint8Array = null;
+    if (reader.result instanceof ArrayBuffer){
+        sendable_blob = new Uint8Array(<ArrayBuffer>sendable_blob);
+    } else {
+        sendable_blob = new TextEncoder().encode(<string>reader.result);
+    }
+    reader.onloadend = () => request.send(sendable_blob);
     reader.readAsArrayBuffer(blob);
 };
 

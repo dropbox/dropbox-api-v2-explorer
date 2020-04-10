@@ -1,6 +1,6 @@
 // Automatically generated code; do not edit
 
-import Utils = require('./utils');
+import * as Utils from './utils';
 
 module Endpoints {
     const auth_token_from_oauth1_endpt = new Utils.Endpoint("auth", "token/from_oauth1",
