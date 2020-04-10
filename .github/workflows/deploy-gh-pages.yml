@@ -17,7 +17,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install stone
           npm install
-          ./codegen/run_codegen.sh
+          cd codegen
+          .run_codegen.sh
+          cd ..
           npm run build
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
