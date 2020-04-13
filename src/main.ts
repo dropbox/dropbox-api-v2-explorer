@@ -750,10 +750,12 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
     }
     updateParamValues = (paramVals: Dict, fileVals: Dict) => {
         this.setState({paramVals: paramVals, fileVals: fileVals});
+        this.forceUpdate();
     };
 
     updateHeaderValues = (headerVals: Header[]) => {
         this.setState({headerVals: headerVals});
+        this.forceUpdate();
     };
 
     updateTokenValue = (tokenValue: string) => {
@@ -855,7 +857,7 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                                 )
                             ),
                             ce('table', {id: 'parameter-list'},
-                                ce('body', null,
+                                ce('tbody', null,
                                     this.props.currEpt.params.map((param: Parameter) =>
                                         ParamClassChooser.getParamInput(param, {
                                             key:      this.props.currEpt.name + param.name,

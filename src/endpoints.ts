@@ -68,6 +68,88 @@ module Endpoints {
         },
         new Utils.TextParam("query", true)
     );
+    const cloud_docs_get_content_endpt = new Utils.Endpoint("cloud_docs", "get_content",
+        {
+            allow_app_folder_app: "True",
+            is_cloud_doc_auth: "True",
+            is_preview: "True",
+            select_admin_mode: "None",
+            style: "download",
+            auth: "user",
+            host: "content",
+            scope: "None",
+        },
+        new Utils.TextParam("file_id", false)
+    );
+    const cloud_docs_get_metadata_endpt = new Utils.Endpoint("cloud_docs", "get_metadata",
+        {
+            allow_app_folder_app: "False",
+            is_cloud_doc_auth: "True",
+            is_preview: "False",
+            select_admin_mode: "None",
+            style: "rpc",
+            auth: "user",
+            host: "api",
+            scope: "files.metadata.read",
+        },
+        new Utils.TextParam("file_id", true)
+    );
+    const cloud_docs_lock_endpt = new Utils.Endpoint("cloud_docs", "lock",
+        {
+            allow_app_folder_app: "False",
+            is_cloud_doc_auth: "True",
+            is_preview: "False",
+            select_admin_mode: "None",
+            style: "rpc",
+            auth: "user",
+            host: "api",
+            scope: "files.metadata.write",
+        },
+        new Utils.TextParam("file_id", true)
+    );
+    const cloud_docs_rename_endpt = new Utils.Endpoint("cloud_docs", "rename",
+        {
+            allow_app_folder_app: "False",
+            is_cloud_doc_auth: "True",
+            is_preview: "False",
+            select_admin_mode: "None",
+            style: "rpc",
+            auth: "user",
+            host: "api",
+            scope: "files.metadata.write",
+        },
+        new Utils.TextParam("file_id", true),
+        new Utils.TextParam("title", true)
+    );
+    const cloud_docs_unlock_endpt = new Utils.Endpoint("cloud_docs", "unlock",
+        {
+            allow_app_folder_app: "False",
+            is_cloud_doc_auth: "True",
+            is_preview: "False",
+            select_admin_mode: "None",
+            style: "rpc",
+            auth: "user",
+            host: "api",
+            scope: "files.metadata.write",
+        },
+        new Utils.TextParam("file_id", true)
+    );
+    const cloud_docs_update_content_endpt = new Utils.Endpoint("cloud_docs", "update_content",
+        {
+            allow_app_folder_app: "True",
+            is_cloud_doc_auth: "True",
+            is_preview: "True",
+            select_admin_mode: "None",
+            style: "upload",
+            auth: "user",
+            host: "content",
+            scope: "None",
+        },
+        new Utils.FileParam(),
+        new Utils.TextParam("file_id", false),
+        new Utils.ListParam("actor_tokens", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
+        new Utils.ListParam("additional_contents", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.UnionParam("purpose", false, [new Utils.VoidParam("search"), new Utils.VoidParam("preview")]), new Utils.TextParam("content_key", false)]))
+    );
     const contacts_delete_manual_contacts_endpt = new Utils.Endpoint("contacts", "delete_manual_contacts",
         {
             allow_app_folder_app: "False",
@@ -2289,7 +2371,7 @@ module Endpoints {
         {
             allow_app_folder_app: "False",
             is_cloud_doc_auth: "False",
-            is_preview: "True",
+            is_preview: "False",
             select_admin_mode: "None",
             style: "rpc",
             auth: "team",
@@ -2302,7 +2384,7 @@ module Endpoints {
         {
             allow_app_folder_app: "False",
             is_cloud_doc_auth: "False",
-            is_preview: "True",
+            is_preview: "False",
             select_admin_mode: "None",
             style: "rpc",
             auth: "team",
@@ -2315,7 +2397,7 @@ module Endpoints {
         {
             allow_app_folder_app: "False",
             is_cloud_doc_auth: "False",
-            is_preview: "True",
+            is_preview: "False",
             select_admin_mode: "None",
             style: "rpc",
             auth: "team",
@@ -2738,6 +2820,12 @@ module Endpoints {
                                                    auth_token_revoke_endpt,
                                                    check_app_endpt,
                                                    check_user_endpt,
+                                                   cloud_docs_get_content_endpt,
+                                                   cloud_docs_get_metadata_endpt,
+                                                   cloud_docs_lock_endpt,
+                                                   cloud_docs_rename_endpt,
+                                                   cloud_docs_unlock_endpt,
+                                                   cloud_docs_update_content_endpt,
                                                    contacts_delete_manual_contacts_endpt,
                                                    contacts_delete_manual_contacts_batch_endpt,
                                                    file_properties_properties_add_endpt,
