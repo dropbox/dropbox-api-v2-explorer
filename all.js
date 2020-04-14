@@ -52599,14 +52599,16 @@ const endRequest = (component) => {
 const utf8Encode = (data, request) => {
     let blob = new Blob([data]);
     let reader = new FileReader();
-    var sendable_blob = null;
-    if (reader.result instanceof ArrayBuffer) {
-        sendable_blob = new Uint8Array(sendable_blob);
-    }
-    else {
-        sendable_blob = new TextEncoder().encode(reader.result);
-    }
-    reader.onloadend = () => request.send(sendable_blob);
+    reader.onloadend = () => {
+        var sendable_blob = null;
+        if (reader.result instanceof ArrayBuffer) {
+            sendable_blob = new Uint8Array(reader.result);
+        }
+        else {
+            sendable_blob = new TextEncoder().encode(reader.result);
+        }
+        request.send(sendable_blob);
+    };
     reader.readAsArrayBuffer(blob);
 };
 exports.APIWrapper = (data, endpt, token, headers, listener, component, file) => {
@@ -55556,9 +55558,11 @@ class RequestArea extends react.Component {
         super(props);
         this.updateParamValues = (paramVals, fileVals) => {
             this.setState({ paramVals: paramVals, fileVals: fileVals });
+            this.forceUpdate();
         };
         this.updateHeaderValues = (headerVals) => {
             this.setState({ headerVals: headerVals });
+            this.forceUpdate();
         };
         this.updateTokenValue = (tokenValue) => {
             // This is called only to trigger live update. Use utils.getToken
@@ -55641,7 +55645,7 @@ class RequestArea extends react.Component {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken,
             callback: this.updateTokenValue
-        }), ce('tr', null, tableText('Request'), ce('td', null, ce('div', { className: 'align-right' }, ce('a', { href: documentation }, 'Documentation')), ce('table', { id: 'parameter-list' }, ce('body', null, this.props.currEpt.params.map((param) => ParamClassChooser.getParamInput(param, {
+        }), ce('tr', null, tableText('Request'), ce('td', null, ce('div', { className: 'align-right' }, ce('a', { href: documentation }, 'Documentation')), ce('table', { id: 'parameter-list' }, ce('tbody', null, this.props.currEpt.params.map((param) => ParamClassChooser.getParamInput(param, {
             key: this.props.currEpt.name + param.name,
             handler: handler.getChildHandler(param),
             param: param
