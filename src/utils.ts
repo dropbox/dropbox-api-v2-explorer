@@ -622,13 +622,15 @@ export class Highlight extends react.Component<HltProps, {}> {
         super(props);
     }
     defaultProps = {className: ""};
-    componentDidMount = () => this.highlightCode();
-    componentDidUpdate = () => this.highlightCode();
 
-    highlightCode = () => [].forEach.call(
-        (<Element>reactDom.findDOMNode(this)).querySelectorAll('pre code'),
-            (node: Node) => hljs.highlightBlock(node)
-    );
+    // TODO: fix this highlighting it breaks updates
+    // componentDidMount = () => this.highlightCode();
+    // componentDidUpdate = () => this.highlightCode();
+
+    // highlightCode = () => [].forEach.call(
+    //     (<Element>reactDom.findDOMNode(this)).querySelectorAll('pre code'),
+    //         (node: Node) => hljs.highlightBlock(node)
+    // );
 
     public render() {
         return react.createElement('pre', {className: this.props.className},
