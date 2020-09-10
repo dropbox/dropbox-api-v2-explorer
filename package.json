@@ -7,7 +7,7 @@
     "lint": "eslint --ext .js,.jsx,.ts src/",
     "lint-fix": "eslint --fix --ext .js,.jsx,.ts src/",
     "test:unit": "mocha -r ts-node/register test/unit/*.test.ts",
-    "coverage": "nyc --reporter=lcov npm run test:unit",
+    "coverage:unit": "nyc --reporter=lcov npm run test:unit",
     "report": "nyc report --reporter=lcov --reporter=text"
   },
   "devDependencies": {
