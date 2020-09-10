@@ -128,5 +128,7 @@ export const APIWrapper = (data: string, endpt: utils.Endpoint, token: string,
       request.responseType = 'arraybuffer';
       request.send();
       break;
+    default:
+      throw new Error('Invalid Endpoint Type');
   }
 };

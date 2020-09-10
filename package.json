@@ -4,8 +4,8 @@
   "scripts": {
     "build": "gulp",
     "watch": "gulp watch",
-    "lint": "eslint --ext .js,.jsx,.ts .",
-    "lint-fix": "eslint --fix --ext .js,.jsx,.ts ."
+    "lint": "eslint --ext .js,.jsx,.ts src/",
+    "lint-fix": "eslint --fix --ext .js,.jsx,.ts src/"
   },
   "devDependencies": {
     "@types/highlight.js": "^9.12.3",

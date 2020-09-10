@@ -11,8 +11,8 @@
  */
 
 import * as react from 'react';
-import * as cookie from './cookie';
 import { ReactNode } from 'react';
+import * as cookie from './cookie';
 
 type MappingFn = (key: string, value: any, i: number) => react.DetailedReactHTMLElement<any, any>;
 
@@ -210,7 +210,7 @@ export class Parameter {
     }
 
     getNameColumn = (): react.DetailedReactHTMLElement<any, any> => {
-      if (!isNaN(+this.name)) {
+      if (!Number.isNaN(+this.name)) {
         // Don't show name column for list parameter item.
         return null;
       }
@@ -559,8 +559,7 @@ export const strippedCurrentURL = (): string => {
   return currentUrl;
 };
 
-export const arrayBufToString = 
-(buf: ArrayBuffer): string => String.fromCharCode.apply(null, new Uint8Array(buf));
+export const arrayBufToString = (buf: ArrayBuffer): string => String.fromCharCode.apply(null, new Uint8Array(buf));
 
 const isJson = (s: string): boolean => {
   try {
@@ -575,8 +574,7 @@ const isJson = (s: string): boolean => {
 export const prettyJson = (s: string): string => JSON.stringify(JSON.parse(s), null, 2);
 
 // common message for error handling
-export const errorHandler = 
-(stat: number, response: string): react.DetailedReactHTMLElement<any, any> => {
+export const errorHandler = (stat: number, response: string): react.DetailedReactHTMLElement<any, any> => {
   if (isJson(response)) return ce('code', { className: null, children: null }, prettyJson(response));
   return react.createElement('span', null, [
     react.createElement('h4', null, `Error: ${stat}`),

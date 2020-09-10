@@ -8,9 +8,9 @@ import * as utils from './utils';
 const ce = react.createElement;
 
 type Renderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
-                 headerVals: utils.Header[]) => react.ReactElement<{}>
+                 headerVals: utils.Header[]) => react.ReactElement<Record<string, unknown>>
 type UploadRenderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
-                       headerVals: utils.Header[], file: File) => react.ReactElement<{}>
+                       headerVals: utils.Header[], file: File) => react.ReactElement<Record<string, unknown>>
 
 /* Something which I wish I had more time to fix: in this file, "upload" and "download" have the wrong
    meanings. Specifically, here, "upload" means a call with a file attached, and "download" means a
@@ -50,7 +50,7 @@ const pythonStringify = (val: any): string => {
     return 'True';
   } if (val === false) {
     return 'False';
-  } if (val === null || (val !== val)) {
+  } if (val === null) {
     return 'None';
   }
   return JSON.stringify(val);
@@ -117,7 +117,7 @@ const HttplibCodeViewer = (): CodeViewer => {
     '    import httplib\n\n');
 
   const httplibTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
-    dataReader: string|react.DetailedReactHTMLElement<any, any>, dataArg: string): react.ReactElement<{}> => syntaxHighlight(syntax, ce('span', null,
+    dataReader: string|react.DetailedReactHTMLElement<any, any>, dataArg: string): react.ReactElement<Record<string, unknown>> => syntaxHighlight(syntax, ce('span', null,
     preamble,
     dictToPython('headers', headers),
     dataReader,
@@ -155,7 +155,7 @@ const CurlCodeViewer = (): CodeViewer => {
 
   // The general model of the curl call, populated with the arguments.
   const curlTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
-    data: string): react.ReactElement<{}> => syntaxHighlight(syntax, ce('span', null, urlArea(endpt), makeHeaders(headers), data));
+    data: string): react.ReactElement<Record<string, unknown>> => syntaxHighlight(syntax, ce('span', null, urlArea(endpt), makeHeaders(headers), data));
 
   const curlRPCLike: Renderer = (endpt, token, paramVals, headerVals) => curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals),
     `\\\n  --data '${shellEscape(paramVals)}'`);
@@ -181,7 +181,7 @@ const HTTPCodeViewer = (): CodeViewer => {
   const syntax = 'http';
 
   const httpTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
-    body: string): react.ReactElement<{}> => syntaxHighlight(syntax, ce('span', null,
+    body: string): react.ReactElement<Record<string, unknown>> => syntaxHighlight(syntax, ce('span', null,
     `POST ${endpt.getPathName()}\n`,
     `Host: https://${endpt.getHostname()}\n`,
     'User-Agent: api-explorer-client\n',
@@ -233,7 +233,7 @@ export const getSelector = (onChange: (e: react.FormEvent) => void): react.Detai
 
 export const render = (cv: CodeViewer, endpt: utils.Endpoint,
   token: string, paramVals: utils.Dict,
-  headerVals: utils.Header[], file: File): react.ReactElement<{}> => {
+  headerVals: utils.Header[], file: File): react.ReactElement<Record<string, unknown>> => {
   if (endpt.getEndpointKind() === utils.EndpointKind.RPCLike) {
     return cv.renderRPCLike(endpt, token, paramVals, headerVals);
   } if (file !== null) {

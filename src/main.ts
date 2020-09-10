@@ -337,7 +337,7 @@ class ListValueHandler extends ParentValueHandler {
 
     hasChild = (name: string) => true;
 
-    value = (key: string): any => this.current()[+name];
+    value = (key: string): any => this.current()[+name]; // eslint-disable-line no-restricted-globals
 
     updateChildValue = (name: string, value: any): void => {
       this.current()[+name] = value;
@@ -421,7 +421,7 @@ class ParamInput<P> extends react.Component<P, any> {
     super(props);
   }
 
-  public render(): any {
+  public render(): any { // eslint-disable-line class-methods-use-this
     throw new Error('Not implemented.');
   }
 }
