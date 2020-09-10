@@ -12,7 +12,18 @@ import * as utils from './utils';
 import * as apicalls from './apicalls';
 import * as codeview from './codeview';
 import {
-  SelectorParam, Parameter, VoidParam, StructParam, Dict, UnionParam, FileParam, ListParam, List, RootUnionParam, Header, Endpoint,
+  SelectorParam,
+  Parameter,
+  VoidParam,
+  StructParam,
+  Dict,
+  UnionParam,
+  FileParam,
+  ListParam,
+  List,
+  RootUnionParam,
+  Header,
+  Endpoint,
 } from './utils';
 
 import ReactElement = react.ReactElement;
@@ -337,7 +348,8 @@ class ListValueHandler extends ParentValueHandler {
 
     hasChild = (name: string) => true;
 
-    value = (key: string): any => this.current()[+name]; // eslint-disable-line no-restricted-globals
+    value =
+      (key: string): any => this.current()[+name]; // eslint-disable-line no-restricted-globals
 
     updateChildValue = (name: string, value: any): void => {
       this.current()[+name] = value;
@@ -616,11 +628,12 @@ class ListParamInput extends ParamInput<ListParamInputProps> {
       const ret: react.DetailedReactHTMLElement<any, any>[] = [];
       for (let i = 0; i < this.state.count; i++) {
         const param: Parameter = this.props.param.createItem(i);
-        const item: react.DetailedReactHTMLElement<any, any> = ParamClassChooser.getParamInput(param, {
-          key: `${this.props.key}_${this.props.param.name}_${i.toString()}`,
-          handler: this.props.handler.getChildHandler(param),
-          param,
-        });
+        const item: react.DetailedReactHTMLElement<any, any> = ParamClassChooser
+          .getParamInput(param, {
+            key: `${this.props.key}_${this.props.param.name}_${i.toString()}`,
+            handler: this.props.handler.getChildHandler(param),
+            param,
+          });
 
         ret.push(item);
       }
@@ -789,8 +802,10 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
 
       const name = this.props.currEpt.name.replace('/', '-');
       const documentation = `${developerPage}/documentation/http/documentation#${this.props.currEpt.ns}-${name}`;
-      const handler = new RootValueHandler(this.state.paramVals, this.state.fileVals, this.updateParamValues);
-      const headerHandler = new RequestHeaderRootHandler(this.state.headerVals, this.updateHeaderValues);
+      const handler = new RootValueHandler(this.state.paramVals,
+        this.state.fileVals, this.updateParamValues);
+      const headerHandler = new RequestHeaderRootHandler(this.state.headerVals,
+        this.updateHeaderValues);
 
       return ce('span', { id: 'request-area' },
         ce('table', { className: 'page-table' },
@@ -811,11 +826,13 @@ class RequestArea extends react.Component<RequestAreaProps, any> {
                     'Documentation')),
                 ce('table', { id: 'parameter-list' },
                   ce('tbody', null,
-                    this.props.currEpt.params.map((param: Parameter) => ParamClassChooser.getParamInput(param, {
-                      key: this.props.currEpt.name + param.name,
-                      handler: handler.getChildHandler(param),
-                      param,
-                    })))),
+                    this.props.currEpt.params.map(
+                      (param: Parameter) => ParamClassChooser.getParamInput(param, {
+                        key: this.props.currEpt.name + param.name,
+                        handler: handler.getChildHandler(param),
+                        param,
+                      }),
+                    ))),
                 ce('div', null,
                   ce('button', { onClick: this.showOrHideHeaders }, this.state.showHeaders ? 'Hide Headers' : 'Show Headers'),
                   ce('button', { onClick: this.showOrHideCode }, this.state.showCode ? 'Hide Code' : 'Show Code'),

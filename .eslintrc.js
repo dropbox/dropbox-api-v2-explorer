@@ -20,7 +20,6 @@ module.exports = {
     'import/no-unresolved': 0,
     'no-useless-constructor': 0,
     'no-use-before-define': 0,
-    'max-len': 0,
     eqeqeq: 0,
     'no-underscore-dangle': 0,
     'no-param-reassign': 0,

@@ -34,9 +34,13 @@ export class Dict {
        These are used, for example, to convert a dict of HTTP headers into its representation
        in code view.
      */
-    static _map = (dc: Dict, f: MappingFn): react.DetailedReactHTMLElement<any, any>[] => Object.keys(dc).map((key: string, i: number) => f(key, dc[key], i));
+    static _map = (dc: Dict, f: MappingFn):
+      react.DetailedReactHTMLElement<any, any>[] => Object.keys(dc)
+      .map((key: string, i: number) => f(key, dc[key], i));
 
-    static map = (dc: Dict, f: (key: string, value: any) => any): react.DetailedReactHTMLElement<any, any>[] => Object.keys(dc).map((key: string) => f(key, dc[key]));
+    static map = (dc: Dict, f: (key: string, value: any) => any):
+      react.DetailedReactHTMLElement<any, any>[] => Object.keys(dc)
+      .map((key: string) => f(key, dc[key]));
 }
 
 export class List {
@@ -168,7 +172,8 @@ export class Header {
       this.value = '';
     }
 
-    asReact(onChangeHandler: (header: Header, removed: boolean)=> void): react.DetailedReactHTMLElement<any, any> {
+    asReact(onChangeHandler: (header: Header, removed: boolean)=> void):
+      react.DetailedReactHTMLElement<any, any> {
       const updateName = (event: react.FormEvent): void => {
         this.name = (<HTMLInputElement>event.target).value;
         onChangeHandler(this, false);
@@ -559,7 +564,8 @@ export const strippedCurrentURL = (): string => {
   return currentUrl;
 };
 
-export const arrayBufToString = (buf: ArrayBuffer): string => String.fromCharCode.apply(null, new Uint8Array(buf));
+export const arrayBufToString = (buf: ArrayBuffer): string => String.fromCharCode
+  .apply(null, new Uint8Array(buf));
 
 const isJson = (s: string): boolean => {
   try {
@@ -574,7 +580,8 @@ const isJson = (s: string): boolean => {
 export const prettyJson = (s: string): string => JSON.stringify(JSON.parse(s), null, 2);
 
 // common message for error handling
-export const errorHandler = (stat: number, response: string): react.DetailedReactHTMLElement<any, any> => {
+export const errorHandler = (stat: number, response: string):
+react.DetailedReactHTMLElement<any, any> => {
   if (isJson(response)) return ce('code', { className: null, children: null }, prettyJson(response));
   return react.createElement('span', null, [
     react.createElement('h4', null, `Error: ${stat}`),

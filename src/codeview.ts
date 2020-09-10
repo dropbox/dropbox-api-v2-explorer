@@ -10,12 +10,14 @@ const ce = react.createElement;
 type Renderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
                  headerVals: utils.Header[]) => react.ReactElement<Record<string, unknown>>
 type UploadRenderer = (endpoint: utils.Endpoint, token: string, paramVals: utils.Dict,
-                       headerVals: utils.Header[], file: File) => react.ReactElement<Record<string, unknown>>
+                       headerVals: utils.Header[], file: File) =>
+                       react.ReactElement<Record<string, unknown>>
 
-/* Something which I wish I had more time to fix: in this file, "upload" and "download" have the wrong
-   meanings. Specifically, here, "upload" means a call with a file attached, and "download" means a
-   non-RPC-like call without a file (e.g. empty uploads and downloads). This might be confusing. I
-   originally did this because it makes more of a difference in what the code viewer looks like.
+/* Something which I wish I had more time to fix: in this file, "upload" and "download" have the
+  wrong meanings. Specifically, here, "upload" means a call with a file attached, and "download"
+  means a non-RPC-like call without a file (e.g. empty uploads and downloads). This might be
+  confusing. I originally did this because it makes more of a difference in what the code
+  viewer looks like.
  */
 
 // An object that handles a particular kind of code view for each kind of endpoint.
@@ -25,24 +27,26 @@ interface CodeViewer {
 
     /* Calls for the three kinds of endpoints: RPC-like (data neither uploaded nor downloaded),
        upload-like (data uploaded as the body of the request), and download-like (no data uploaded,
-       but not RPC-like). If you upload with no data, it should thus be treated as download-like, which
-       is a bit counterintuitive.
+       but not RPC-like). If you upload with no data, it should thus be treated as download-like,
+       which is a bit counterintuitive.
      */
     renderRPCLike: Renderer;
     renderUploadLike: UploadRenderer;
     renderDownloadLike: Renderer;
 }
 
-const syntaxHighlight = (syntax: string, text: react.DetailedReactHTMLElement<any, any>): react.ReactElement<{}> => ce(utils.Highlight, { className: syntax, children: null }, text);
+const syntaxHighlight = (syntax: string, text: react.DetailedReactHTMLElement<any, any>):
+react.ReactElement<{}> => ce(utils.Highlight, { className: syntax, children: null }, text);
 
 // Applies f to each element of the dict, and then appends the separator to all but the last result.
 // Subsequent list elements are separated by newlines.
 const joinWithNewlines = (dc: utils.Dict, f: (k: string, v: string) => string, sep = ','):
-react.DetailedReactHTMLElement<any, any>[] => utils.Dict._map(dc, (k: string, v: string, i: number) => {
-  const maybeSep = (i === Object.keys(dc).length - 1)
-    ? '\n' : `${sep}\n`;
-  return ce('span', { key: `${i}` }, f(k, v), maybeSep);
-});
+react.DetailedReactHTMLElement<any, any>[] => utils.Dict._map(dc,
+  (k: string, v: string, i: number) => {
+    const maybeSep = (i === Object.keys(dc).length - 1)
+      ? '\n' : `${sep}\n`;
+    return ce('span', { key: `${i}` }, f(k, v), maybeSep);
+  });
 
 // the minor differences between JSON and Python's notation
 const pythonStringify = (val: any): string => {
@@ -86,14 +90,19 @@ const RequestsCodeViewer = (): CodeViewer => {
     dataReader: string|react.DetailedReactHTMLElement<any, any>, call: string) => syntaxHighlight(syntax, ce('span', null,
     preamble(endpt), dictToPython('headers', headers), dataReader, call));
 
-  const requestsRPCLike: Renderer = (endpt, token, paramVals, headerVals) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals), dictToPython('data', paramVals),
+  const requestsRPCLike: Renderer = (endpt, token, paramVals, headerVals) => requestsTemplate(endpt,
+    utils.getHeaders(endpt, token, headerVals), dictToPython('data', paramVals),
     'r = requests.post(url, headers=headers, data=json.dumps(data))');
 
-  const requestsUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
+  const requestsUploadLike: UploadRenderer = (endpt, token, paramVals,
+    headerVals, file) => requestsTemplate(endpt,
+    utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
     `data = open(${JSON.stringify(file.name)}, "rb").read()\n\n`,
     'r = requests.post(url, headers=headers, data=data)');
 
-  const requestsDownloadLike: Renderer = (endpt, token, paramVals, headerVals) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
+  const requestsDownloadLike: Renderer = (endpt, token,
+    paramVals, headerVals) => requestsTemplate(endpt,
+    utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
     '', 'r = requests.post(url, headers=headers)');
 
   return {
@@ -125,10 +134,13 @@ const HttplibCodeViewer = (): CodeViewer => {
     `c.request("POST", "${endpt.getPathName()}", ${dataArg}, headers)\n`,
     'r = c.getresponse()'));
 
-  const httplibRPCLike: Renderer = (endpt, token, paramVals, headerVals) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals),
+  const httplibRPCLike: Renderer = (endpt, token, paramVals, headerVals) => httplibTemplate(endpt,
+    utils.getHeaders(endpt, token, headerVals),
     dictToPython('params', paramVals), 'json.dumps(params)');
 
-  const httplibUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
+  const httplibUploadLike: UploadRenderer = (endpt, token, paramVals,
+    headerVals, file) => httplibTemplate(endpt,
+    utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)),
     `data = open(${JSON.stringify(file.name)}, "rb")\n\n`, 'data');
 
   const httplibDownloadLike: Renderer = (endpt, token, paramVals, headerVals) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), '', '""');
@@ -147,7 +159,8 @@ const CurlCodeViewer = (): CodeViewer => {
   const urlArea = (endpt: utils.Endpoint) => `curl -X POST ${endpt.getURL()} \\\n`;
 
   const makeHeaders = (headers: utils.Dict): react.DetailedReactHTMLElement<any, any> => ce('span', null,
-    utils.Dict._map(headers, (k: string, v: string, i: number): react.DetailedReactHTMLElement<any, any> => {
+    utils.Dict._map(headers, (k: string, v: string, i: number):
+    react.DetailedReactHTMLElement<any, any> => {
       let sep = '\\\n';
       if (i == Object.keys(headers).length - 1) sep = '';
       return ce('span', { key: `${i}` }, `  --header '${k}: ${v}' ${sep}`);
@@ -157,7 +170,8 @@ const CurlCodeViewer = (): CodeViewer => {
   const curlTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
     data: string): react.ReactElement<Record<string, unknown>> => syntaxHighlight(syntax, ce('span', null, urlArea(endpt), makeHeaders(headers), data));
 
-  const curlRPCLike: Renderer = (endpt, token, paramVals, headerVals) => curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals),
+  const curlRPCLike: Renderer = (endpt, token, paramVals, headerVals) => curlTemplate(endpt,
+    utils.getHeaders(endpt, token, headerVals),
     `\\\n  --data '${shellEscape(paramVals)}'`);
 
   const curlUploadLike: UploadRenderer = (endpt, token, paramVals, headerVals, file) => {
