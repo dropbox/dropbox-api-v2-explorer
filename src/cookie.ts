@@ -3,28 +3,27 @@
    mode etc.)
  */
 
-
 type StringMap = { [index: string]: string };
 
 export const setItem = (key: string, item: string): void => {
-    document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(item)
-}
+  document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(item)}`;
+};
 
 export const getItem = (key: string) : any => {
-    var dict = getAll();
-    return dict[key];
-}
+  const dict = getAll();
+  return dict[key];
+};
 
 export const getAll = (): StringMap => {
-    var dict : StringMap = {};
-    const cookies: string[] = document.cookie.split('; ');
+  const dict : StringMap = {};
+  const cookies: string[] = document.cookie.split('; ');
 
-    cookies.forEach(value => {
-        if (value.length > 0){
-            const items: string[] = value.split('=');
-            dict[decodeURIComponent(items[0])] = decodeURIComponent(items[1]);
-        }
-    });
+  cookies.forEach((value) => {
+    if (value.length > 0) {
+      const items: string[] = value.split('=');
+      dict[decodeURIComponent(items[0])] = decodeURIComponent(items[1]);
+    }
+  });
 
-    return dict;
-}
+  return dict;
+};

@@ -1,46 +1,42 @@
-'use strict';
+const gulp = require('gulp');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const tsify = require('tsify');
+const connect = require('gulp-connect');
+const sourcemaps = require('gulp-sourcemaps');
+const buffer = require('vinyl-buffer');
 
-var gulp = require('gulp');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var tsify = require('tsify');
-var connect = require('gulp-connect');
-var sourcemaps = require('gulp-sourcemaps');
-var buffer = require('vinyl-buffer');
+const tsPath = '+(src)/**/*.ts';
+const staticPath = 'src/**/*.+(html|css|jpeg)';
 
-var tsPath = '+(src)/**/*.ts';
-var staticPath = 'src/**/*.+(html|css|jpeg)';
-
-gulp.task('build-ts', function() {
-  var b = browserify({debug: true})
+gulp.task('build-ts', () => {
+  const b = browserify({ debug: true })
     .add('src/main.ts')
     .plugin('tsify', {
       typescript: require('typescript'),
-        // Use our version of typescript instead of the one specified by tsify's own dependencies.
+      // Use our version of typescript instead of the one specified by tsify's own dependencies.
       sortOutput: true,
-      noEmitOnError: true
+      noEmitOnError: true,
     })
-    .bundle()
-  b.on('error', function (error) { console.log(error.toString()); b.emit('end') });
+    .bundle();
+  b.on('error', (error) => { console.log(error.toString()); b.emit('end'); });
 
   return b
     .pipe(source('all.js'))
     .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('build'))
     .pipe(connect.reload());
 });
 
-gulp.task('build-static', function() {
-  return gulp.src(staticPath)
-    .pipe(gulp.dest('build'))
-    .pipe(connect.reload());
-})
+gulp.task('build-static', () => gulp.src(staticPath)
+  .pipe(gulp.dest('build'))
+  .pipe(connect.reload()));
 
-gulp.task('default', gulp.series('build-ts', 'build-static'))
+gulp.task('default', gulp.series('build-ts', 'build-static'));
 
-gulp.task('watch', gulp.series('build-ts', 'build-static', function() {
+gulp.task('watch', gulp.series('build-ts', 'build-static', () => {
   connect.server({
     root: 'build',
     port: 8042,

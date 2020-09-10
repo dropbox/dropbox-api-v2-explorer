@@ -11,34 +11,32 @@
  */
 
 import * as react from 'react';
-import * as reactDom from 'react-dom';
-import * as hljs from 'highlight.js';
 import * as cookie from './cookie';
+import { ReactNode } from 'react';
 
 type MappingFn = (key: string, value: any, i: number) => react.DetailedReactHTMLElement<any, any>;
 
 const ce = react.createElement;
 
 const allowedHeaders = [
-    'Dropbox-Api-Select-User',
-    'Dropbox-Api-Select-Admin',
-    'Dropbox-Api-Path-Root'
+  'Dropbox-Api-Select-User',
+  'Dropbox-Api-Select-Admin',
+  'Dropbox-Api-Path-Root',
 ];
 
 // This class mostly exists to help Typescript type-check my programs.
 export class Dict {
     [index: string]: any;
-    
+
     /* Two methods for mapping through dictionaries, customized to the API Explorer's use case.
        - _map takes function from a key, a value, and an index to a React element, and
        - map is the same, but without an index.
        These are used, for example, to convert a dict of HTTP headers into its representation
        in code view.
      */
-    static _map = (dc: Dict, f: MappingFn): react.DetailedReactHTMLElement<any, any>[] =>
-        Object.keys(dc).map((key: string, i: number) => f(key, dc[key], i));
-    static map = (dc: Dict, f: (key: string, value: any) => any): react.DetailedReactHTMLElement<any, any>[] =>
-        Object.keys(dc).map((key: string) => f(key, dc[key]));
+    static _map = (dc: Dict, f: MappingFn): react.DetailedReactHTMLElement<any, any>[] => Object.keys(dc).map((key: string, i: number) => f(key, dc[key], i));
+
+    static map = (dc: Dict, f: (key: string, value: any) => any): react.DetailedReactHTMLElement<any, any>[] => Object.keys(dc).map((key: string) => f(key, dc[key]));
 }
 
 export class List {
@@ -52,34 +50,32 @@ export class List {
    private browsing mode), cookie storage will be used as fallback.
  */
 export class LocalStorage {
-    private static _is_session_storage_allowed(): boolean {
-        var test = 'test';
-        try {
-            localStorage.setItem(test, test);
-            localStorage.removeItem(test);
-            return true;
-        } catch(e) {
-            return false;
-        }
+  private static _is_session_storage_allowed(): boolean {
+    const test = 'test';
+    try {
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  public static setItem(key: string, data:string) : void {
+    if (LocalStorage._is_session_storage_allowed()) {
+      sessionStorage.setItem(key, data);
+    } else {
+      cookie.setItem(key, data);
+    }
+  }
+
+  public static getItem(key: string) : any {
+    if (LocalStorage._is_session_storage_allowed()) {
+      return sessionStorage.getItem(key);
     }
 
-    public static setItem(key: string, data:string) : void {
-        if (LocalStorage._is_session_storage_allowed()) {
-            sessionStorage.setItem(key, data);
-        }
-        else {
-            cookie.setItem(key, data);
-        }
-    }
-
-    public static getItem(key: string) : any {
-        if (LocalStorage._is_session_storage_allowed()) {
-            return sessionStorage.getItem(key);
-        }
-        else {
-            return cookie.getItem(key);
-        }
-    }
+    return cookie.getItem(key);
+  }
 }
 
 /* There are three kinds of endpoints, and a lot of the program logic depends on what kind of
@@ -101,103 +97,102 @@ export enum AuthType {None, User, Team, App}
  */
 export class Endpoint {
     name: string;
+
     ns: string; // namespace, e.g. users or files
+
     attrs: Dict; // All attributes
+
     params: Parameter[]; // the arguments to the API call
 
     constructor(ns: string, name: string, attrs: Dict, ...params: Parameter[]) {
-        this.ns = ns;
-        this.name = name;
-        this.attrs = attrs;
-        this.params = params;
+      this.ns = ns;
+      this.name = name;
+      this.attrs = attrs;
+      this.params = params;
     }
 
     getHostname = (): string => {
-        switch (this.attrs["host"]) {
-            case "content":
-                return "content.dropboxapi.com";
-            case "notify":
-                return "notify.dropboxapi.com";
-            default:
-                return "api.dropboxapi.com";
-        }
+      switch (this.attrs.host) {
+        case 'content':
+          return 'content.dropboxapi.com';
+        case 'notify':
+          return 'notify.dropboxapi.com';
+        default:
+          return 'api.dropboxapi.com';
+      }
     };
 
     getAuthType = (): AuthType => {
-        if (this.attrs["host"] == "notify") {
-            return AuthType.None;
-        }
+      if (this.attrs.host === 'notify') {
+        return AuthType.None;
+      }
 
-        var auth = this.attrs["auth"];
+      const { auth } = this.attrs;
 
-        if (auth == "team") {
-            return AuthType.Team;
-        }
-        else if (auth == "app") {
-            return AuthType.App;
-        }
-        else {
-            return AuthType.User;
-        }
+      if (auth === 'team') {
+        return AuthType.Team;
+      }
+      if (auth === 'app') {
+        return AuthType.App;
+      }
+
+      return AuthType.User;
     };
 
     getEndpointKind = (): EndpointKind => {
-        switch (this.attrs["style"]) {
-            case "upload":
-                return EndpointKind.Upload;
-            case "download":
-                return EndpointKind.Download;
-            default:
-                return EndpointKind.RPCLike;
-        }
+      switch (this.attrs.style) {
+        case 'upload':
+          return EndpointKind.Upload;
+        case 'download':
+          return EndpointKind.Download;
+        default:
+          return EndpointKind.RPCLike;
+      }
     };
 
-    getPathName = (): string => '/2/' + this.ns + '/' + this.name;
-    getFullName = (): string => this.ns + '_' + this.name;
-    getURL = (): string => 'https://' + this.getHostname() + this.getPathName();
+    getPathName = (): string => `/2/${this.ns}/${this.name}`;
+
+    getFullName = (): string => `${this.ns}_${this.name}`;
+
+    getURL = (): string => `https://${this.getHostname()}${this.getPathName()}`;
 }
 
 // Class store information about request header.
 export class Header {
     name: string;
+
     value: string;
 
     constructor() {
-        this.name = allowedHeaders[0];
-        this.value = '';
+      this.name = allowedHeaders[0];
+      this.value = '';
     }
 
     asReact(onChangeHandler: (header: Header, removed: boolean)=> void): react.DetailedReactHTMLElement<any, any> {
-        var updateName = (event: react.FormEvent): void => {
-            this.name = (<HTMLInputElement>event.target).value;
-            onChangeHandler(this, false);
-        };
+      const updateName = (event: react.FormEvent): void => {
+        this.name = (<HTMLInputElement>event.target).value;
+        onChangeHandler(this, false);
+      };
 
-        var updateValue = (event: react.FormEvent): void => {
-            this.value = (<HTMLInputElement>event.target).value;
-            onChangeHandler(this, false);
-        };
+      const updateValue = (event: react.FormEvent): void => {
+        this.value = (<HTMLInputElement>event.target).value;
+        onChangeHandler(this, false);
+      };
 
-        return ce('tr', null,
-            ce('td', null,
-                ce('select', { value: this.name, onChange: updateName, className: 'header-name'},
-                    allowedHeaders.map((name: string) => ce('option', { key: name, value: name }, name)
-                    )
-                )
-            ),
-            ce('td', null,
-                ce('input', {
-                    type:         'text',
-                    className:    'header-value',
-                    onChange:     updateValue,
-                    placeholder: 'Header Value',
-                    value:       this.value
-                })
-            ),
-            ce('td', null,
-                ce('button', {onClick: () => onChangeHandler(this, true)}, 'Remove')
-            )
-        );
+      return ce('tr', null,
+        ce('td', null,
+          ce('select', { value: this.name, onChange: updateName, className: 'header-name' },
+            allowedHeaders.map((name: string) => ce('option', { key: name, value: name }, name)))),
+        ce('td', null,
+          ce('input', {
+            type: 'text',
+            className: 'header-value',
+            onChange: updateValue,
+            placeholder: 'Header Value',
+            value: this.value,
+          })),
+        ce('td', null,
+          ce('button', { onClick: () => onChangeHandler(this, true) }, 'Remove')));
     }
 }
 
@@ -206,43 +201,42 @@ export class Header {
  */
 export class Parameter {
     name: string;
+
     optional: boolean;
+
     constructor(name: string, optional: boolean) {
-        this.name = name;
-        this.optional = optional;
+      this.name = name;
+      this.optional = optional;
     }
 
     getNameColumn = (): react.DetailedReactHTMLElement<any, any> => {
-        if (!isNaN(+this.name)) {
-            // Don't show name column for list parameter item.
-            return null;
-        }
+      if (!isNaN(+this.name)) {
+        // Don't show name column for list parameter item.
+        return null;
+      }
 
-        let displayName: string = (this.name !== '__file__')? this.name : 'File to upload';
-            if (this.optional) displayName += ' (optional)';
-        let nameArgs: Dict = this.optional? {'style': {'color': '#999'}} : {};
-        return ce('td', nameArgs, displayName);
+      let displayName: string = (this.name !== '__file__') ? this.name : 'File to upload';
+      if (this.optional) displayName += ' (optional)';
+      const nameArgs: Dict = this.optional ? { style: { color: '#999' } } : {};
+      return ce('td', nameArgs, displayName);
     };
 
     defaultValue = (): any => {
-        if (this.optional) {
-            return null;
-        }
-        else {
-            return this.defaultValueRequired();
-        }
+      if (this.optional) {
+        return null;
+      }
+
+      return this.defaultValueRequired();
     };
 
     /* Renders the parameter's input field, using another method which depends on the
        parameter's subclass.
      */
     asReact(props: Dict, key: string): react.DetailedReactHTMLElement<any, any> {
-        return ce('tr', {key: key},
-            this.getNameColumn(),
-            ce('td', null,
-                this.innerReact(props)
-            )
-        );
+      return ce('tr', { key },
+        this.getNameColumn(),
+        ce('td', null,
+          this.innerReact(props)));
     }
 
     /* Each subclass will implement these abstract methods differently.
@@ -253,30 +247,31 @@ export class Parameter {
         - innerReact determines how to render the input field for a parameter.
      */
     getValue = (s: string): any => s;
-    defaultValueRequired = (): any => "";
-    innerReact = (props: Dict): any => null;
 
+    defaultValueRequired = (): any => '';
+
+    innerReact = (props: Dict): any => null;
 }
 
 export const parameterInput = (props: Dict) => {
-    props['className'] = 'parameter-input';
-    return react.createElement(
-        'input',
-        props
-    );
+  props.className = 'parameter-input';
+  return react.createElement(
+    'input',
+    props,
+  );
 };
 
 // A parameter whose value is a string.
 export class TextParam extends Parameter {
-    constructor(name: string, optional: boolean) {super(name, optional); }
     innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => parameterInput(props);
 }
 
 // A parameter whose value is an integer.
 export class IntParam extends Parameter {
-    constructor(name: string, optional: boolean) { super(name, optional);}
     innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => parameterInput(props);
-    getValue = (s: string): number => (s === '')? this.defaultValue() : parseInt(s, 10);
+
+    getValue = (s: string): number => ((s === '') ? this.defaultValue() : parseInt(s, 10));
+
     defaultValueRequired = (): number => 0;
 }
 
@@ -284,62 +279,66 @@ export class IntParam extends Parameter {
    This isn't currently used in our API, but could be in the future.
  */
 export class FloatParam extends Parameter {
-    constructor(name: string, optional: boolean) { super(name, optional); }
     innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => parameterInput(props);
-    getValue = (s: string): number => (s === '')? this.defaultValue() : parseFloat(s);
+
+    getValue = (s: string): number => ((s === '') ? this.defaultValue() : parseFloat(s));
+
     defaultValueRequired = (): number => 0;
 }
 
 /* A parameter whose type is void.
  */
 export class VoidParam extends Parameter {
-    constructor(name: string) {
-        super(name, true)
-    }
+  constructor(name: string) {
+    super(name, true);
+  }
 
     defaultValueRequired = (): number => 0;
+
     getValue = (s: string): string => null;
 }
 
 export class SelectorParam extends Parameter {
     choices: string[];
+
     selected: string;
 
     constructor(name: string, optional: boolean, choices: string[], selected: string = null) {
-        super(name, optional);
+      super(name, optional);
 
-        this.choices = choices;
-        if (this.optional) {
-            this.choices.unshift('')
-        }
+      this.choices = choices;
+      if (this.optional) {
+        this.choices.unshift('');
+      }
 
-        this.selected = selected;
+      this.selected = selected;
     }
 
     defaultValueRequired = (): any => this.choices[0];
+
     getValue = (s: string): any => s;
 
     innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => {
-        if (this.selected != null) {
-            props['value'] = this.selected;
-        }
+      if (this.selected != null) {
+        props.value = this.selected;
+      }
 
-        return ce('select', props,
-            this.choices.map((choice:string) => ce('option', {
-                key: choice,
-                value: choice
-            }, choice))
-        );
+      return ce('select', props,
+        this.choices.map((choice:string) => ce('option', {
+          key: choice,
+          value: choice,
+        }, choice)));
     }
 }
 
 // Booleans are selectors for true or false.
 export class BoolParam extends SelectorParam {
-    constructor(name: string, optional: boolean) {
-        super(name, optional, ['false', 'true']);
-    }
+  constructor(name: string, optional: boolean) {
+    super(name, optional, ['false', 'true']);
+  }
 
     defaultValueRequired = (): any => false;
+
     getValue = (s: string): boolean => s === 'true';
 }
 
@@ -351,13 +350,13 @@ export class BoolParam extends SelectorParam {
    now.
  */
 export class FileParam extends Parameter {
-    constructor() {
-        super('__file__', false);
-    }
+  constructor() {
+    super('__file__', false);
+  }
 
     innerReact = (props: Dict): react.DetailedReactHTMLElement<any, any> => {
-        props['type'] = 'file';
-        return parameterInput(props);
+      props.type = 'file';
+      return parameterInput(props);
     }
 }
 
@@ -370,62 +369,51 @@ export class StructParam extends Parameter {
     fields: Parameter[];
 
     constructor(name: string, optional: boolean, fields: Parameter[]) {
-        super(name, optional);
-        this.fields = fields;
+      super(name, optional);
+      this.fields = fields;
     }
 
     populateFields = (dict: Dict): void => {
-        this.fields.forEach((field: Parameter) => {
-            if (!field.optional) {
-                dict[field.name] = field.defaultValue();
-            }
-        })
+      this.fields.forEach((field: Parameter) => {
+        if (!field.optional) {
+          dict[field.name] = field.defaultValue();
+        }
+      });
     };
 
     defaultValueRequired = (): Dict => {
-        let toReturn: Dict = {};
-        this.populateFields(toReturn);
-        return toReturn;
+      const toReturn: Dict = {};
+      this.populateFields(toReturn);
+      return toReturn;
     }
 }
 
 // Union are selectors with multiple fields.
 export class UnionParam extends StructParam {
-    constructor(name: string, optional: boolean, fields: Parameter[]) {
-        super(name, optional, fields);
-    }
-
     getSelectorParam = (selected: string = null): SelectorParam => {
-        let choices: string[] = [];
-        this.fields.forEach(p => choices.push(p.name));
+      const choices: string[] = [];
+      this.fields.forEach((p) => choices.push(p.name));
 
-        return new SelectorParam(this.getSelectorName(), this.optional, choices, selected);
+      return new SelectorParam(this.getSelectorName(), this.optional, choices, selected);
     };
 
     getSelectorName = (): string => this.name;
 
     defaultValueRequired = (): Dict => {
-        let param: Parameter = this.fields[0];
-        let toReturn: Dict = {'.tag': param.name};
+      const param: Parameter = this.fields[0];
+      const toReturn: Dict = { '.tag': param.name };
 
-        if (param instanceof StructParam) {
-            (<StructParam>param).populateFields(toReturn);
-        }
-        else if (param instanceof VoidParam) {
-        }
-        else {
-            toReturn[param.name] = param.defaultValue();
-        }
+      if (param instanceof StructParam) {
+        (<StructParam>param).populateFields(toReturn);
+      } else if (!(param instanceof VoidParam)) {
+        toReturn[param.name] = param.defaultValue();
+      }
 
-        return toReturn;
+      return toReturn;
     }
 }
 
 export class RootUnionParam extends UnionParam {
-    constructor(name:string, optional:boolean, fields:Parameter[]) {
-        super(name, optional, fields);
-    }
-
     getSelectorName = (): string => 'tag';
 }
 
@@ -433,15 +421,13 @@ export class ListParam extends Parameter {
     creator: (index: string) => Parameter;
 
     constructor(name: string, optional: boolean, creator: (index: string) => Parameter) {
-        super(name, optional);
-        this.creator = creator;
+      super(name, optional);
+      this.creator = creator;
     }
 
-    createItem = (index: number) => this.creator(index.toString());
+    createItem = (index: number): Parameter => this.creator(index.toString());
 
-    defaultValue = (): List => {
-       return [];
-    }
+    defaultValue = (): List => []
 }
 
 // Utilities for token flow
@@ -449,84 +435,77 @@ const csrfTokenStorageName = 'Dropbox_API_state';
 const tokenStorageName = 'Dropbox_API_explorer_token';
 const clientIdStorageName = 'Dropbox_API_explorer_client_id';
 
-export const getAuthType = (): AuthType => {
-    return window.location.href.indexOf('/team') > 0
-        ? AuthType.Team
-        : AuthType.User
-};
+export const getAuthType = (): AuthType => (window.location.href.indexOf('/team') > 0
+  ? AuthType.Team
+  : AuthType.User);
 
 export const createCsrfToken = (): string => {
-    const randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
+  const randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
 
-    // If available, use the cryptographically secure generator, otherwise use Math.random.
-    const crypto: RandomSource = window.crypto || (<any>window).msCrypto;
-    if (crypto && crypto.getRandomValues && false) {
-        crypto.getRandomValues(randomBytes);
+  // If available, use the cryptographically secure generator, otherwise use Math.random.
+  const crypto: RandomSource = window.crypto || (<any>window).msCrypto;
+  if (crypto && crypto.getRandomValues && false) {
+    crypto.getRandomValues(randomBytes);
+  } else {
+    for (let i = 0; i < randomBytes.length; i++) {
+      randomBytes[i] = Math.floor(Math.random() * 256);
     }
-    else {
-        for (let i = 0; i < randomBytes.length; i++) {
-            randomBytes[i] = Math.floor(Math.random() * 256);
-        }
-    }
+  }
 
-    var token = btoa(String.fromCharCode.apply(null, randomBytes)); // base64-encode
-    LocalStorage.setItem(csrfTokenStorageName, token);
-    return token;
+  const token = btoa(String.fromCharCode.apply(null, randomBytes)); // base64-encode
+  LocalStorage.setItem(csrfTokenStorageName, token);
+  return token;
 };
 
 export const checkCsrfToken = (givenCsrfToken: string): boolean => {
-    const expectedCsrfToken = LocalStorage.getItem(csrfTokenStorageName);
-    if (expectedCsrfToken === null) return false;
-    return givenCsrfToken === expectedCsrfToken;  // TODO: timing attack in string comparison?
+  const expectedCsrfToken = LocalStorage.getItem(csrfTokenStorageName);
+  if (expectedCsrfToken === null) return false;
+  return givenCsrfToken === expectedCsrfToken; // TODO: timing attack in string comparison?
 };
 
 // A utility to read the URL's hash and parse it into a dict.
 export const getHashDict = (): Dict => {
-    let toReturn: Dict = {};
-    let index: number = window.location.href.indexOf('#');
+  const toReturn: Dict = {};
+  const index: number = window.location.href.indexOf('#');
 
-    if (index === -1) return toReturn;
+  if (index === -1) return toReturn;
 
-    const hash = window.location.href.substr(index + 1);
-    const hashes: string[] = hash.split('#');
-    hashes.forEach((s: string) => {
-        if (s.indexOf('&') == -1) toReturn['__ept__'] = decodeURIComponent(s);
-        else {
-            s.split('&').forEach((pair: string) => {
-                const splitPair = pair.split('=');
-                toReturn[decodeURIComponent(splitPair[0])] = decodeURIComponent(splitPair[1]);
-            });
-        }
-    });
-    return toReturn;
+  const hash = window.location.href.substr(index + 1);
+  const hashes: string[] = hash.split('#');
+  hashes.forEach((s: string) => {
+    if (s.indexOf('&') === -1) toReturn.__ept__ = decodeURIComponent(s);
+    else {
+      s.split('&').forEach((pair: string) => {
+        const splitPair = pair.split('=');
+        toReturn[decodeURIComponent(splitPair[0])] = decodeURIComponent(splitPair[1]);
+      });
+    }
+  });
+  return toReturn;
 };
 
 // Reading and writing the token, which is preserved in LocalStorage.
 export const putToken = (token: string): void => {
-    LocalStorage.setItem(tokenStorageName + '_' + getAuthType(), token);
+  LocalStorage.setItem(`${tokenStorageName}_${getAuthType()}`, token);
 };
 
-export const getToken = (): string => {
-    return LocalStorage.getItem(tokenStorageName + '_' + getAuthType());
-};
+export const getToken = (): string => LocalStorage.getItem(`${tokenStorageName}_${getAuthType()}`);
 
 // Reading and writing the client id, which is preserved in LocalStorage.
 export const putClientId = (clientId: string): void => {
-    LocalStorage.setItem(clientIdStorageName + '_' + getAuthType(), clientId)
+  LocalStorage.setItem(`${clientIdStorageName}_${getAuthType()}`, clientId);
 };
 
-export const getClientId = (): string => {
-    return LocalStorage.getItem(clientIdStorageName + '_' + getAuthType());
-};
+export const getClientId = (): string => LocalStorage.getItem(`${clientIdStorageName}_${getAuthType()}`);
 
 // Some utilities that help with processing user input
 
 // Returns an endpoint given its name, or null if there was none
 export const getEndpoint = (epts: Endpoint[], name: string): Endpoint => {
-    for(let i = 0; i < epts.length; i++) {
-        if (epts[i].getFullName() === name) return epts[i];
-    }
-    return null; // signals an error
+  for (let i = 0; i < epts.length; i++) {
+    if (epts[i].getFullName() === name) return epts[i];
+  }
+  return null; // signals an error
 };
 
 /* Returns the intial values for the parameters of an endpoint. Specifically, the non-optional
@@ -536,22 +515,21 @@ export const getEndpoint = (epts: Endpoint[], name: string): Endpoint => {
    than an empty dict.
  */
 export const initialValues = (ept: Endpoint): Dict => {
-    if (ept.params.length == 0) return null;
-    if (ept.params.length == 1 && ept.params[0].name === '__file__') return null;
+  if (ept.params.length === 0) return null;
+  if (ept.params.length === 1 && ept.params[0].name === '__file__') return null;
 
-    let toReturn: Dict = {};
-    ept.params.forEach((param: Parameter) => {
-        if (!param.optional && param.name !== '__file__') {
-            if (param instanceof RootUnionParam) {
-                toReturn = param.defaultValue();
-            }
-            else {
-                toReturn[param.name] = param.defaultValue();
-            }
-        }
-    });
+  let toReturn: Dict = {};
+  ept.params.forEach((param: Parameter) => {
+    if (!param.optional && param.name !== '__file__') {
+      if (param instanceof RootUnionParam) {
+        toReturn = param.defaultValue();
+      } else {
+        toReturn[param.name] = param.defaultValue();
+      }
+    }
+  });
 
-    return toReturn;
+  return toReturn;
 };
 
 /* For a download endpoint, this function calculates the filename that the data should be saved
@@ -560,68 +538,64 @@ export const initialValues = (ept: Endpoint): Dict => {
    This function assumes every download-style endpoint has a parameter named 'path.'
  */
 export const getDownloadName = (ept: Endpoint, paramVals: Dict): string => {
-    if (paramVals !== null && 'path' in paramVals) {
-        let toReturn = paramVals['path'].split('/').pop();
-        if (ept.name === 'get_thumbnail') {
-            const format = ('format' in paramVals)? paramVals['format']['.tag'] : 'jpeg';
-            toReturn = toReturn.substr(0, toReturn.lastIndexOf('.')) + '.' + format;
-        }
-        return toReturn;
-    } else return ''; // not a download-style endpoint anyways
+  if (paramVals !== null && 'path' in paramVals) {
+    let toReturn = paramVals.path.split('/').pop();
+    if (ept.name === 'get_thumbnail') {
+      const format = ('format' in paramVals) ? paramVals.format['.tag'] : 'jpeg';
+      toReturn = `${toReturn.substr(0, toReturn.lastIndexOf('.'))}.${format}`;
+    }
+    return toReturn;
+  } return ''; // not a download-style endpoint anyways
 };
 
 // Returns the current URL without any fragment
 export const currentURL = (): string => window.location.href.split('#', 1)[0];
 
 export const strippedCurrentURL = (): string => {
-    var currentUrl = currentURL();
-    if(currentUrl.includes("?")){
-        return currentUrl.substring(0, currentUrl.indexOf("?"));
-    }else{
-        return currentUrl;
-    }
+  const currentUrl = currentURL();
+  if (currentUrl.includes('?')) {
+    return currentUrl.substring(0, currentUrl.indexOf('?'));
+  }
+  return currentUrl;
 };
 
-export const arrayBufToString = (buf: ArrayBuffer) =>
-    String.fromCharCode.apply(null, new Uint8Array(buf));
+export const arrayBufToString = 
+(buf: ArrayBuffer): string => String.fromCharCode.apply(null, new Uint8Array(buf));
 
 const isJson = (s: string): boolean => {
-    try {
-        JSON.parse(s);
-        return true;
-    } catch (_) {
-        return false;
-    }
+  try {
+    JSON.parse(s);
+    return true;
+  } catch (_) {
+    return false;
+  }
 };
 
 // Applies pretty-printing to JSON data serialized as a string.
 export const prettyJson = (s: string): string => JSON.stringify(JSON.parse(s), null, 2);
 
 // common message for error handling
-export const errorHandler = (stat: number, response: string): react.DetailedReactHTMLElement<any, any> => {
-    if (isJson(response)) return ce('code', {className: null, children: null}, prettyJson(response));
-    else return react.createElement('span', null, [
-        react.createElement('h4', null, "Error: " + stat),
-        react.createElement('code', null, response)
-    ]);
+export const errorHandler = 
+(stat: number, response: string): react.DetailedReactHTMLElement<any, any> => {
+  if (isJson(response)) return ce('code', { className: null, children: null }, prettyJson(response));
+  return react.createElement('span', null, [
+    react.createElement('h4', null, `Error: ${stat}`),
+    react.createElement('code', null, response),
+  ]);
 };
 
-    
 // Since HTTP headers cannot contain arbitrary Unicode characters, we must replace them.
 export const escapeUnicode = (s: string): string => s.replace(/[\u007f-\uffff]/g,
-    (c: string) => '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4));
+  (c: string) => `\\u${(`0000${c.charCodeAt(0).toString(16)}`).slice(-4)}`);
 
 // Used to get highlight.js to syntax-highlight the codeview and response areas.
 // Source: https://github.com/akiran/react-highlight/blob/master/src/index.jsx
 interface HltProps {
     className: string;
-    children: react.ClassicElement<{}>
+    children: react.ClassicElement<Record<string, unknown>>
 }
-export class Highlight extends react.Component<HltProps, {}> {
-    constructor(props: HltProps) {
-        super(props);
-    }
-    defaultProps = {className: ""};
+export class Highlight extends react.Component<HltProps, Record<string, unknown>> {
+    defaultProps = { className: '' };
 
     // TODO: fix this highlighting it breaks updates
     // componentDidMount = () => this.highlightCode();
@@ -632,11 +606,10 @@ export class Highlight extends react.Component<HltProps, {}> {
     //         (node: Node) => hljs.highlightBlock(node)
     // );
 
-    public render() {
-        return react.createElement('pre', {className: this.props.className},
-            react.createElement('code', {className: this.props.className},
-            this.props.children)
-        );
+    public render(): ReactNode {
+      return react.createElement('pre', { className: this.props.className },
+        react.createElement('code', { className: this.props.className },
+          this.props.children));
     }
 }
 
@@ -644,59 +617,56 @@ export class Highlight extends react.Component<HltProps, {}> {
 
 // The headers for an RPC-like endpoint HTTP request
 export const RPCLikeHeaders = (token: string, authType: AuthType): Dict => {
-    let toReturn: Dict =  {};
-    if (authType == AuthType.None) {
-        // No auth headered for no auth endpoints.
-    }
-    else if (authType == AuthType.App) {
-        toReturn['Authorization'] = "Basic <APP_KEY>:<APP_SECRET>";
-    }
-    else {
-        toReturn['Authorization'] = "Bearer " + token;
-    }
-    toReturn["Content-Type"] = "application/json";
-    return toReturn;
+  const toReturn: Dict = {};
+  if (authType === AuthType.None) {
+    // No auth headered for no auth endpoints.
+  } else if (authType === AuthType.App) {
+    toReturn.Authorization = 'Basic <APP_KEY>:<APP_SECRET>';
+  } else {
+    toReturn.Authorization = `Bearer ${token}`;
+  }
+  toReturn['Content-Type'] = 'application/json';
+  return toReturn;
 };
 
 // args may need to be modified by the client, so they're passed in as a string
-export const uploadLikeHeaders = (token: string, args: string): Dict => {
-    return {
-        Authorization:     "Bearer " + token,
-        "Content-Type":    "application/octet-stream",
-        "Dropbox-API-Arg": escapeUnicode(args)
-    };
-};
-export const downloadLikeHeaders = (token: string, args: string): Dict => {
-    return {
-        Authorization:     "Bearer " + token,
-        "Dropbox-API-Arg": escapeUnicode(args)
-    }
-};
+export const uploadLikeHeaders = (token: string, args: string): Dict => ({
+  Authorization: `Bearer ${token}`,
+  'Content-Type': 'application/octet-stream',
+  'Dropbox-API-Arg': escapeUnicode(args),
+});
+export const downloadLikeHeaders = (token: string, args: string): Dict => ({
+  Authorization: `Bearer ${token}`,
+  'Dropbox-API-Arg': escapeUnicode(args),
+});
 
 export const getHeaders = (ept: Endpoint, token: string, customHeaders: Header[],
-                           args: string = null): Dict => {
-    var headers: Dict = {};
+  args: string = null): Dict => {
+  let headers: Dict = {};
 
-    switch(ept.getEndpointKind()) {
-        case EndpointKind.RPCLike:  {
-            headers = RPCLikeHeaders(token, ept.getAuthType());
-            break;
-        }
-        case EndpointKind.Upload:   {
-            headers = uploadLikeHeaders(token, args);
-            break;
-        }
-        case EndpointKind.Download: {
-            headers = downloadLikeHeaders(token, args);
-            break;
-        }
+  switch (ept.getEndpointKind()) {
+    case EndpointKind.RPCLike: {
+      headers = RPCLikeHeaders(token, ept.getAuthType());
+      break;
     }
+    case EndpointKind.Upload: {
+      headers = uploadLikeHeaders(token, args);
+      break;
+    }
+    case EndpointKind.Download: {
+      headers = downloadLikeHeaders(token, args);
+      break;
+    }
+    default: {
+      throw new Error('Unknown endpoint type');
+    }
+  }
 
-    customHeaders.forEach((header) => {
-        if (header.name != '') {
-            headers[header.name] = header.value;
-        }
-    });
+  customHeaders.forEach((header) => {
+    if (header.name !== '') {
+      headers[header.name] = header.value;
+    }
+  });
 
-    return headers
+  return headers;
 };
