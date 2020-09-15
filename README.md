@@ -1,44 +1,14 @@
 [![Logo][logo]][repo]
 
-{Build Badge}
-{Version Badge}
-{Code Coverage Badge}
-{Docs Badge}
+[![codecov](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer/branch/master/graph/badge.svg)](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer)
 
-The offical Dropbox SDK for {language}.
+The offical API Explorer for Dropbox API v2.
 
-Documentation can be found on [{Documentation Source}][documentation]
+API v2 Explorer is a client-side web app that lets you explore the different Dropbox APIs hosted via github pages.
 
-## Installation
+Live Link: https://dropbox.github.io/dropbox-api-v2-explorer/
 
-Create an app via the [Developer Console][devconsole]
-
-Install via [{manager}]({link})
-
-```
-$ {install command}
-```
-
-Install from source:
-
-```
-$ git clone {repo}
-$ cd {repo name}
-$ {install command}
-```
-
-After installation, follow one of our [Examples][examples] or read the [Documentation][documentation].
-
-You can also view our [OAuth guide][oauthguide].
-
-## Examples
-
-We provide [Examples][examples] to help get you started with a lot of the basic functionality in the SDK.
-
-- **OAuth**
-    - {link} - {Description}
-- **Other Examples**
-    - {link} - {Description}
+You can view documentation for all of the APIs in our documentation: https://www.dropbox.com/developers/documentation/http/documentation
 
 ## Getting Help
 
@@ -51,11 +21,7 @@ If you need help that is not specific to this SDK, please reach out to [Dropbox 
 This SDK is distributed under the MIT license, please see [LICENSE][license] for more information.
 
 [logo]: {logo_link}
-[repo]: {repo_link}
-[documentation]: {documentation_link}
-[examples]: {examples_link}
-[license]: {license_link}
-[contributing]: {contributing_link}
-[devconsole]: https://dropbox.com/developers/apps
-[oauthguide]: https://www.dropbox.com/lp/developers/reference/oauth-guide
+[repo]: https://github.com/dropbox/dropbox-api-v2-explorer
+[license]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/LICENSE
+[contributing]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/CONTRIBUTING.md
 [support]: https://www.dropbox.com/developers/contact

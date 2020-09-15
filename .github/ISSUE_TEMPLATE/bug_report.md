@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Bug report"
-about: Create a report to help us improve the SDK
+about: Create a report to help us improve the API Explorer
 title: ''
 labels: bug
 assignees: ''
@@ -23,9 +23,7 @@ A clear description of what actually happened
 If applicable, add screenshots to help explain your problem.
 
 **Versions**
-* What version of the SDK are you using?
-* What version of the language are you using?
-* What platform are you using? (if applicable)
+* What platform/browser are you using? (if applicable)
 
 **Additional context**
 Add any other context about the problem here.

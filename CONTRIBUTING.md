@@ -1,4 +1,4 @@
-# Contributing to the Dropbox SDK for {language}
+# Contributing to the Dropbox API V2 Explorer
 We value and rely on the feedback from our community. This comes in the form of bug reports, feature requests, and general guidance. We welcome your issues and pull requests and try our hardest to be timely in both response and resolution. Please read through this document before submitting issues or pull requests to ensure we have the necessary information to help you resolve your issue.
 
 ## Filing Bug Reports
@@ -18,12 +18,46 @@ We are more than happy to recieve pull requests helping us improve the state of 
 
 2. Please add tests confirming the new functionality works. Pull requests will not be merged without passing continuous integration tests unless the pull requests aims to fix existing issues with these tests.
 
+## Updating Generated Code
+
+Generated code can be updated by running the following code:
+
+```
+$ npm install
+$ git submodule init
+$ git submodule update --remote --recursive
+$ cd codegen/stone
+$ python setup.py install
+$ cd ..
+$ sh ./run_codegen.sh
+```
+
 ## Testing the Code
 
-{Language Specific Testing Guide}
+Tests live under the test/ folder and are then broken down into the type of test it is. To run both the unit tests and the typescript tests, you can use:
 
-[issues]: issues_link
-[pr]: pr_link
-[coc]: code_of_conduct_link
-[license]: license_link
+```
+$ npm test
+```
+
+To test the build of the webpage, you can use:
+
+```
+$ npm run build
+```
+
+This builds the site once and places the output into the `build/` directory.
+
+## Running the Explorer Locally
+
+You can run the explorer locally and see changes reflected live as you develop by starting up `Gulp`:
+
+```
+$ npm run watch
+```
+
+[issues]: https://github.com/dropbox/dropbox-api-v2-explorer/issues
+[pr]: https://github.com/dropbox/dropbox-api-v2-explorer/pulls
+[coc]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/CODE_OF_CONDUCT.md
+[license]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/LICENSE
 [cla]: https://opensource.dropbox.com/cla/

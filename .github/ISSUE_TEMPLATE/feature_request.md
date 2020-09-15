@@ -1,6 +1,6 @@
 ---
 name: "\U0001F680 Feature Request"
-about: Suggest an idea for this SDK
+about: Suggest an idea for the API Explorer
 title: ''
 labels: enhancement
 assignees: ''
