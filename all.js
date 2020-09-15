@@ -29004,7 +29004,8 @@ const JSONListener = (component, resp) => {
 };
 const DownloadCallListener = (component, resp, path) => {
     if (resp.status !== 200) {
-        component.setState({ responseText: utils.errorHandler(resp.status, utils.arrayBufToString(resp.response))
+        component.setState({
+            responseText: utils.errorHandler(resp.status, utils.arrayBufToString(resp.response)),
         });
     }
     else {
@@ -29013,7 +29014,7 @@ const DownloadCallListener = (component, resp, path) => {
         const toDownload = new Blob([resp.response], { type: 'application/octet-stream' });
         component.setState({
             downloadURL: URL.createObjectURL(toDownload),
-            downloadFilename: path
+            downloadFilename: path,
         });
     }
 };
@@ -29029,14 +29030,14 @@ exports.chooseCallback = (k, path) => {
     }
 };
 const initRequest = (endpt, token, data, customHeaders, listener, component) => {
-    let request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.onload = (_) => listener(component, request);
     request.open('POST', endpt.getURL(), true);
-    let headers = utils.getHeaders(endpt, token, customHeaders, data);
-    for (let key in headers) {
+    const headers = utils.getHeaders(endpt, token, customHeaders, data);
+    for (const key in headers) {
         let value = headers[key];
-        if (key == "Content-Type" && endpt.getEndpointKind() == utils.EndpointKind.RPCLike) {
-            value = "text/plain; charset=dropbox-cors-hack";
+        if (key == 'Content-Type' && endpt.getEndpointKind() == utils.EndpointKind.RPCLike) {
+            value = 'text/plain; charset=dropbox-cors-hack';
         }
         request.setRequestHeader(key, value);
     }
@@ -29055,10 +29056,10 @@ const endRequest = (component) => {
    The file parameter will be null unless the user specified a file on an upload-like endpoint.
  */
 const utf8Encode = (data, request) => {
-    let blob = new Blob([data]);
-    let reader = new FileReader();
+    const blob = new Blob([data]);
+    const reader = new FileReader();
     reader.onloadend = () => {
-        var sendable_blob = null;
+        let sendable_blob = null;
         if (reader.result instanceof ArrayBuffer) {
             sendable_blob = new Uint8Array(reader.result);
         }
@@ -29083,7 +29084,7 @@ exports.APIWrapper = (data, endpt, token, headers, listener, component, file) =>
         case utils.EndpointKind.Upload:
             var request = initRequest(endpt, token, data, headers, listener_wrapper, component);
             if (file !== null) {
-                let reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = () => request.send(reader.result);
                 reader.readAsArrayBuffer(file);
             }
@@ -29097,6 +29098,8 @@ exports.APIWrapper = (data, endpt, token, headers, listener, component, file) =>
             request.responseType = 'arraybuffer';
             request.send();
             break;
+        default:
+            throw new Error('Invalid Endpoint Type');
     }
 };
 
@@ -29113,141 +29116,136 @@ const syntaxHighlight = (syntax, text) => ce(utils.Highlight, { className: synta
 // Applies f to each element of the dict, and then appends the separator to all but the last result.
 // Subsequent list elements are separated by newlines.
 const joinWithNewlines = (dc, f, sep = ',') => utils.Dict._map(dc, (k, v, i) => {
-    const maybeSep = (i === Object.keys(dc).length - 1) ?
-        "\n" : sep + "\n";
-    return ce('span', { key: "" + i }, f(k, v), maybeSep);
+    const maybeSep = (i === Object.keys(dc).length - 1)
+        ? '\n' : `${sep}\n`;
+    return ce('span', { key: `${i}` }, f(k, v), maybeSep);
 });
 // the minor differences between JSON and Python's notation
 const pythonStringify = (val) => {
     if (val === true) {
-        return "True";
+        return 'True';
     }
-    else if (val === false) {
-        return "False";
+    if (val === false) {
+        return 'False';
     }
-    else if (val === null || (val !== val)) {
-        return "None";
+    if (val === null) {
+        return 'None';
     }
-    else {
-        return JSON.stringify(val);
-    }
+    return JSON.stringify(val);
 };
 // Representation of a dict, or null if the passed-in dict is also null
-const dictToPython = (name, dc) => ce('span', null, name + ' = ', (dc === null) ?
-    'None' : ce('span', null, '{\n', joinWithNewlines(dc, (k, v) => '    "' + k + '": ' + pythonStringify(v)), '}'), '\n\n');
+const dictToPython = (name, dc) => ce('span', null, `${name} = `, (dc === null)
+    ? 'None' : ce('span', null, '{\n', joinWithNewlines(dc, (k, v) => `    "${k}": ${pythonStringify(v)}`), '}'), '\n\n');
 // For curl calls, we need to escape single quotes, and sometimes also double quotes.
 const shellEscape = (val, inQuotes = false) => {
-    const toReturn = JSON.stringify(val).replace(/'/g, "'\\''");
+    const toReturn = JSON.stringify(val).replace(/'/g, '\'\\\'\'');
     if (inQuotes)
         return toReturn.replace(/\\/g, '\\\\').replace(/"/g, '\\\"');
-    else
-        return toReturn;
+    return toReturn;
 };
 // Generates the functions that make up the Python Requests code viewer
 const RequestsCodeViewer = () => {
-    const syntax = "python";
+    const syntax = 'python';
     // common among all three parts
     const preamble = (endpt) => ce('span', null, [
         'import requests\n', 'import json\n\n',
-        'url = "' + endpt.getURL() + '"\n\n'
+        `url = "${endpt.getURL()}"\n\n`,
     ]);
     const requestsTemplate = (endpt, headers, dataReader, call) => syntaxHighlight(syntax, ce('span', null, preamble(endpt), dictToPython('headers', headers), dataReader, call));
     const requestsRPCLike = (endpt, token, paramVals, headerVals) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals), dictToPython('data', paramVals), 'r = requests.post(url, headers=headers, data=json.dumps(data))');
-    const requestsUploadLike = (endpt, token, paramVals, headerVals, file) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), 'data = open(' + JSON.stringify(file.name) + ', "rb").read()\n\n', 'r = requests.post(url, headers=headers, data=data)');
+    const requestsUploadLike = (endpt, token, paramVals, headerVals, file) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), `data = open(${JSON.stringify(file.name)}, "rb").read()\n\n`, 'r = requests.post(url, headers=headers, data=data)');
     const requestsDownloadLike = (endpt, token, paramVals, headerVals) => requestsTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), '', 'r = requests.post(url, headers=headers)');
     return {
-        syntax: syntax,
-        description: "Python request (requests library)",
+        syntax,
+        description: 'Python request (requests library)',
         renderRPCLike: requestsRPCLike,
         renderUploadLike: requestsUploadLike,
-        renderDownloadLike: requestsDownloadLike
+        renderDownloadLike: requestsDownloadLike,
     };
 };
 // Python's httplib library (which is also the urllib backend)
 const HttplibCodeViewer = () => {
-    const syntax = "python";
+    const syntax = 'python';
     const preamble = ce('span', null, 'import sys\nimport json\n', 'if (3,0) <= sys.version_info < (4,0):\n', '    import http.client as httplib\n', 'elif (2,6) <= sys.version_info < (3,0):\n', '    import httplib\n\n');
-    const httplibTemplate = (endpt, headers, dataReader, dataArg) => syntaxHighlight(syntax, ce('span', null, preamble, dictToPython('headers', headers), dataReader, 'c = httplib.HTTPSConnection("' + endpt.getHostname() + '")\n', 'c.request("POST", "' + endpt.getPathName() + '", ' + dataArg + ', headers)\n', 'r = c.getresponse()'));
+    const httplibTemplate = (endpt, headers, dataReader, dataArg) => syntaxHighlight(syntax, ce('span', null, preamble, dictToPython('headers', headers), dataReader, `c = httplib.HTTPSConnection("${endpt.getHostname()}")\n`, `c.request("POST", "${endpt.getPathName()}", ${dataArg}, headers)\n`, 'r = c.getresponse()'));
     const httplibRPCLike = (endpt, token, paramVals, headerVals) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals), dictToPython('params', paramVals), 'json.dumps(params)');
-    const httplibUploadLike = (endpt, token, paramVals, headerVals, file) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), 'data = open(' + JSON.stringify(file.name) + ', "rb")\n\n', 'data');
+    const httplibUploadLike = (endpt, token, paramVals, headerVals, file) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), `data = open(${JSON.stringify(file.name)}, "rb")\n\n`, 'data');
     const httplibDownloadLike = (endpt, token, paramVals, headerVals) => httplibTemplate(endpt, utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals)), '', '""');
     return {
-        syntax: syntax,
-        description: "Python request (standard library)",
+        syntax,
+        description: 'Python request (standard library)',
         renderRPCLike: httplibRPCLike,
         renderUploadLike: httplibUploadLike,
-        renderDownloadLike: httplibDownloadLike
+        renderDownloadLike: httplibDownloadLike,
     };
 };
 const CurlCodeViewer = () => {
     const syntax = 'bash';
-    const urlArea = (endpt) => 'curl -X POST ' + endpt.getURL() + ' \\\n';
+    const urlArea = (endpt) => `curl -X POST ${endpt.getURL()} \\\n`;
     const makeHeaders = (headers) => ce('span', null, utils.Dict._map(headers, (k, v, i) => {
         let sep = '\\\n';
         if (i == Object.keys(headers).length - 1)
             sep = '';
-        return ce('span', { key: "" + i }, "  --header '" + k + ': ' + v + "' " + sep);
+        return ce('span', { key: `${i}` }, `  --header '${k}: ${v}' ${sep}`);
     }));
     // The general model of the curl call, populated with the arguments.
     const curlTemplate = (endpt, headers, data) => syntaxHighlight(syntax, ce('span', null, urlArea(endpt), makeHeaders(headers), data));
-    const curlRPCLike = (endpt, token, paramVals, headerVals) => curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals), "\\\n  --data '" + shellEscape(paramVals) + "'");
+    const curlRPCLike = (endpt, token, paramVals, headerVals) => curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals), `\\\n  --data '${shellEscape(paramVals)}'`);
     const curlUploadLike = (endpt, token, paramVals, headerVals, file) => {
         const headers = utils.getHeaders(endpt, token, headerVals, shellEscape(paramVals, false));
-        return curlTemplate(endpt, headers, "\\\n  --data-binary @'" + file.name.replace(/'/g, "'\\''") + "'");
+        return curlTemplate(endpt, headers, `\\\n  --data-binary @'${file.name.replace(/'/g, '\'\\\'\'')}'`);
     };
     const curlDownloadLike = (endpt, token, paramVals, headerVals) => curlTemplate(endpt, utils.getHeaders(endpt, token, headerVals, shellEscape(paramVals, false)), '');
     return {
-        syntax: syntax,
-        description: "curl request",
+        syntax,
+        description: 'curl request',
         renderRPCLike: curlRPCLike,
         renderUploadLike: curlUploadLike,
-        renderDownloadLike: curlDownloadLike
+        renderDownloadLike: curlDownloadLike,
     };
 };
 const HTTPCodeViewer = () => {
     const syntax = 'http';
-    const httpTemplate = (endpt, headers, body) => syntaxHighlight(syntax, ce('span', null, 'POST ' + endpt.getPathName() + "\n", 'Host: https://' + endpt.getHostname() + "\n", 'User-Agent: api-explorer-client\n', utils.Dict.map(headers, (key, value) => ce('span', { key: key }, key + ": " + value + "\n")), body));
+    const httpTemplate = (endpt, headers, body) => syntaxHighlight(syntax, ce('span', null, `POST ${endpt.getPathName()}\n`, `Host: https://${endpt.getHostname()}\n`, 'User-Agent: api-explorer-client\n', utils.Dict.map(headers, (key, value) => ce('span', { key }, `${key}: ${value}\n`)), body));
     const httpRPCLike = (endpt, token, paramVals, headerVals) => {
         const body = JSON.stringify(paramVals, null, 4);
         const headers = utils.getHeaders(endpt, token, headerVals);
         // TODO: figure out how to determine the UTF-8 encoded length
-        //headers['Content-Length'] = ...
-        return httpTemplate(endpt, headers, "\n" + body);
+        // headers['Content-Length'] = ...
+        return httpTemplate(endpt, headers, `\n${body}`);
     };
     const httpUploadLike = (endpt, token, paramVals, headerVals, file) => {
         const headers = utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals));
         headers['Content-Length'] = file.size;
-        return httpTemplate(endpt, headers, "\n--- (content of " + file.name + " goes here) ---");
+        return httpTemplate(endpt, headers, `\n--- (content of ${file.name} goes here) ---`);
     };
     const httpDownloadLike = (endpt, token, paramVals, headerVals) => {
         const headers = utils.getHeaders(endpt, token, headerVals, JSON.stringify(paramVals));
         return httpTemplate(endpt, headers, '');
     };
     return {
-        syntax: syntax,
+        syntax,
         description: 'HTTP request',
         renderRPCLike: httpRPCLike,
         renderUploadLike: httpUploadLike,
-        renderDownloadLike: httpDownloadLike
+        renderDownloadLike: httpDownloadLike,
     };
 };
 exports.formats = {
-    'curl': CurlCodeViewer(),
-    'requests': RequestsCodeViewer(),
-    'httplib': HttplibCodeViewer(),
-    'http': HTTPCodeViewer()
+    curl: CurlCodeViewer(),
+    requests: RequestsCodeViewer(),
+    httplib: HttplibCodeViewer(),
+    http: HTTPCodeViewer(),
 };
-exports.getSelector = (onChange) => ce('select', { onChange: onChange }, utils.Dict.map(exports.formats, (key, cv) => ce('option', { key: key, value: key }, cv.description)));
+exports.getSelector = (onChange) => ce('select', { onChange }, utils.Dict.map(exports.formats, (key, cv) => ce('option', { key, value: key }, cv.description)));
 exports.render = (cv, endpt, token, paramVals, headerVals, file) => {
     if (endpt.getEndpointKind() === utils.EndpointKind.RPCLike) {
         return cv.renderRPCLike(endpt, token, paramVals, headerVals);
     }
-    else if (file !== null) {
+    if (file !== null) {
         return cv.renderUploadLike(endpt, token, paramVals, headerVals, file);
     }
-    else {
-        return cv.renderDownloadLike(endpt, token, paramVals, headerVals);
-    }
+    return cv.renderDownloadLike(endpt, token, paramVals, headerVals);
 };
 
 },{"./utils":22,"react":10}],19:[function(require,module,exports){
@@ -29258,16 +29256,16 @@ exports.render = (cv, endpt, token, paramVals, headerVals, file) => {
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setItem = (key, item) => {
-    document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(item);
+    document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(item)}`;
 };
 exports.getItem = (key) => {
-    var dict = exports.getAll();
+    const dict = exports.getAll();
     return dict[key];
 };
 exports.getAll = () => {
-    var dict = {};
+    const dict = {};
     const cookies = document.cookie.split('; ');
-    cookies.forEach(value => {
+    cookies.forEach((value) => {
         if (value.length > 0) {
             const items = value.split('=');
             dict[decodeURIComponent(items[0])] = decodeURIComponent(items[1]);
@@ -31512,33 +31510,24 @@ const utils = require("./utils");
 const apicalls = require("./apicalls");
 const codeview = require("./codeview");
 const utils_1 = require("./utils");
-const utils_2 = require("./utils");
-const utils_3 = require("./utils");
-const utils_4 = require("./utils");
-const utils_5 = require("./utils");
-const utils_6 = require("./utils");
-const utils_7 = require("./utils");
-const utils_8 = require("./utils");
 const ce = react.createElement;
 const developerPage = 'https://www.dropbox.com/developers';
 const displayNone = { style: { display: 'none' } };
 /* Element for text field in page table.
  */
-const tableText = (text) => {
-    return ce('td', { className: 'label' }, ce('div', { className: 'text' }, text));
-};
+const tableText = (text) => ce('td', { className: 'label' }, ce('div', { className: 'text' }, text));
 /* Map between client id and associated permission type.
  */
 const clientIdMap = {
-    'vyjzkx2chlpsooc': 'Team Information',
-    'pq2bj4ll002gohi': 'Team Auditing',
-    'j3zzv20pgxds87u': 'Team Member File Access',
-    'oq1ywlcgrto51qk': 'Team Member Management'
+    vyjzkx2chlpsooc: 'Team Information',
+    pq2bj4ll002gohi: 'Team Auditing',
+    j3zzv20pgxds87u: 'Team Member File Access',
+    oq1ywlcgrto51qk: 'Team Member Management',
 };
 /* Get client id from local storage. If doesn't exist. Use default value instead.
  */
 const getClientId = () => {
-    var clientId = utils.getClientId();
+    const clientId = utils.getClientId();
     if (clientId != null) {
         return clientId;
     }
@@ -31555,12 +31544,12 @@ class AppPermissionInputProps {
 class AppPermissionInput extends react.Component {
     constructor(props) { super(props); }
     render() {
-        var options = [];
-        var clientId = getClientId();
-        for (let id in clientIdMap) {
-            var value = clientIdMap[id];
-            var selected = id == clientId;
-            options.push(ce('option', { selected: selected, className: null, children: null }, value));
+        const options = [];
+        const clientId = getClientId();
+        for (const id in clientIdMap) {
+            const value = clientIdMap[id];
+            const selected = id == clientId;
+            options.push(ce('option', { selected, className: null, children: null }, value));
         }
         return ce('tr', null, tableText('App Permission'), ce('td', null, ce('select', { style: { 'margin-top': '5px' }, onChange: this.props.handler }, options)));
     }
@@ -31569,23 +31558,23 @@ class TokenInput extends react.Component {
     constructor(props) {
         super(props);
         this.handleEdit = (event) => {
-            let value = event.target.value;
+            const { value } = event.target;
             this.props.callback(value);
         };
         // This function handles the initial part of the OAuth2 token flow for the user.
         this.retrieveAuth = () => {
             const clientId = getClientId();
-            const state = utils.getHashDict()['__ept__'] + '!' + utils.createCsrfToken();
+            const state = `${utils.getHashDict().__ept__}!${utils.createCsrfToken()}`;
             const params = {
                 response_type: 'token',
                 client_id: clientId,
                 redirect_uri: utils.strippedCurrentURL(),
-                state: state,
+                state,
                 token_access_type: 'online',
             };
             let urlWithParams = 'https://www.dropbox.com/oauth2/authorize?';
-            for (let key in params) {
-                urlWithParams += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
+            for (const key in params) {
+                urlWithParams += `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}&`;
             }
             window.location.assign(urlWithParams);
         };
@@ -31596,7 +31585,7 @@ class TokenInput extends react.Component {
             id: 'token-input',
             defaultValue: utils.getToken(),
             onChange: this.handleEdit,
-            placeholder: 'If you don\'t have an access token, click the "Get Token" button to obtain one.'
+            placeholder: 'If you don\'t have an access token, click the "Get Token" button to obtain one.',
         }), ce('div', { className: 'align-right' }, ce('button', { onClick: this.retrieveAuth }, 'Get Token'), ce('button', { onClick: this.props.toggleShow }, this.props.showToken ? 'Hide Token' : 'Show Token'))));
     }
 }
@@ -31620,55 +31609,47 @@ class ParentValueHandler extends ValueHandler {
         super(...arguments);
         // Create a child value handler based on parameter type.
         this.getChildHandler = (param) => {
-            if (param instanceof utils_4.FileParam) {
+            if (param instanceof utils_1.FileParam) {
                 return new FileValueHandler(param, this);
             }
-            else if (param instanceof utils_6.RootUnionParam) {
+            if (param instanceof utils_1.RootUnionParam) {
                 return new RootUnionValueHandler(param, this);
             }
-            else if (param instanceof utils_3.UnionParam) {
+            if (param instanceof utils_1.UnionParam) {
                 return new UnionValueHandler(param, this);
             }
-            else if (param instanceof utils_2.StructParam) {
+            if (param instanceof utils_1.StructParam) {
                 return new StructValueHandler(param, this);
             }
-            else if (param instanceof utils_5.ListParam) {
+            if (param instanceof utils_1.ListParam) {
                 return new ListValueHandler(param, this);
             }
-            else {
-                return new ChildValueHandler(param, this);
-            }
+            return new ChildValueHandler(param, this);
         };
         this.getOrCreate = (name, defaultValue) => {
-            let dict = this.current();
+            const dict = this.current();
             if (name in dict) {
                 return dict[name];
             }
-            else {
-                dict[name] = defaultValue;
-                return dict[name];
-            }
+            dict[name] = defaultValue;
+            return dict[name];
         };
         this.hasChild = (name) => {
-            let dict = this.current();
+            const dict = this.current();
             if (name in dict) {
                 return true;
             }
-            else {
-                return false;
-            }
+            return false;
         };
         this.value = (key) => {
-            let dict = this.current();
+            const dict = this.current();
             if (key in dict) {
                 return dict[key];
             }
-            else {
-                return null;
-            }
+            return null;
         };
         this.updateChildValue = (name, value) => {
-            let dict = this.current();
+            const dict = this.current();
             if (value == null) {
                 delete dict[name];
             }
@@ -31713,9 +31694,7 @@ class UnionValueHandler extends StructValueHandler {
             if (this.parent.hasChild(this.param.name)) {
                 return this.value('.tag');
             }
-            else {
-                return null;
-            }
+            return null;
         };
         this.updateTag = (tag) => {
             this.parent.updateChildValue(this.param.name, this.param.optional ? null : {});
@@ -31723,9 +31702,7 @@ class UnionValueHandler extends StructValueHandler {
                 this.updateChildValue('.tag', tag);
             }
         };
-        this.getTagHandler = () => {
-            return new TagValueHandler(this);
-        };
+        this.getTagHandler = () => new TagValueHandler(this);
     }
 }
 /* Special case when root type is a union.
@@ -31733,12 +31710,10 @@ class UnionValueHandler extends StructValueHandler {
 class RootUnionValueHandler extends UnionValueHandler {
     constructor(param, handler) {
         super(param, handler);
-        this.getTag = () => {
-            return this.value('.tag');
-        };
+        this.getTag = () => this.value('.tag');
         this.updateTag = (tag) => {
-            let dict = this.current();
-            for (let name in dict) {
+            const dict = this.current();
+            for (const name in dict) {
                 delete dict[name];
             }
             if (tag != null) {
@@ -31747,9 +31722,7 @@ class RootUnionValueHandler extends UnionValueHandler {
         };
         this.current = () => this.parent.current();
         this.update = () => this.parent.update();
-        this.getTagHandler = () => {
-            return new TagValueHandler(this);
-        };
+        this.getTagHandler = () => new TagValueHandler(this);
     }
 }
 /* Value handler for list type.
@@ -31758,8 +31731,8 @@ class ListValueHandler extends ParentValueHandler {
     constructor(param, parent) {
         super();
         this.addItem = () => {
-            let list = this.current();
-            let param = this.param.createItem(0);
+            const list = this.current();
+            const param = this.param.createItem(0);
             list.push(param.defaultValue());
             this.update();
         };
@@ -31767,15 +31740,9 @@ class ListValueHandler extends ParentValueHandler {
             this.parent.updateChildValue(this.param.name, this.param.defaultValue());
             this.update();
         };
-        this.getOrCreate = (name, defaultValue) => {
-            return this.current()[+name];
-        };
-        this.hasChild = (name) => {
-            return true;
-        };
-        this.value = (key) => {
-            return this.current()[+name];
-        };
+        this.getOrCreate = (name, defaultValue) => this.current()[+name];
+        this.hasChild = (name) => true;
+        this.value = (key) => this.current()[+name]; // eslint-disable-line no-restricted-globals
         this.updateChildValue = (name, value) => {
             this.current()[+name] = value;
         };
@@ -31826,7 +31793,7 @@ class RootValueHandler extends ParentValueHandler {
         super();
         this.current = () => this.paramVals;
         this.update = () => this.callback(this.paramVals, this.fileVals);
-        this.updateFile = (value) => this.fileVals['file'] = value;
+        this.updateFile = (value) => this.fileVals.file = value;
         this.paramVals = paramVals;
         this.fileVals = fileVals;
         this.callback = callback;
@@ -31857,8 +31824,8 @@ class SingleParamInput extends ParamInput {
             else {
                 const target = event.target;
                 /* If valueToReturn is left as null, it signals an optional value that should be
-                 deleted from the dict of param values.
-                 */
+                     deleted from the dict of param values.
+                     */
                 if (target.value !== '' || !this.props.param.optional) {
                     valueToReturn = this.props.param.getValue(target.value);
                 }
@@ -31876,33 +31843,33 @@ class StructParamInput extends ParamInput {
         super(props);
         this.add = () => {
             this.props.handler.add();
-            this.setState({ 'display': true });
+            this.setState({ display: true });
         };
         this.reset = () => {
             this.props.handler.reset();
-            this.setState({ 'display': false });
+            this.setState({ display: false });
         };
         this.renderItems = () => {
-            let ret = [];
+            const ret = [];
             if (this.state.display || !this.props.param.optional) {
-                for (let p of this.props.param.fields) {
-                    let input = ParamClassChooser.getParamInput(p, {
-                        key: this.props.key + '_' + this.props.param.name + '_' + p.name,
+                for (const p of this.props.param.fields) {
+                    const input = ParamClassChooser.getParamInput(p, {
+                        key: `${this.props.key}_${this.props.param.name}_${p.name}`,
                         handler: this.props.handler.getChildHandler(p),
-                        param: p
+                        param: p,
                     });
                     ret.push(input);
                 }
             }
             if (this.props.param.optional) {
-                let button = this.state.display
+                const button = this.state.display
                     ? ce('button', { onClick: this.reset }, 'Clear')
                     : ce('button', { onClick: this.add }, 'Add');
                 ret.push(ce('tr', { className: 'struct-param-actions' }, ce('td', null, button)));
             }
             return ret;
         };
-        this.state = { 'display': !props.param.optional };
+        this.state = { display: !props.param.optional };
     }
     render() {
         return ce('tr', null, this.props.param.getNameColumn(), ce('td', null, ce('table', null, ce('tbody', null, this.renderItems()))));
@@ -31912,14 +31879,14 @@ class UnionParamInput extends ParamInput {
     constructor(props) {
         super(props);
         this.getParam = () => {
-            let tag = this.props.handler.getTag();
+            const tag = this.props.handler.getTag();
             let fields = null;
             if (tag == null) {
                 fields = [];
             }
             else {
-                let param = this.props.param.fields.filter(t => t.name == tag)[0];
-                if (param instanceof utils_2.StructParam) {
+                const param = this.props.param.fields.filter((t) => t.name == tag)[0];
+                if (param instanceof utils_1.StructParam) {
                     fields = param.fields;
                 }
                 else if (param instanceof utils_1.VoidParam) {
@@ -31929,23 +31896,23 @@ class UnionParamInput extends ParamInput {
                     fields = [param];
                 }
             }
-            return new utils_2.StructParam(this.props.param.name, false, fields);
+            return new utils_1.StructParam(this.props.param.name, false, fields);
         };
     }
     render() {
-        let selectParamProps = {
-            key: this.props.key + '_selector',
+        const selectParamProps = {
+            key: `${this.props.key}_selector`,
             handler: this.props.handler.getTagHandler(),
-            param: this.props.param.getSelectorParam(this.props.handler.getTag())
+            param: this.props.param.getSelectorParam(this.props.handler.getTag()),
         };
-        let param = this.getParam();
+        const param = this.getParam();
         if (param.fields.length == 0) {
             return ce(SingleParamInput, selectParamProps);
         }
-        let structParam = new StructParamInput({
-            key: this.props.key + '_' + param.name,
+        const structParam = new StructParamInput({
+            key: `${this.props.key}_${param.name}`,
             handler: this.props.handler,
-            param: param
+            param,
         });
         return ce('tr', null, this.props.param.getNameColumn(), ce('td', null, ce('table', null, ce('tbody', null, [ce(SingleParamInput, selectParamProps)].concat(structParam.renderItems())))));
     }
@@ -31955,27 +31922,28 @@ class ListParamInput extends ParamInput {
         super(props);
         this.addItem = () => {
             this.props.handler.addItem();
-            this.setState({ 'count': this.state.count + 1 });
+            this.setState({ count: this.state.count + 1 });
         };
         this.reset = () => {
             this.props.handler.reset();
-            this.setState({ 'count': 0 });
+            this.setState({ count: 0 });
         };
         this.renderItems = () => {
-            let ret = [];
+            const ret = [];
             for (let i = 0; i < this.state.count; i++) {
-                let param = this.props.param.createItem(i);
-                let item = ParamClassChooser.getParamInput(param, {
-                    key: this.props.key + '_' + this.props.param.name + '_' + i.toString(),
+                const param = this.props.param.createItem(i);
+                const item = ParamClassChooser
+                    .getParamInput(param, {
+                    key: `${this.props.key}_${this.props.param.name}_${i.toString()}`,
                     handler: this.props.handler.getChildHandler(param),
-                    param: param
+                    param,
                 });
                 ret.push(item);
             }
             ret.push(ce('tr', { className: 'list-param-actions' }, ce('td', null, ce('button', { onClick: this.addItem }, 'Add'), ce('button', { onClick: this.reset }, 'Clear'))));
             return ret;
         };
-        this.state = { 'count': 0 };
+        this.state = { count: 0 };
     }
     render() {
         return ce('tr', null, this.props.param.getNameColumn(), ce('td', null, ce('table', null, ce('tbody', null, this.renderItems()))));
@@ -31987,15 +31955,13 @@ class ParamClassChooser {
         if (param instanceof utils.UnionParam) {
             return ce(UnionParamInput, props);
         }
-        else if (param instanceof utils.StructParam) {
+        if (param instanceof utils.StructParam) {
             return ce(StructParamInput, props);
         }
-        else if (param instanceof utils.ListParam) {
+        if (param instanceof utils.ListParam) {
             return ce(ListParamInput, props);
         }
-        else {
-            return ce(SingleParamInput, props);
-        }
+        return ce(SingleParamInput, props);
     }
 }
 class CodeArea extends react.Component {
@@ -32005,7 +31971,7 @@ class CodeArea extends react.Component {
             const newFormat = event.target.value;
             this.setState({ formatter: codeview.formats[newFormat] });
         };
-        this.state = { formatter: codeview.formats['curl'] };
+        this.state = { formatter: codeview.formats.curl };
     }
     render() {
         return ce('span', { id: 'code-area' }, ce('p', null, 'View request as ', codeview.getSelector(this.changeFormat)), ce('span', null, codeview.render(this.state.formatter, this.props.ept, this.props.token, this.props.paramVals, this.props.headerVals, this.props.__file__)));
@@ -32015,11 +31981,11 @@ class RequestArea extends react.Component {
     constructor(props) {
         super(props);
         this.updateParamValues = (paramVals, fileVals) => {
-            this.setState({ paramVals: paramVals, fileVals: fileVals });
+            this.setState({ paramVals, fileVals });
             this.forceUpdate();
         };
         this.updateHeaderValues = (headerVals) => {
-            this.setState({ headerVals: headerVals });
+            this.setState({ headerVals });
             this.forceUpdate();
         };
         this.updateTokenValue = (tokenValue) => {
@@ -32034,7 +32000,7 @@ class RequestArea extends react.Component {
          */
         this.componentWillReceiveProps = (newProps) => {
             if (newProps.currEpt !== this.props.currEpt) {
-                this.updateParamValues(utils.initialValues(newProps.currEpt), { 'file': null });
+                this.updateParamValues(utils.initialValues(newProps.currEpt), { file: null });
             }
             this.setState({ errMsg: null });
         };
@@ -32044,22 +32010,22 @@ class RequestArea extends react.Component {
          */
         this.submit = () => {
             const token = utils.getToken();
-            var currEpt = this.props.currEpt;
-            var authType = currEpt.getAuthType();
+            const { currEpt } = this.props;
+            const authType = currEpt.getAuthType();
             if (authType == utils.AuthType.App) {
                 this.setState({
-                    errMsg: "Error: Making API call for app auth endpoint is not supported. Please run the code using credential of your own app."
+                    errMsg: 'Error: Making API call for app auth endpoint is not supported. Please run the code using credential of your own app.',
                 });
             }
             else if (authType != utils.AuthType.None && (token == null || token === '')) {
                 this.setState({
-                    errMsg: 'Error: missing token. Please enter a token above or click the "Get Token" button.'
+                    errMsg: 'Error: missing token. Please enter a token above or click the "Get Token" button.',
                 });
             }
             else {
                 this.setState({ errMsg: null });
                 const responseFn = apicalls.chooseCallback(currEpt.getEndpointKind(), utils.getDownloadName(currEpt, this.state.paramVals));
-                this.props.APICaller(JSON.stringify(this.state.paramVals), currEpt, token, this.state.headerVals, responseFn, this.state.fileVals['file']);
+                this.props.APICaller(JSON.stringify(this.state.paramVals), currEpt, token, this.state.headerVals, responseFn, this.state.fileVals.file);
             }
         };
         // Toggles whether the token is hidden, or visible on the screen.
@@ -32070,8 +32036,8 @@ class RequestArea extends react.Component {
         this.showOrHideHeaders = () => this.setState({ showHeaders: !this.state.showHeaders });
         // Update client id when app permission change.
         this.updateClientId = (e) => {
-            var value = (e.target).value;
-            for (let id in clientIdMap) {
+            const { value } = (e.target);
+            for (const id in clientIdMap) {
                 if (clientIdMap[id] == value) {
                     utils.putClientId(id);
                     return;
@@ -32081,11 +32047,11 @@ class RequestArea extends react.Component {
         this.state = {
             paramVals: utils.initialValues(this.props.currEpt),
             headerVals: [],
-            fileVals: { 'file': null },
+            fileVals: { file: null },
             errMsg: null,
             showToken: true,
             showCode: false,
-            showHeaders: false
+            showHeaders: false,
         };
     }
     render() {
@@ -32093,30 +32059,30 @@ class RequestArea extends react.Component {
         if (this.state.errMsg != null) {
             errMsg = [ce('span', { style: { color: 'red' } }, this.state.errMsg)];
         }
-        var name = this.props.currEpt.name.replace('/', '-');
-        var documentation = `${developerPage}/documentation/http/documentation#${this.props.currEpt.ns}-${name}`;
-        var handler = new RootValueHandler(this.state.paramVals, this.state.fileVals, this.updateParamValues);
-        var headerHandler = new RequestHeaderRootHandler(this.state.headerVals, this.updateHeaderValues);
+        const name = this.props.currEpt.name.replace('/', '-');
+        const documentation = `${developerPage}/documentation/http/documentation#${this.props.currEpt.ns}-${name}`;
+        const handler = new RootValueHandler(this.state.paramVals, this.state.fileVals, this.updateParamValues);
+        const headerHandler = new RequestHeaderRootHandler(this.state.headerVals, this.updateHeaderValues);
         return ce('span', { id: 'request-area' }, ce('table', { className: 'page-table' }, ce('tbody', null, utils.getAuthType() == utils.AuthType.Team
             ? ce(AppPermissionInput, { handler: this.updateClientId })
             : null, ce(TokenInput, {
             toggleShow: this.showOrHide,
             showToken: this.state.showToken,
-            callback: this.updateTokenValue
+            callback: this.updateTokenValue,
         }), ce('tr', null, tableText('Request'), ce('td', null, ce('div', { className: 'align-right' }, ce('a', { href: documentation }, 'Documentation')), ce('table', { id: 'parameter-list' }, ce('tbody', null, this.props.currEpt.params.map((param) => ParamClassChooser.getParamInput(param, {
             key: this.props.currEpt.name + param.name,
             handler: handler.getChildHandler(param),
-            param: param
+            param,
         })))), ce('div', null, ce('button', { onClick: this.showOrHideHeaders }, this.state.showHeaders ? 'Hide Headers' : 'Show Headers'), ce('button', { onClick: this.showOrHideCode }, this.state.showCode ? 'Hide Code' : 'Show Code'), ce('button', { onClick: this.submit, disabled: this.props.inProgress }, 'Submit Call'), ce('img', {
             src: 'https://www.dropbox.com/static/images/icons/ajax-loading-small.gif',
             hidden: !this.props.inProgress,
-            style: { position: 'relative', top: '2px', left: '10px' }
+            style: { position: 'relative', top: '2px', left: '10px' },
         }), errMsg))), ce('tr', this.state.showHeaders ? null : displayNone, tableText('Headers'), ce('td', null, ce('div', { id: 'request-headers' }, ce(RequestHeaderArea, { handler: headerHandler })))), ce('tr', this.state.showCode ? null : displayNone, tableText('Code'), ce('td', null, ce('div', { id: 'request-container' }, ce(CodeArea, {
             ept: this.props.currEpt,
             paramVals: this.state.paramVals,
             headerVals: this.state.headerVals,
-            __file__: this.state.fileVals['file'],
-            token: this.state.showToken ? utils.getToken() : '<access-token>'
+            __file__: this.state.fileVals.file,
+            token: this.state.showToken ? utils.getToken() : '<access-token>',
         })))))));
     }
 }
@@ -32125,30 +32091,28 @@ class RequestHeaderArea extends react.Component {
         super(props);
     }
     render() {
-        var handler = this.props.handler;
+        const { handler } = this.props;
         return ce('span', { id: 'request-header-area' }, ce('div', null, ce('button', { onClick: handler.add }, 'Add Header')), ce('table', null, ce('tbody', null, handler.getHeaders().map((header) => ce(RequestHeaderInput, {
-            header: header,
-            handler: new RequestHeaderHandler(handler)
+            header,
+            handler: new RequestHeaderHandler(handler),
         })))));
     }
 }
 class RequestHeaderRootHandler {
     constructor(headers, callback) {
         this.remove = (header) => {
-            var index = this.headers.indexOf(header);
+            const index = this.headers.indexOf(header);
             this.headers.splice(index, 1);
             this.callBack(this.headers);
         };
         this.add = () => {
-            this.headers.push(new utils_7.Header());
+            this.headers.push(new utils_1.Header());
             this.callBack(this.headers);
         };
         this.update = () => {
             this.callBack(this.headers);
         };
-        this.getHeaders = () => {
-            return this.headers;
-        };
+        this.getHeaders = () => this.headers;
         this.headers = headers;
         this.callBack = callback;
     }
@@ -32180,9 +32144,9 @@ class EndpointChoice extends react.Component {
         this.onClick = () => this.props.handleClick(this.props.ept);
     }
     render() {
-        return (this.props.isSelected) ?
-            ce('li', null, ce('b', null, this.props.ept.name), ce('br', null)) :
-            ce('li', null, ce('a', { onClick: this.onClick }, this.props.ept.name), ce('br', null));
+        return (this.props.isSelected)
+            ? ce('li', null, ce('b', null, this.props.ept.name), ce('br', null))
+            : ce('li', null, ce('a', { onClick: this.onClick }, this.props.ept.name), ce('br', null));
     }
 }
 class EndpointSelector extends react.Component {
@@ -32193,7 +32157,7 @@ class EndpointSelector extends react.Component {
                 // Skip not implemented endpoints.
                 return true;
             }
-            var eptAuthType = ept.getAuthType() == utils.AuthType.Team
+            const eptAuthType = ept.getAuthType() == utils.AuthType.Team
                 ? utils.AuthType.Team
                 : utils.AuthType.User;
             if (eptAuthType != utils.getAuthType()) {
@@ -32205,8 +32169,8 @@ class EndpointSelector extends react.Component {
     }
     // Renders the logo and the list of endpoints
     render() {
-        var groups = {};
-        var namespaces = [];
+        const groups = {};
+        const namespaces = [];
         endpoints.endpointList.forEach((ept) => {
             if (this.filter(ept)) {
                 return;
@@ -32219,15 +32183,15 @@ class EndpointSelector extends react.Component {
                 groups[ept.ns].push(ept);
             }
         });
-        return ce('div', { 'id': 'sidebar' }, ce('p', { style: { marginLeft: '35px', marginTop: '12px' } }, ce('a', { onClick: () => window.location.href = developerPage }, ce('img', {
+        return ce('div', { id: 'sidebar' }, ce('p', { style: { marginLeft: '35px', marginTop: '12px' } }, ce('a', { onClick: () => window.location.href = developerPage }, ce('img', {
             src: 'https://cfl.dropboxstatic.com/static/images/logo_catalog/blue_dropbox_glyph_m1-vflZvZxbS.png',
             width: 36,
-            className: 'home-icon'
+            className: 'home-icon',
         }))), ce('div', { id: 'endpoint-list' }, namespaces.sort().map((ns) => ce('div', null, ce('li', null, ns), groups[ns].map((ept) => ce(EndpointChoice, {
             key: ept.name,
-            ept: ept,
+            ept,
             handleClick: this.props.eptChanged,
-            isSelected: this.props.currEpt == ept
+            isSelected: this.props.currEpt == ept,
         }))))));
     }
 }
@@ -32245,7 +32209,7 @@ class APIExplorer extends react.Component {
         this.componentWillReceiveProps = (newProps) => this.setState({
             ept: newProps.initEpt,
             downloadURL: '',
-            responseText: ''
+            responseText: '',
         });
         this.APICaller = (paramsData, endpt, token, headers, responseFn, file) => {
             this.setState({ inProgress: true });
@@ -32259,20 +32223,20 @@ class APIExplorer extends react.Component {
             ept: this.props.initEpt,
             downloadURL: '',
             responseText: '',
-            inProgress: false
+            inProgress: false,
         };
     }
     render() {
         // This button pops up only on download
-        const downloadButton = (this.state.downloadURL !== '') ?
-            ce('a', {
+        const downloadButton = (this.state.downloadURL !== '')
+            ? ce('a', {
                 href: this.state.downloadURL,
-                download: this.state.downloadFilename
-            }, ce('button', null, 'Download ' + this.state.downloadFilename)) :
-            null;
-        var props = {
+                download: this.state.downloadFilename,
+            }, ce('button', null, `Download ${this.state.downloadFilename}`))
+            : null;
+        const props = {
             currEpt: this.state.ept,
-            header: ce('span', null, 'Dropbox API Explorer • ' + this.state.ept.name),
+            header: ce('span', null, `Dropbox API Explorer • ${this.state.ept.name}`),
             messages: [
                 ce(RequestArea, {
                     currEpt: this.state.ept,
@@ -32282,9 +32246,9 @@ class APIExplorer extends react.Component {
                 ce(ResponseArea, {
                     hide: this.state.inProgress || this.state.responseText == '',
                     responseText: this.state.responseText,
-                    downloadButton: downloadButton
-                })
-            ]
+                    downloadButton,
+                }),
+            ],
         };
         return ce(MainPage, props);
     }
@@ -32294,17 +32258,15 @@ class MainPage extends react.Component {
         super(props);
         this.getAuthSwitch = () => {
             if (utils.getAuthType() == utils.AuthType.User) {
-                return ce('a', { id: 'auth-switch', href: utils.currentURL() + 'team/' }, 'Switch to Business endpoints');
+                return ce('a', { id: 'auth-switch', href: `${utils.currentURL()}team/` }, 'Switch to Business endpoints');
             }
-            else {
-                return ce('a', { id: 'auth-switch', href: '../' }, 'Switch to User endpoints');
-            }
+            return ce('a', { id: 'auth-switch', href: '../' }, 'Switch to User endpoints');
         };
     }
     render() {
         return ce('span', null, ce(EndpointSelector, {
-            eptChanged: (endpt) => window.location.hash = '#' + endpt.getFullName(),
-            currEpt: this.props.currEpt
+            eptChanged: (endpt) => window.location.hash = `#${endpt.getFullName()}`,
+            currEpt: this.props.currEpt,
         }), ce('h1', { id: 'header' }, this.props.header, this.getAuthSwitch()), ce('div', { id: 'page-content' }, this.props.messages));
     }
 }
@@ -32312,28 +32274,28 @@ class TextPage extends react.Component {
     constructor(props) { super(props); }
     render() {
         return ce(MainPage, {
-            currEpt: new utils_8.Endpoint('', '', null),
+            currEpt: new utils_1.Endpoint('', '', null),
             header: ce('span', null, 'Dropbox API Explorer'),
-            messages: [this.props.message]
+            messages: [this.props.message],
         });
     }
 }
 // Introductory page, which people see when they first open the webpage
 const introPage = ce(TextPage, {
-    message: ce('span', null, ce('p', null, 'Welcome to the Dropbox API Explorer!'), ce('p', null, 'This API Explorer is a tool to help you learn about the ', ce('a', { href: developerPage }, 'Dropbox API v2'), " and test your own examples. For each endpoint, you'll be able to submit an API call ", 'with your own parameters and see the code for that call, as well as the API response.'), ce('p', null, 'Click on an endpoint on your left to get started, or check out ', ce('a', { href: developerPage + '/documentation' }, 'the documentation'), ' for more information on the API.'))
+    message: ce('span', null, ce('p', null, 'Welcome to the Dropbox API Explorer!'), ce('p', null, 'This API Explorer is a tool to help you learn about the ', ce('a', { href: developerPage }, 'Dropbox API v2'), ' and test your own examples. For each endpoint, you\'ll be able to submit an API call ', 'with your own parameters and see the code for that call, as well as the API response.'), ce('p', null, 'Click on an endpoint on your left to get started, or check out ', ce('a', { href: `${developerPage}/documentation` }, 'the documentation'), ' for more information on the API.')),
 });
 /* The endpoint name (supplied via the URL's hash) doesn't correspond to any actual endpoint. Right
    now, this can only happen if the user edits the URL hash.
    React sanitizes its inputs, so displaying the hash below is safe.
  */
 const endpointNotFound = ce(TextPage, {
-    message: ce('span', null, ce('p', null, 'Welcome to the Dropbox API Explorer!'), ce('p', null, "Unfortunately, there doesn't seem to be an endpoint called ", ce('b', null, window.location.hash.substr(1)), '. Try clicking on an endpoint on the left instead.'), ce('p', null, 'If you think you received this message in error, please get in contact with us.'))
+    message: ce('span', null, ce('p', null, 'Welcome to the Dropbox API Explorer!'), ce('p', null, 'Unfortunately, there doesn\'t seem to be an endpoint called ', ce('b', null, window.location.hash.substr(1)), '. Try clicking on an endpoint on the left instead.'), ce('p', null, 'If you think you received this message in error, please get in contact with us.')),
 });
 /* Error when the state parameter of the hash isn't what was expected, which could be due to an
    XSRF attack.
  */
 const stateError = ce(TextPage, {
-    message: ce('span', null, ce('p', null, ''), ce('p', null, 'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ', 'If this error persists, you may be using an insecure network.'), ce('p', null, 'If you think you received this message in error, please get in contact with us.'))
+    message: ce('span', null, ce('p', null, ''), ce('p', null, 'Unfortunately, there was a problem retrieving your OAuth2 token; please try again. ', 'If this error persists, you may be using an insecure network.'), ce('p', null, 'If you think you received this message in error, please get in contact with us.')),
 });
 /* The hash of the URL determines which page to render; no hash renders the intro page, and
    'auth_error!' (the ! chosen so it's less likely to have a name clash) renders the stateError
@@ -32378,22 +32340,22 @@ const checkCsrf = (state) => {
  */
 const main = () => {
     window.onhashchange = (e) => {
-        //first one works everywhere but IE, second one works everywhere but Firefox 40
+        // first one works everywhere but IE, second one works everywhere but Firefox 40
         renderGivenHash(e.newURL ? e.newURL.split('#')[1] : window.location.hash.slice(1));
     };
     const hashes = utils.getHashDict();
     if ('state' in hashes) { // completing token flow, and checking the state is OK
-        const state = checkCsrf(hashes['state']);
+        const state = checkCsrf(hashes.state);
         if (state === null) {
             window.location.hash = '#auth_error!';
         }
         else {
-            utils.putToken(hashes['access_token']);
-            window.location.href = utils.currentURL() + '#' + state;
+            utils.putToken(hashes.access_token);
+            window.location.href = `${utils.currentURL()}#${state}`;
         }
     }
     else if ('__ept__' in hashes) { // no token, but an endpoint selected
-        renderGivenHash(hashes['__ept__']);
+        renderGivenHash(hashes.__ept__);
     }
     else { // no endpoint selected: render the intro page
         reactDom.render(introPage, document.body);
@@ -32421,7 +32383,7 @@ const ce = react.createElement;
 const allowedHeaders = [
     'Dropbox-Api-Select-User',
     'Dropbox-Api-Select-Admin',
-    'Dropbox-Api-Path-Root'
+    'Dropbox-Api-Path-Root',
 ];
 // This class mostly exists to help Typescript type-check my programs.
 class Dict {
@@ -32433,8 +32395,10 @@ exports.Dict = Dict;
    These are used, for example, to convert a dict of HTTP headers into its representation
    in code view.
  */
-Dict._map = (dc, f) => Object.keys(dc).map((key, i) => f(key, dc[key], i));
-Dict.map = (dc, f) => Object.keys(dc).map((key) => f(key, dc[key]));
+Dict._map = (dc, f) => Object.keys(dc)
+    .map((key, i) => f(key, dc[key], i));
+Dict.map = (dc, f) => Object.keys(dc)
+    .map((key) => f(key, dc[key]));
 class List {
     constructor() {
         this.push = (value) => this.push(value);
@@ -32447,7 +32411,7 @@ exports.List = List;
  */
 class LocalStorage {
     static _is_session_storage_allowed() {
-        var test = 'test';
+        const test = 'test';
         try {
             localStorage.setItem(test, test);
             localStorage.removeItem(test);
@@ -32469,9 +32433,7 @@ class LocalStorage {
         if (LocalStorage._is_session_storage_allowed()) {
             return sessionStorage.getItem(key);
         }
-        else {
-            return cookie.getItem(key);
-        }
+        return cookie.getItem(key);
     }
 }
 exports.LocalStorage = LocalStorage;
@@ -32504,43 +32466,41 @@ var AuthType;
 class Endpoint {
     constructor(ns, name, attrs, ...params) {
         this.getHostname = () => {
-            switch (this.attrs["host"]) {
-                case "content":
-                    return "content.dropboxapi.com";
-                case "notify":
-                    return "notify.dropboxapi.com";
+            switch (this.attrs.host) {
+                case 'content':
+                    return 'content.dropboxapi.com';
+                case 'notify':
+                    return 'notify.dropboxapi.com';
                 default:
-                    return "api.dropboxapi.com";
+                    return 'api.dropboxapi.com';
             }
         };
         this.getAuthType = () => {
-            if (this.attrs["host"] == "notify") {
+            if (this.attrs.host === 'notify') {
                 return AuthType.None;
             }
-            var auth = this.attrs["auth"];
-            if (auth == "team") {
+            const { auth } = this.attrs;
+            if (auth === 'team') {
                 return AuthType.Team;
             }
-            else if (auth == "app") {
+            if (auth === 'app') {
                 return AuthType.App;
             }
-            else {
-                return AuthType.User;
-            }
+            return AuthType.User;
         };
         this.getEndpointKind = () => {
-            switch (this.attrs["style"]) {
-                case "upload":
+            switch (this.attrs.style) {
+                case 'upload':
                     return EndpointKind.Upload;
-                case "download":
+                case 'download':
                     return EndpointKind.Download;
                 default:
                     return EndpointKind.RPCLike;
             }
         };
-        this.getPathName = () => '/2/' + this.ns + '/' + this.name;
-        this.getFullName = () => this.ns + '_' + this.name;
-        this.getURL = () => 'https://' + this.getHostname() + this.getPathName();
+        this.getPathName = () => `/2/${this.ns}/${this.name}`;
+        this.getFullName = () => `${this.ns}_${this.name}`;
+        this.getURL = () => `https://${this.getHostname()}${this.getPathName()}`;
         this.ns = ns;
         this.name = name;
         this.attrs = attrs;
@@ -32555,11 +32515,11 @@ class Header {
         this.value = '';
     }
     asReact(onChangeHandler) {
-        var updateName = (event) => {
+        const updateName = (event) => {
             this.name = event.target.value;
             onChangeHandler(this, false);
         };
-        var updateValue = (event) => {
+        const updateValue = (event) => {
             this.value = event.target.value;
             onChangeHandler(this, false);
         };
@@ -32568,7 +32528,7 @@ class Header {
             className: 'header-value',
             onChange: updateValue,
             placeholder: 'Header Value',
-            value: this.value
+            value: this.value,
         })), ce('td', null, ce('button', { onClick: () => onChangeHandler(this, true) }, 'Remove')));
     }
 }
@@ -32579,23 +32539,21 @@ exports.Header = Header;
 class Parameter {
     constructor(name, optional) {
         this.getNameColumn = () => {
-            if (!isNaN(+this.name)) {
+            if (!Number.isNaN(+this.name)) {
                 // Don't show name column for list parameter item.
                 return null;
             }
             let displayName = (this.name !== '__file__') ? this.name : 'File to upload';
             if (this.optional)
                 displayName += ' (optional)';
-            let nameArgs = this.optional ? { 'style': { 'color': '#999' } } : {};
+            const nameArgs = this.optional ? { style: { color: '#999' } } : {};
             return ce('td', nameArgs, displayName);
         };
         this.defaultValue = () => {
             if (this.optional) {
                 return null;
             }
-            else {
-                return this.defaultValueRequired();
-            }
+            return this.defaultValueRequired();
         };
         /* Each subclass will implement these abstract methods differently.
             - getValue should parse the value in the string and return the (typed) value for that
@@ -32605,7 +32563,7 @@ class Parameter {
             - innerReact determines how to render the input field for a parameter.
          */
         this.getValue = (s) => s;
-        this.defaultValueRequired = () => "";
+        this.defaultValueRequired = () => '';
         this.innerReact = (props) => null;
         this.name = name;
         this.optional = optional;
@@ -32614,28 +32572,28 @@ class Parameter {
        parameter's subclass.
      */
     asReact(props, key) {
-        return ce('tr', { key: key }, this.getNameColumn(), ce('td', null, this.innerReact(props)));
+        return ce('tr', { key }, this.getNameColumn(), ce('td', null, this.innerReact(props)));
     }
 }
 exports.Parameter = Parameter;
 exports.parameterInput = (props) => {
-    props['className'] = 'parameter-input';
+    props.className = 'parameter-input';
     return react.createElement('input', props);
 };
 // A parameter whose value is a string.
 class TextParam extends Parameter {
-    constructor(name, optional) {
-        super(name, optional);
+    constructor() {
+        super(...arguments);
         this.innerReact = (props) => exports.parameterInput(props);
     }
 }
 exports.TextParam = TextParam;
 // A parameter whose value is an integer.
 class IntParam extends Parameter {
-    constructor(name, optional) {
-        super(name, optional);
+    constructor() {
+        super(...arguments);
         this.innerReact = (props) => exports.parameterInput(props);
-        this.getValue = (s) => (s === '') ? this.defaultValue() : parseInt(s, 10);
+        this.getValue = (s) => ((s === '') ? this.defaultValue() : parseInt(s, 10));
         this.defaultValueRequired = () => 0;
     }
 }
@@ -32644,10 +32602,10 @@ exports.IntParam = IntParam;
    This isn't currently used in our API, but could be in the future.
  */
 class FloatParam extends Parameter {
-    constructor(name, optional) {
-        super(name, optional);
+    constructor() {
+        super(...arguments);
         this.innerReact = (props) => exports.parameterInput(props);
-        this.getValue = (s) => (s === '') ? this.defaultValue() : parseFloat(s);
+        this.getValue = (s) => ((s === '') ? this.defaultValue() : parseFloat(s));
         this.defaultValueRequired = () => 0;
     }
 }
@@ -32669,11 +32627,11 @@ class SelectorParam extends Parameter {
         this.getValue = (s) => s;
         this.innerReact = (props) => {
             if (this.selected != null) {
-                props['value'] = this.selected;
+                props.value = this.selected;
             }
             return ce('select', props, this.choices.map((choice) => ce('option', {
                 key: choice,
-                value: choice
+                value: choice,
             }, choice)));
         };
         this.choices = choices;
@@ -32704,7 +32662,7 @@ class FileParam extends Parameter {
     constructor() {
         super('__file__', false);
         this.innerReact = (props) => {
-            props['type'] = 'file';
+            props.type = 'file';
             return exports.parameterInput(props);
         };
     }
@@ -32726,7 +32684,7 @@ class StructParam extends Parameter {
             });
         };
         this.defaultValueRequired = () => {
-            let toReturn = {};
+            const toReturn = {};
             this.populateFields(toReturn);
             return toReturn;
         };
@@ -32736,23 +32694,21 @@ class StructParam extends Parameter {
 exports.StructParam = StructParam;
 // Union are selectors with multiple fields.
 class UnionParam extends StructParam {
-    constructor(name, optional, fields) {
-        super(name, optional, fields);
+    constructor() {
+        super(...arguments);
         this.getSelectorParam = (selected = null) => {
-            let choices = [];
-            this.fields.forEach(p => choices.push(p.name));
+            const choices = [];
+            this.fields.forEach((p) => choices.push(p.name));
             return new SelectorParam(this.getSelectorName(), this.optional, choices, selected);
         };
         this.getSelectorName = () => this.name;
         this.defaultValueRequired = () => {
-            let param = this.fields[0];
-            let toReturn = { '.tag': param.name };
+            const param = this.fields[0];
+            const toReturn = { '.tag': param.name };
             if (param instanceof StructParam) {
                 param.populateFields(toReturn);
             }
-            else if (param instanceof VoidParam) {
-            }
-            else {
+            else if (!(param instanceof VoidParam)) {
                 toReturn[param.name] = param.defaultValue();
             }
             return toReturn;
@@ -32761,8 +32717,8 @@ class UnionParam extends StructParam {
 }
 exports.UnionParam = UnionParam;
 class RootUnionParam extends UnionParam {
-    constructor(name, optional, fields) {
-        super(name, optional, fields);
+    constructor() {
+        super(...arguments);
         this.getSelectorName = () => 'tag';
     }
 }
@@ -32771,9 +32727,7 @@ class ListParam extends Parameter {
     constructor(name, optional, creator) {
         super(name, optional);
         this.createItem = (index) => this.creator(index.toString());
-        this.defaultValue = () => {
-            return [];
-        };
+        this.defaultValue = () => [];
         this.creator = creator;
     }
 }
@@ -32782,11 +32736,9 @@ exports.ListParam = ListParam;
 const csrfTokenStorageName = 'Dropbox_API_state';
 const tokenStorageName = 'Dropbox_API_explorer_token';
 const clientIdStorageName = 'Dropbox_API_explorer_client_id';
-exports.getAuthType = () => {
-    return window.location.href.indexOf('/team') > 0
-        ? AuthType.Team
-        : AuthType.User;
-};
+exports.getAuthType = () => (window.location.href.indexOf('/team') > 0
+    ? AuthType.Team
+    : AuthType.User);
 exports.createCsrfToken = () => {
     const randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
     // If available, use the cryptographically secure generator, otherwise use Math.random.
@@ -32799,7 +32751,7 @@ exports.createCsrfToken = () => {
             randomBytes[i] = Math.floor(Math.random() * 256);
         }
     }
-    var token = btoa(String.fromCharCode.apply(null, randomBytes)); // base64-encode
+    const token = btoa(String.fromCharCode.apply(null, randomBytes)); // base64-encode
     LocalStorage.setItem(csrfTokenStorageName, token);
     return token;
 };
@@ -32811,15 +32763,15 @@ exports.checkCsrfToken = (givenCsrfToken) => {
 };
 // A utility to read the URL's hash and parse it into a dict.
 exports.getHashDict = () => {
-    let toReturn = {};
-    let index = window.location.href.indexOf('#');
+    const toReturn = {};
+    const index = window.location.href.indexOf('#');
     if (index === -1)
         return toReturn;
     const hash = window.location.href.substr(index + 1);
     const hashes = hash.split('#');
     hashes.forEach((s) => {
-        if (s.indexOf('&') == -1)
-            toReturn['__ept__'] = decodeURIComponent(s);
+        if (s.indexOf('&') === -1)
+            toReturn.__ept__ = decodeURIComponent(s);
         else {
             s.split('&').forEach((pair) => {
                 const splitPair = pair.split('=');
@@ -32831,18 +32783,14 @@ exports.getHashDict = () => {
 };
 // Reading and writing the token, which is preserved in LocalStorage.
 exports.putToken = (token) => {
-    LocalStorage.setItem(tokenStorageName + '_' + exports.getAuthType(), token);
+    LocalStorage.setItem(`${tokenStorageName}_${exports.getAuthType()}`, token);
 };
-exports.getToken = () => {
-    return LocalStorage.getItem(tokenStorageName + '_' + exports.getAuthType());
-};
+exports.getToken = () => LocalStorage.getItem(`${tokenStorageName}_${exports.getAuthType()}`);
 // Reading and writing the client id, which is preserved in LocalStorage.
 exports.putClientId = (clientId) => {
-    LocalStorage.setItem(clientIdStorageName + '_' + exports.getAuthType(), clientId);
+    LocalStorage.setItem(`${clientIdStorageName}_${exports.getAuthType()}`, clientId);
 };
-exports.getClientId = () => {
-    return LocalStorage.getItem(clientIdStorageName + '_' + exports.getAuthType());
-};
+exports.getClientId = () => LocalStorage.getItem(`${clientIdStorageName}_${exports.getAuthType()}`);
 // Some utilities that help with processing user input
 // Returns an endpoint given its name, or null if there was none
 exports.getEndpoint = (epts, name) => {
@@ -32859,9 +32807,9 @@ exports.getEndpoint = (epts, name) => {
    than an empty dict.
  */
 exports.initialValues = (ept) => {
-    if (ept.params.length == 0)
+    if (ept.params.length === 0)
         return null;
-    if (ept.params.length == 1 && ept.params[0].name === '__file__')
+    if (ept.params.length === 1 && ept.params[0].name === '__file__')
         return null;
     let toReturn = {};
     ept.params.forEach((param) => {
@@ -32883,28 +32831,26 @@ exports.initialValues = (ept) => {
  */
 exports.getDownloadName = (ept, paramVals) => {
     if (paramVals !== null && 'path' in paramVals) {
-        let toReturn = paramVals['path'].split('/').pop();
+        let toReturn = paramVals.path.split('/').pop();
         if (ept.name === 'get_thumbnail') {
-            const format = ('format' in paramVals) ? paramVals['format']['.tag'] : 'jpeg';
-            toReturn = toReturn.substr(0, toReturn.lastIndexOf('.')) + '.' + format;
+            const format = ('format' in paramVals) ? paramVals.format['.tag'] : 'jpeg';
+            toReturn = `${toReturn.substr(0, toReturn.lastIndexOf('.'))}.${format}`;
         }
         return toReturn;
     }
-    else
-        return ''; // not a download-style endpoint anyways
+    return ''; // not a download-style endpoint anyways
 };
 // Returns the current URL without any fragment
 exports.currentURL = () => window.location.href.split('#', 1)[0];
 exports.strippedCurrentURL = () => {
-    var currentUrl = exports.currentURL();
-    if (currentUrl.includes("?")) {
-        return currentUrl.substring(0, currentUrl.indexOf("?"));
+    const currentUrl = exports.currentURL();
+    if (currentUrl.includes('?')) {
+        return currentUrl.substring(0, currentUrl.indexOf('?'));
     }
-    else {
-        return currentUrl;
-    }
+    return currentUrl;
 };
-exports.arrayBufToString = (buf) => String.fromCharCode.apply(null, new Uint8Array(buf));
+exports.arrayBufToString = (buf) => String.fromCharCode
+    .apply(null, new Uint8Array(buf));
 const isJson = (s) => {
     try {
         JSON.parse(s);
@@ -32920,18 +32866,17 @@ exports.prettyJson = (s) => JSON.stringify(JSON.parse(s), null, 2);
 exports.errorHandler = (stat, response) => {
     if (isJson(response))
         return ce('code', { className: null, children: null }, exports.prettyJson(response));
-    else
-        return react.createElement('span', null, [
-            react.createElement('h4', null, "Error: " + stat),
-            react.createElement('code', null, response)
-        ]);
+    return react.createElement('span', null, [
+        react.createElement('h4', null, `Error: ${stat}`),
+        react.createElement('code', null, response),
+    ]);
 };
 // Since HTTP headers cannot contain arbitrary Unicode characters, we must replace them.
-exports.escapeUnicode = (s) => s.replace(/[\u007f-\uffff]/g, (c) => '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4));
+exports.escapeUnicode = (s) => s.replace(/[\u007f-\uffff]/g, (c) => `\\u${(`0000${c.charCodeAt(0).toString(16)}`).slice(-4)}`);
 class Highlight extends react.Component {
-    constructor(props) {
-        super(props);
-        this.defaultProps = { className: "" };
+    constructor() {
+        super(...arguments);
+        this.defaultProps = { className: '' };
     }
     // TODO: fix this highlighting it breaks updates
     // componentDidMount = () => this.highlightCode();
@@ -32948,35 +32893,31 @@ exports.Highlight = Highlight;
 // Utility functions for getting the headers for an API call
 // The headers for an RPC-like endpoint HTTP request
 exports.RPCLikeHeaders = (token, authType) => {
-    let toReturn = {};
-    if (authType == AuthType.None) {
+    const toReturn = {};
+    if (authType === AuthType.None) {
         // No auth headered for no auth endpoints.
     }
-    else if (authType == AuthType.App) {
-        toReturn['Authorization'] = "Basic <APP_KEY>:<APP_SECRET>";
+    else if (authType === AuthType.App) {
+        toReturn.Authorization = 'Basic <APP_KEY>:<APP_SECRET>';
     }
     else {
-        toReturn['Authorization'] = "Bearer " + token;
+        toReturn.Authorization = `Bearer ${token}`;
     }
-    toReturn["Content-Type"] = "application/json";
+    toReturn['Content-Type'] = 'application/json';
     return toReturn;
 };
 // args may need to be modified by the client, so they're passed in as a string
-exports.uploadLikeHeaders = (token, args) => {
-    return {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/octet-stream",
-        "Dropbox-API-Arg": exports.escapeUnicode(args)
-    };
-};
-exports.downloadLikeHeaders = (token, args) => {
-    return {
-        Authorization: "Bearer " + token,
-        "Dropbox-API-Arg": exports.escapeUnicode(args)
-    };
-};
+exports.uploadLikeHeaders = (token, args) => ({
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/octet-stream',
+    'Dropbox-API-Arg': exports.escapeUnicode(args),
+});
+exports.downloadLikeHeaders = (token, args) => ({
+    Authorization: `Bearer ${token}`,
+    'Dropbox-API-Arg': exports.escapeUnicode(args),
+});
 exports.getHeaders = (ept, token, customHeaders, args = null) => {
-    var headers = {};
+    let headers = {};
     switch (ept.getEndpointKind()) {
         case EndpointKind.RPCLike: {
             headers = exports.RPCLikeHeaders(token, ept.getAuthType());
@@ -32990,9 +32931,12 @@ exports.getHeaders = (ept, token, customHeaders, args = null) => {
             headers = exports.downloadLikeHeaders(token, args);
             break;
         }
+        default: {
+            throw new Error('Unknown endpoint type');
+        }
     }
     customHeaders.forEach((header) => {
-        if (header.name != '') {
+        if (header.name !== '') {
             headers[header.name] = header.value;
         }
     });
