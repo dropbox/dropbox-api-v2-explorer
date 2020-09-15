@@ -18,7 +18,7 @@ If you need help that is not specific to this SDK, please reach out to [Dropbox 
 
 ## License
 
-This SDK is distributed under the MIT license, please see [LICENSE][license] for more information.
+This Explorer is distributed under the MIT license, please see [LICENSE][license] for more information.
 
 [logo]: {logo_link}
 [repo]: https://github.com/dropbox/dropbox-api-v2-explorer
