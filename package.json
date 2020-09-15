@@ -3,23 +3,32 @@
   "private": true,
   "scripts": {
     "build": "gulp",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "lint": "eslint --ext .js,.jsx,.ts src/",
+    "lint-fix": "eslint --fix --ext .js,.jsx,.ts src/"
   },
   "devDependencies": {
     "@types/highlight.js": "^9.12.3",
     "@types/react": "^16.9.34",
     "@types/react-dom": "*",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
     "browserify": "^16.5.1",
+    "eslint": "^7.8.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
     "gulp-sourcemaps": "^2.6.5",
     "highlight.js": "^9.18.1",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
     "tsify": "^4.0.1",
     "typescript": "^3.8.3",
     "vinyl": "^2.2.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   }
 }
