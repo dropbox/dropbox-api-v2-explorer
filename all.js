@@ -28989,6 +28989,7 @@ if (process.env.NODE_ENV === 'production') {
    helper functions.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.APIWrapper = exports.chooseCallback = void 0;
 const utils = require("./utils");
 /* Listener functions for the API calls; since downloads have a non-JSON response, they need a
    separate listener.
@@ -29109,6 +29110,7 @@ exports.APIWrapper = (data, endpt, token, headers, listener, component, file) =>
    representing it as an HTTP request or code to generate that request.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.render = exports.getSelector = exports.formats = void 0;
 const react = require("react");
 const utils = require("./utils");
 const ce = react.createElement;
@@ -29255,6 +29257,7 @@ exports.render = (cv, endpt, token, paramVals, headerVals, file) => {
    mode etc.)
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAll = exports.getItem = exports.setItem = void 0;
 exports.setItem = (key, item) => {
     document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(item)}`;
 };
@@ -32377,6 +32380,7 @@ main();
    - Functions to generate the headers for a given API call
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getHeaders = exports.downloadLikeHeaders = exports.uploadLikeHeaders = exports.RPCLikeHeaders = exports.Highlight = exports.escapeUnicode = exports.errorHandler = exports.prettyJson = exports.arrayBufToString = exports.strippedCurrentURL = exports.currentURL = exports.getDownloadName = exports.initialValues = exports.getEndpoint = exports.getClientId = exports.putClientId = exports.getToken = exports.putToken = exports.getHashDict = exports.checkCsrfToken = exports.createCsrfToken = exports.getAuthType = exports.ListParam = exports.RootUnionParam = exports.UnionParam = exports.StructParam = exports.FileParam = exports.BoolParam = exports.SelectorParam = exports.VoidParam = exports.FloatParam = exports.IntParam = exports.TextParam = exports.parameterInput = exports.Parameter = exports.Header = exports.Endpoint = exports.AuthType = exports.EndpointKind = exports.LocalStorage = exports.List = exports.Dict = void 0;
 const react = require("react");
 const cookie = require("./cookie");
 const ce = react.createElement;
