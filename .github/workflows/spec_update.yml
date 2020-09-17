@@ -48,13 +48,17 @@ jobs:
         run: |
           cd codegen/spec
           gitdiff=$(git log -n ${{ steps.git-diff-num.outputs.num-diff }} --pretty="format:%n %H %n%n %b")
-          echo "$gitdiff"
-          diffCommit="Automated Spec Update $gitdiff"
+          diffCommit="Automated Spec Update \n $gitdiff"
+          diffCommit="${diffCommit//'%'/'%25'}"
+          diffCommit="${diffCommit//$'\n'/'%0A'}"
+          diffCommit="${diffCommit//$'\r'/'%0D'}"
+          echo "$diffCommit"
           echo "::set-output name=diff::$gitdiff"
           echo "::set-output name=commitDiff::$diffCommit"
           cd ../..
       - name: Generate New Routes
         run: |
+          echo "${{ steps.git-diff.outputs.commitDiff}}"
           cd codegen/stone
           python setup.py install
           cd ..
@@ -69,6 +73,7 @@ jobs:
             ${{ steps.git-diff.outputs.commitDiff}}
           branch: ${{ steps.git-branch.outputs.branch }}
           delete-branch: true
+          title: 'Automated Spec Update'
           base: 'master'
           team-reviewers: |
             owners
