@@ -49,7 +49,9 @@ jobs:
           cd codegen/spec
           gitdiff=$(git log -n ${{ steps.git-diff-num.outputs.num-diff }} --pretty="format:%n %H %n%n %b")
           echo "$gitdiff"
+          diffCommit="Automated Spec Update $gitdiff"
           echo "::set-output name=diff::$gitdiff"
+          echo "::set-output name=commitDiff::$diffCommit"
           cd ../..
       - name: Generate New Routes
         run: |
@@ -64,14 +66,10 @@ jobs:
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
           commit-message: |
-            'Automated Spec Update'
-            ${{ steps.git-diff.outputs.diff }}
+            ${{ steps.git-diff.outputs.commitDiff}}
           branch: ${{ steps.git-branch.outputs.branch }}
           delete-branch: true
           base: 'master'
-          title: 'Automated Spec Update'
-          body: |
-            ${{ steps.git-diff.outputs.diff }}
           team-reviewers: |
             owners
             maintainers
