@@ -40,7 +40,7 @@ jobs:
         run: |
           cd codegen/
           diffs=$(git diff --submodule spec | grep ">" | wc -l)
-          echo "$diffs"
+          echo "Number of Spec diffs: $diffs"
           echo "::set-output name=num-diff::$diffs"
           cd ..
       - name: Generate Diff
@@ -48,17 +48,15 @@ jobs:
         run: |
           cd codegen/spec
           gitdiff=$(git log -n ${{ steps.git-diff-num.outputs.num-diff }} --pretty="format:%n %H %n%n %b")
-          diffCommit="Automated Spec Update \n $gitdiff"
-          diffCommit="${diffCommit//'%'/'%25'}"
-          diffCommit="${diffCommit//$'\n'/'%0A'}"
-          diffCommit="${diffCommit//$'\r'/'%0D'}"
-          echo "$diffCommit"
-          echo "::set-output name=diff::$gitdiff"
-          echo "::set-output name=commitDiff::$diffCommit"
+          commit="Automated Spec Update $gitdiff"
+          commit="${commit//'%'/'%25'}"
+          commit="${commit//$'\n'/'%0A'}"
+          commit="${commit//$'\r'/'%0D'}"
+          echo "Commit Message: $commit"
+          echo "::set-output name=commit::$commit"
           cd ../..
       - name: Generate New Routes
         run: |
-          echo "${{ steps.git-diff.outputs.commitDiff}}"
           cd codegen/stone
           python setup.py install
           cd ..
@@ -70,10 +68,12 @@ jobs:
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
           commit-message: |
-            ${{ steps.git-diff.outputs.commitDiff}}
+            ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
           delete-branch: true
           title: 'Automated Spec Update'
+          body: |
+            ${{ steps.git-diff.outputs.commit}}
           base: 'master'
           team-reviewers: |
             owners
