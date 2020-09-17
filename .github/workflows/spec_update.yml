@@ -63,12 +63,15 @@ jobs:
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
-          commit-message: 'Automated Spec Update'
+          commit-message: |
+            'Automated Spec Update'
+            ${{ steps.git-diff.outputs.diff }}
           branch: ${{ steps.git-branch.outputs.branch }}
           delete-branch: true
           base: 'master'
           title: 'Automated Spec Update'
-          body: ${{ steps.git-diff.outputs.diff }}
+          body: |
+            ${{ steps.git-diff.outputs.diff }}
           team-reviewers: |
             owners
             maintainers
