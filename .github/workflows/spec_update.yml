@@ -12,7 +12,7 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v2.1.2
         with:
-          python-version: 3.7
+          python-version: 2.7
       - name: Setup Node.JS environment
         uses: actions/setup-node@v2.1.1
         with:
@@ -39,7 +39,7 @@ jobs:
         run: |
           cd codegen/
           diffs=$(git diff --submodule spec | grep ">" | wc -l)
-          echo "$diffs"
+          echo "Number of Spec diffs: $diffs"
           echo "::set-output name=num-diff::$diffs"
           cd ..
       - name: Generate Diff
@@ -47,8 +47,12 @@ jobs:
         run: |
           cd codegen/spec
           gitdiff=$(git log -n ${{ steps.git-diff-num.outputs.num-diff }} --pretty="format:%n %H %n%n %b")
-          echo "$gitdiff"
-          echo "::set-output name=diff::$gitdiff"
+          commit="Automated Spec Update $gitdiff"
+          commit="${commit//'%'/'%25'}"
+          commit="${commit//$'\n'/'%0A'}"
+          commit="${commit//$'\r'/'%0D'}"
+          echo "Commit Message: $commit"
+          echo "::set-output name=commit::$commit"
           cd ../..
       - name: Generate New Routes
         run: |
@@ -62,12 +66,14 @@ jobs:
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
-          commit-message: 'Automated Spec Update'
+          commit-message: |
+            ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
           delete-branch: true
-          base: 'master'
           title: 'Automated Spec Update'
-          body: ${{ steps.git-diff.outputs.diff }}
+          body: |
+            ${{ steps.git-diff.outputs.commit}}
+          base: 'master'
           team-reviewers: |
             owners
             maintainers
