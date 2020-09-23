@@ -32,7 +32,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "ts-node": "^9.0.0",
-    "tsify": "^4.0.1",
+    "tsify": "^5.0.2",
     "typescript": "^3.9.7",
     "vinyl": "^2.2.0",
     "vinyl-buffer": "^1.0.1",
