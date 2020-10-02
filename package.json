@@ -12,9 +12,9 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",
-    "@types/highlight.js": "^9.12.3",
+    "@types/highlight.js": "^9.12.4",
     "@types/mocha": "^8.0.3",
-    "@types/react": "^16.9.34",
+    "@types/react": "^16.9.50",
     "@types/react-dom": "*",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
     "@typescript-eslint/parser": "^3.6.1",
