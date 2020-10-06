@@ -21,7 +21,7 @@
     "browserify": "^16.5.1",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import": "^2.22.1",
     "chai": "^4.2.0",
     "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
