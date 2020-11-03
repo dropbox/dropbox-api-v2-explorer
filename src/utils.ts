@@ -594,7 +594,7 @@ export const escapeUnicode = (s: string): string => s.replace(/[\u007f-\uffff]/g
   (c: string) => `\\u${(`0000${c.charCodeAt(0).toString(16)}`).slice(-4)}`);
 
 // Used to get highlight.js to syntax-highlight the codeview and response areas.
-// Source: https://github.com/akiran/react-highlight/blob/master/src/index.jsx
+// Source: https://github.com/akiran/react-highlight/blob/main/src/index.jsx
 interface HltProps {
     className: string;
     children: react.ClassicElement<Record<string, unknown>>
