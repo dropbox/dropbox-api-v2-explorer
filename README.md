@@ -1,6 +1,6 @@
 [![Logo][logo]][repo]
 
-[![codecov](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer/branch/master/graph/badge.svg)](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer)
+[![codecov](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer/branch/main/graph/badge.svg)](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer)
 
 The offical API Explorer for Dropbox API v2.
 
@@ -22,6 +22,6 @@ This Explorer is distributed under the MIT license, please see [LICENSE][license
 
 [logo]: https://cfl.dropboxstatic.com/static/images/sdk/api_v2_explorer_banner.png
 [repo]: https://github.com/dropbox/dropbox-api-v2-explorer
-[license]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/LICENSE
-[contributing]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/CONTRIBUTING.md
+[license]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/main/LICENSE
+[contributing]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/main/CONTRIBUTING.md
 [support]: https://www.dropbox.com/developers/contact

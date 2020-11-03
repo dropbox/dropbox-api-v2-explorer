@@ -58,6 +58,6 @@ $ npm run watch
 
 [issues]: https://github.com/dropbox/dropbox-api-v2-explorer/issues
 [pr]: https://github.com/dropbox/dropbox-api-v2-explorer/pulls
-[coc]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/CODE_OF_CONDUCT.md
-[license]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/master/LICENSE
+[coc]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/main/CODE_OF_CONDUCT.md
+[license]: https://github.com/dropbox/dropbox-api-v2-explorer/blob/main/LICENSE
 [cla]: https://opensource.dropbox.com/cla/
