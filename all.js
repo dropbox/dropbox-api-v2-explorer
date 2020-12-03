@@ -30558,13 +30558,14 @@ const DownloadCallListener = (component, resp, path) => {
    Since the download listener needs to know the filename (for saving the file), it's
    passed through this function.
  */
-exports.chooseCallback = (k, path) => {
+const chooseCallback = (k, path) => {
     switch (k) {
         case utils.EndpointKind.Download:
             return (component, resp) => DownloadCallListener(component, resp, path);
         default: return JSONListener;
     }
 };
+exports.chooseCallback = chooseCallback;
 const initRequest = (endpt, token, data, customHeaders, listener, component) => {
     const request = new XMLHttpRequest();
     request.onload = (_) => listener(component, request);
@@ -30606,7 +30607,7 @@ const utf8Encode = (data, request) => {
     };
     reader.readAsArrayBuffer(blob);
 };
-exports.APIWrapper = (data, endpt, token, headers, listener, component, file) => {
+const APIWrapper = (data, endpt, token, headers, listener, component, file) => {
     beginRequest(component);
     const listener_wrapper = (component, resp) => {
         endRequest(component);
@@ -30638,6 +30639,7 @@ exports.APIWrapper = (data, endpt, token, headers, listener, component, file) =>
             throw new Error('Invalid Endpoint Type');
     }
 };
+exports.APIWrapper = APIWrapper;
 
 },{"./utils":20}],16:[function(require,module,exports){
 "use strict";
@@ -30774,8 +30776,9 @@ exports.formats = {
     httplib: HttplibCodeViewer(),
     http: HTTPCodeViewer(),
 };
-exports.getSelector = (onChange) => ce('select', { onChange }, utils.Dict.map(exports.formats, (key, cv) => ce('option', { key, value: key }, cv.description)));
-exports.render = (cv, endpt, token, paramVals, headerVals, file) => {
+const getSelector = (onChange) => ce('select', { onChange }, utils.Dict.map(exports.formats, (key, cv) => ce('option', { key, value: key }, cv.description)));
+exports.getSelector = getSelector;
+const render = (cv, endpt, token, paramVals, headerVals, file) => {
     if (endpt.getEndpointKind() === utils.EndpointKind.RPCLike) {
         return cv.renderRPCLike(endpt, token, paramVals, headerVals);
     }
@@ -30784,6 +30787,7 @@ exports.render = (cv, endpt, token, paramVals, headerVals, file) => {
     }
     return cv.renderDownloadLike(endpt, token, paramVals, headerVals);
 };
+exports.render = render;
 
 },{"./utils":20,"react":8}],17:[function(require,module,exports){
 "use strict";
@@ -30793,14 +30797,16 @@ exports.render = (cv, endpt, token, paramVals, headerVals, file) => {
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getItem = exports.setItem = void 0;
-exports.setItem = (key, item) => {
+const setItem = (key, item) => {
     document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(item)}`;
 };
-exports.getItem = (key) => {
+exports.setItem = setItem;
+const getItem = (key) => {
     const dict = exports.getAll();
     return dict[key];
 };
-exports.getAll = () => {
+exports.getItem = getItem;
+const getAll = () => {
     const dict = {};
     const cookies = document.cookie.split('; ');
     cookies.forEach((value) => {
@@ -30811,6 +30817,7 @@ exports.getAll = () => {
     });
     return dict;
 };
+exports.getAll = getAll;
 
 },{}],18:[function(require,module,exports){
 "use strict";
@@ -34005,10 +34012,11 @@ class Parameter {
     }
 }
 exports.Parameter = Parameter;
-exports.parameterInput = (props) => {
+const parameterInput = (props) => {
     props.className = 'parameter-input';
     return react.createElement('input', props);
 };
+exports.parameterInput = parameterInput;
 // A parameter whose value is a string.
 class TextParam extends Parameter {
     constructor() {
@@ -34165,10 +34173,11 @@ exports.ListParam = ListParam;
 const csrfTokenStorageName = 'Dropbox_API_state';
 const tokenStorageName = 'Dropbox_API_explorer_token';
 const clientIdStorageName = 'Dropbox_API_explorer_client_id';
-exports.getAuthType = () => (window.location.href.indexOf('/team') > 0
+const getAuthType = () => (window.location.href.indexOf('/team') > 0
     ? AuthType.Team
     : AuthType.User);
-exports.createCsrfToken = () => {
+exports.getAuthType = getAuthType;
+const createCsrfToken = () => {
     const randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
     // If available, use the cryptographically secure generator, otherwise use Math.random.
     const crypto = window.crypto || window.msCrypto;
@@ -34184,14 +34193,16 @@ exports.createCsrfToken = () => {
     LocalStorage.setItem(csrfTokenStorageName, token);
     return token;
 };
-exports.checkCsrfToken = (givenCsrfToken) => {
+exports.createCsrfToken = createCsrfToken;
+const checkCsrfToken = (givenCsrfToken) => {
     const expectedCsrfToken = LocalStorage.getItem(csrfTokenStorageName);
     if (expectedCsrfToken === null)
         return false;
     return givenCsrfToken === expectedCsrfToken; // TODO: timing attack in string comparison?
 };
+exports.checkCsrfToken = checkCsrfToken;
 // A utility to read the URL's hash and parse it into a dict.
-exports.getHashDict = () => {
+const getHashDict = () => {
     const toReturn = {};
     const index = window.location.href.indexOf('#');
     if (index === -1)
@@ -34210,32 +34221,38 @@ exports.getHashDict = () => {
     });
     return toReturn;
 };
+exports.getHashDict = getHashDict;
 // Reading and writing the token, which is preserved in LocalStorage.
-exports.putToken = (token) => {
+const putToken = (token) => {
     LocalStorage.setItem(`${tokenStorageName}_${exports.getAuthType()}`, token);
 };
-exports.getToken = () => LocalStorage.getItem(`${tokenStorageName}_${exports.getAuthType()}`);
+exports.putToken = putToken;
+const getToken = () => LocalStorage.getItem(`${tokenStorageName}_${exports.getAuthType()}`);
+exports.getToken = getToken;
 // Reading and writing the client id, which is preserved in LocalStorage.
-exports.putClientId = (clientId) => {
+const putClientId = (clientId) => {
     LocalStorage.setItem(`${clientIdStorageName}_${exports.getAuthType()}`, clientId);
 };
-exports.getClientId = () => LocalStorage.getItem(`${clientIdStorageName}_${exports.getAuthType()}`);
+exports.putClientId = putClientId;
+const getClientId = () => LocalStorage.getItem(`${clientIdStorageName}_${exports.getAuthType()}`);
+exports.getClientId = getClientId;
 // Some utilities that help with processing user input
 // Returns an endpoint given its name, or null if there was none
-exports.getEndpoint = (epts, name) => {
+const getEndpoint = (epts, name) => {
     for (let i = 0; i < epts.length; i++) {
         if (epts[i].getFullName() === name)
             return epts[i];
     }
     return null; // signals an error
 };
+exports.getEndpoint = getEndpoint;
 /* Returns the intial values for the parameters of an endpoint. Specifically, the non-optional
    parameters' initial values are put into the paramVals dictionary. This ensures that the
    required parameters are never missing when the 'submit' button is pressed.
    If there are no parameters (except possibly a file), then the dict should be null rather
    than an empty dict.
  */
-exports.initialValues = (ept) => {
+const initialValues = (ept) => {
     if (ept.params.length === 0)
         return null;
     if (ept.params.length === 1 && ept.params[0].name === '__file__')
@@ -34253,12 +34270,13 @@ exports.initialValues = (ept) => {
     });
     return toReturn;
 };
+exports.initialValues = initialValues;
 /* For a download endpoint, this function calculates the filename that the data should be saved
    as. First, it takes the basename of the 'path' argument, and then changes the extension for
    the get_thumbnail endpoint (which is a special case).
    This function assumes every download-style endpoint has a parameter named 'path.'
  */
-exports.getDownloadName = (ept, paramVals) => {
+const getDownloadName = (ept, paramVals) => {
     if (paramVals !== null && 'path' in paramVals) {
         let toReturn = paramVals.path.split('/').pop();
         if (ept.name === 'get_thumbnail') {
@@ -34269,17 +34287,21 @@ exports.getDownloadName = (ept, paramVals) => {
     }
     return ''; // not a download-style endpoint anyways
 };
+exports.getDownloadName = getDownloadName;
 // Returns the current URL without any fragment
-exports.currentURL = () => window.location.href.split('#', 1)[0];
-exports.strippedCurrentURL = () => {
+const currentURL = () => window.location.href.split('#', 1)[0];
+exports.currentURL = currentURL;
+const strippedCurrentURL = () => {
     const currentUrl = exports.currentURL();
     if (currentUrl.includes('?')) {
         return currentUrl.substring(0, currentUrl.indexOf('?'));
     }
     return currentUrl;
 };
-exports.arrayBufToString = (buf) => String.fromCharCode
+exports.strippedCurrentURL = strippedCurrentURL;
+const arrayBufToString = (buf) => String.fromCharCode
     .apply(null, new Uint8Array(buf));
+exports.arrayBufToString = arrayBufToString;
 const isJson = (s) => {
     try {
         JSON.parse(s);
@@ -34290,9 +34312,10 @@ const isJson = (s) => {
     }
 };
 // Applies pretty-printing to JSON data serialized as a string.
-exports.prettyJson = (s) => JSON.stringify(JSON.parse(s), null, 2);
+const prettyJson = (s) => JSON.stringify(JSON.parse(s), null, 2);
+exports.prettyJson = prettyJson;
 // common message for error handling
-exports.errorHandler = (stat, response) => {
+const errorHandler = (stat, response) => {
     if (isJson(response))
         return ce('code', { className: null, children: null }, exports.prettyJson(response));
     return react.createElement('span', null, [
@@ -34300,8 +34323,10 @@ exports.errorHandler = (stat, response) => {
         react.createElement('code', null, response),
     ]);
 };
+exports.errorHandler = errorHandler;
 // Since HTTP headers cannot contain arbitrary Unicode characters, we must replace them.
-exports.escapeUnicode = (s) => s.replace(/[\u007f-\uffff]/g, (c) => `\\u${(`0000${c.charCodeAt(0).toString(16)}`).slice(-4)}`);
+const escapeUnicode = (s) => s.replace(/[\u007f-\uffff]/g, (c) => `\\u${(`0000${c.charCodeAt(0).toString(16)}`).slice(-4)}`);
+exports.escapeUnicode = escapeUnicode;
 class Highlight extends react.Component {
     constructor() {
         super(...arguments);
@@ -34321,7 +34346,7 @@ class Highlight extends react.Component {
 exports.Highlight = Highlight;
 // Utility functions for getting the headers for an API call
 // The headers for an RPC-like endpoint HTTP request
-exports.RPCLikeHeaders = (token, authType) => {
+const RPCLikeHeaders = (token, authType) => {
     const toReturn = {};
     if (authType === AuthType.None) {
         // No auth headered for no auth endpoints.
@@ -34335,17 +34360,20 @@ exports.RPCLikeHeaders = (token, authType) => {
     toReturn['Content-Type'] = 'application/json';
     return toReturn;
 };
+exports.RPCLikeHeaders = RPCLikeHeaders;
 // args may need to be modified by the client, so they're passed in as a string
-exports.uploadLikeHeaders = (token, args) => ({
+const uploadLikeHeaders = (token, args) => ({
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/octet-stream',
     'Dropbox-API-Arg': exports.escapeUnicode(args),
 });
-exports.downloadLikeHeaders = (token, args) => ({
+exports.uploadLikeHeaders = uploadLikeHeaders;
+const downloadLikeHeaders = (token, args) => ({
     Authorization: `Bearer ${token}`,
     'Dropbox-API-Arg': exports.escapeUnicode(args),
 });
-exports.getHeaders = (ept, token, customHeaders, args = null) => {
+exports.downloadLikeHeaders = downloadLikeHeaders;
+const getHeaders = (ept, token, customHeaders, args = null) => {
     let headers = {};
     switch (ept.getEndpointKind()) {
         case EndpointKind.RPCLike: {
@@ -34371,6 +34399,7 @@ exports.getHeaders = (ept, token, customHeaders, args = null) => {
     });
     return headers;
 };
+exports.getHeaders = getHeaders;
 
 },{"./cookie":17,"react":8}]},{},[19])
 
