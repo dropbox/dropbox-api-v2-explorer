@@ -65,7 +65,7 @@ class APIEndpointGenerator(CodeBackend):
             if is_union_type(route.arg_data_type):
                 return [self.data_type_constructor(route.arg_data_type, "''", is_root=True)]
             else:
-                return map(self.parameter_constructor, route.arg_data_type.all_fields)
+                return list(map(self.parameter_constructor, route.arg_data_type.all_fields))
 
         def is_empty_type(arg_type):
             return is_void_type(arg_type) or len(arg_type.all_fields) == 0
