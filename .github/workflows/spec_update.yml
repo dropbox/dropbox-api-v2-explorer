@@ -12,7 +12,7 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v2.2.1
         with:
-          python-version: 3.7
+          python-version: 2.7
       - name: Setup Node.JS environment
         uses: actions/setup-node@v2.1.4
         with:
