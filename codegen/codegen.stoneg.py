@@ -134,7 +134,7 @@ class APIEndpointGenerator(CodeBackend):
 
         self.emit('{')
         with self.indent():
-            for k, v in attrs.iteritems():
+            for k, v in attrs.items():
                 self.emit('{0}: "{1}",'.format(k, v))
         self.emit(close)
 
