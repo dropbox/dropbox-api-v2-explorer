@@ -12,7 +12,7 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
       - name: Setup Python
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.7
       - name: Install Packages
