@@ -2210,6 +2210,18 @@ module Endpoints {
         },
         new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)])
     );
+    const team_members_get_available_team_member_roles_endpt = new Utils.Endpoint("team", "members/get_available_team_member_roles",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.read",
+            is_cloud_doc_auth: "False",
+        }
+    );
     const team_members_get_info_endpt = new Utils.Endpoint("team", "members/get_info",
         {
             auth: "team",
@@ -2373,6 +2385,20 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.RootUnionParam('', false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)])
+    );
+    const team_members_set_admin_permissions_v2_endpt = new Utils.Endpoint("team", "members/set_admin_permissions_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
+        new Utils.ListParam("new_roles", true, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
     );
     const team_members_set_admin_permissions_endpt = new Utils.Endpoint("team", "members/set_admin_permissions",
         {
@@ -2871,6 +2897,7 @@ module Endpoints {
                                                    team_members_add_endpt,
                                                    team_members_add_job_status_get_endpt,
                                                    team_members_delete_profile_photo_endpt,
+                                                   team_members_get_available_team_member_roles_endpt,
                                                    team_members_get_info_endpt,
                                                    team_members_list_endpt,
                                                    team_members_list_continue_endpt,
@@ -2883,6 +2910,7 @@ module Endpoints {
                                                    team_members_secondary_emails_delete_endpt,
                                                    team_members_secondary_emails_resend_verification_emails_endpt,
                                                    team_members_send_welcome_email_endpt,
+                                                   team_members_set_admin_permissions_v2_endpt,
                                                    team_members_set_admin_permissions_endpt,
                                                    team_members_set_profile_endpt,
                                                    team_members_set_profile_photo_endpt,
