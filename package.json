@@ -11,7 +11,7 @@
     "report": "nyc report --reporter=lcov --reporter=text"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.14",
+    "@types/chai": "^4.2.16",
     "@types/highlight.js": "^10.1.0",
     "@types/mocha": "^8.2.0",
     "@types/react": "^17.0.3",
