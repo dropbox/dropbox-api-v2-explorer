@@ -11,10 +11,10 @@
     "report": "nyc report --reporter=lcov --reporter=text"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.14",
+    "@types/chai": "^4.2.16",
     "@types/highlight.js": "^10.1.0",
     "@types/mocha": "^8.2.0",
-    "@types/react": "^17.0.1",
+    "@types/react": "^17.0.3",
     "@types/react-dom": "*",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.6.1",
@@ -27,7 +27,7 @@
     "gulp-connect": "^5.7.0",
     "gulp-sourcemaps": "^3.0.0",
     "highlight.js": "^10.6.0",
-    "mocha": "^8.2.1",
+    "mocha": "^8.3.2",
     "nyc": "^15.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
