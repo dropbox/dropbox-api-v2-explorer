@@ -2170,6 +2170,20 @@ module Endpoints {
         },
         new Utils.ListParam("users_and_quotas", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]), new Utils.IntParam("quota_gb", false)]))
     );
+    const team_members_add_v2_endpt = new Utils.Endpoint("team", "members/add_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.BoolParam("is_directory_restricted", true), new Utils.ListParam("role_ids", true, (index: string): Utils.Parameter => new Utils.TextParam(index, false))])),
+        new Utils.BoolParam("force_async", true)
+    );
     const team_members_add_endpt = new Utils.Endpoint("team", "members/add",
         {
             auth: "team",
@@ -2181,8 +2195,21 @@ module Endpoints {
             scope: "members.write",
             is_cloud_doc_auth: "False",
         },
-        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")]), new Utils.BoolParam("is_directory_restricted", true)])),
+        new Utils.ListParam("new_members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("member_email", false), new Utils.TextParam("member_given_name", true), new Utils.TextParam("member_surname", true), new Utils.TextParam("member_external_id", true), new Utils.TextParam("member_persistent_id", true), new Utils.BoolParam("send_welcome_email", true), new Utils.BoolParam("is_directory_restricted", true), new Utils.UnionParam("role", true, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")])])),
         new Utils.BoolParam("force_async", true)
+    );
+    const team_members_add_job_status_get_v2_endpt = new Utils.Endpoint("team", "members/add/job_status/get_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
     );
     const team_members_add_job_status_get_endpt = new Utils.Endpoint("team", "members/add/job_status/get",
         {
@@ -2196,6 +2223,19 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("async_job_id", false)
+    );
+    const team_members_delete_profile_photo_v2_endpt = new Utils.Endpoint("team", "members/delete_profile_photo_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)])
     );
     const team_members_delete_profile_photo_endpt = new Utils.Endpoint("team", "members/delete_profile_photo",
         {
@@ -2222,6 +2262,19 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         }
     );
+    const team_members_get_info_v2_endpt = new Utils.Endpoint("team", "members/get_info_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.ListParam("members", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]))
+    );
     const team_members_get_info_endpt = new Utils.Endpoint("team", "members/get_info",
         {
             auth: "team",
@@ -2234,6 +2287,20 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.ListParam("members", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]))
+    );
+    const team_members_list_v2_endpt = new Utils.Endpoint("team", "members/list_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.IntParam("limit", true),
+        new Utils.BoolParam("include_removed", true)
     );
     const team_members_list_endpt = new Utils.Endpoint("team", "members/list",
         {
@@ -2248,6 +2315,19 @@ module Endpoints {
         },
         new Utils.IntParam("limit", true),
         new Utils.BoolParam("include_removed", true)
+    );
+    const team_members_list_continue_v2_endpt = new Utils.Endpoint("team", "members/list/continue_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("cursor", false)
     );
     const team_members_list_continue_endpt = new Utils.Endpoint("team", "members/list/continue",
         {
@@ -2414,6 +2494,25 @@ module Endpoints {
         new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
         new Utils.UnionParam("new_role", false, [new Utils.VoidParam("team_admin"), new Utils.VoidParam("user_management_admin"), new Utils.VoidParam("support_admin"), new Utils.VoidParam("member_only")])
     );
+    const team_members_set_profile_v2_endpt = new Utils.Endpoint("team", "members/set_profile_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
+        new Utils.TextParam("new_email", true),
+        new Utils.TextParam("new_external_id", true),
+        new Utils.TextParam("new_given_name", true),
+        new Utils.TextParam("new_surname", true),
+        new Utils.TextParam("new_persistent_id", true),
+        new Utils.BoolParam("new_is_directory_restricted", true)
+    );
     const team_members_set_profile_endpt = new Utils.Endpoint("team", "members/set_profile",
         {
             auth: "team",
@@ -2432,6 +2531,20 @@ module Endpoints {
         new Utils.TextParam("new_surname", true),
         new Utils.TextParam("new_persistent_id", true),
         new Utils.BoolParam("new_is_directory_restricted", true)
+    );
+    const team_members_set_profile_photo_v2_endpt = new Utils.Endpoint("team", "members/set_profile_photo_v2",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
+        new Utils.UnionParam("photo", false, [new Utils.TextParam("base64_data", false)])
     );
     const team_members_set_profile_photo_endpt = new Utils.Endpoint("team", "members/set_profile_photo",
         {
@@ -2894,12 +3007,18 @@ module Endpoints {
                                                    team_member_space_limits_get_custom_quota_endpt,
                                                    team_member_space_limits_remove_custom_quota_endpt,
                                                    team_member_space_limits_set_custom_quota_endpt,
+                                                   team_members_add_v2_endpt,
                                                    team_members_add_endpt,
+                                                   team_members_add_job_status_get_v2_endpt,
                                                    team_members_add_job_status_get_endpt,
+                                                   team_members_delete_profile_photo_v2_endpt,
                                                    team_members_delete_profile_photo_endpt,
                                                    team_members_get_available_team_member_roles_endpt,
+                                                   team_members_get_info_v2_endpt,
                                                    team_members_get_info_endpt,
+                                                   team_members_list_v2_endpt,
                                                    team_members_list_endpt,
+                                                   team_members_list_continue_v2_endpt,
                                                    team_members_list_continue_endpt,
                                                    team_members_move_former_member_files_endpt,
                                                    team_members_move_former_member_files_job_status_check_endpt,
@@ -2912,7 +3031,9 @@ module Endpoints {
                                                    team_members_send_welcome_email_endpt,
                                                    team_members_set_admin_permissions_v2_endpt,
                                                    team_members_set_admin_permissions_endpt,
+                                                   team_members_set_profile_v2_endpt,
                                                    team_members_set_profile_endpt,
+                                                   team_members_set_profile_photo_v2_endpt,
                                                    team_members_set_profile_photo_endpt,
                                                    team_members_suspend_endpt,
                                                    team_members_unsuspend_endpt,
