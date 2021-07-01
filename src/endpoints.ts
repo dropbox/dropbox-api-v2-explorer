@@ -749,7 +749,7 @@ module Endpoints {
     );
     const files_list_folder_endpt = new Utils.Endpoint("files", "list_folder",
         {
-            auth: "user",
+            auth: "app, user",
             host: "api",
             style: "rpc",
             is_preview: "False",
@@ -771,7 +771,7 @@ module Endpoints {
     );
     const files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue",
         {
-            auth: "user",
+            auth: "app, user",
             host: "api",
             style: "rpc",
             is_preview: "False",
@@ -784,7 +784,7 @@ module Endpoints {
     );
     const files_list_folder_get_latest_cursor_endpt = new Utils.Endpoint("files", "list_folder/get_latest_cursor",
         {
-            auth: "user",
+            auth: "app, user",
             host: "api",
             style: "rpc",
             is_preview: "False",
