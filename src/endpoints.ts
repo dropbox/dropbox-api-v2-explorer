@@ -1196,7 +1196,7 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.StructParam("settings", true, [new Utils.BoolParam("require_password", true), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("access", true, [new Utils.VoidParam("viewer"), new Utils.VoidParam("editor"), new Utils.VoidParam("max")]), new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")])])
+        new Utils.StructParam("settings", true, [new Utils.BoolParam("require_password", true), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("access", true, [new Utils.VoidParam("viewer"), new Utils.VoidParam("editor"), new Utils.VoidParam("max")]), new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.BoolParam("allow_download", true)])
     );
     const sharing_get_file_metadata_endpt = new Utils.Endpoint("sharing", "get_file_metadata",
         {
@@ -1449,7 +1449,7 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("url", false),
-        new Utils.StructParam("settings", false, [new Utils.BoolParam("require_password", true), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("access", true, [new Utils.VoidParam("viewer"), new Utils.VoidParam("editor"), new Utils.VoidParam("max")]), new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")])]),
+        new Utils.StructParam("settings", false, [new Utils.BoolParam("require_password", true), new Utils.TextParam("link_password", true), new Utils.TextParam("expires", true), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("access", true, [new Utils.VoidParam("viewer"), new Utils.VoidParam("editor"), new Utils.VoidParam("max")]), new Utils.UnionParam("requested_visibility", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team_only"), new Utils.VoidParam("password")]), new Utils.BoolParam("allow_download", true)]),
         new Utils.BoolParam("remove_expiration", true)
     );
     const sharing_mount_folder_endpt = new Utils.Endpoint("sharing", "mount_folder",
