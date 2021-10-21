@@ -1070,25 +1070,12 @@ module Endpoints {
         new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]),
         new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])
     );
-    const files_upload_session_finish_batch_endpt = new Utils.Endpoint("files", "upload_session/finish_batch",
-        {
-            auth: "user",
-            host: "api",
-            style: "rpc",
-            is_preview: "False",
-            allow_app_folder_app: "True",
-            select_admin_mode: "team_admin",
-            scope: "files.content.write",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])]))
-    );
     const files_upload_session_finish_batch_v2_endpt = new Utils.Endpoint("files", "upload_session/finish_batch_v2",
         {
             auth: "user",
             host: "api",
             style: "rpc",
-            is_preview: "True",
+            is_preview: "False",
             allow_app_folder_app: "True",
             select_admin_mode: "team_admin",
             scope: "files.content.write",
@@ -2942,7 +2929,6 @@ module Endpoints {
                                                    files_upload_endpt,
                                                    files_upload_session_append_v2_endpt,
                                                    files_upload_session_finish_endpt,
-                                                   files_upload_session_finish_batch_endpt,
                                                    files_upload_session_finish_batch_v2_endpt,
                                                    files_upload_session_finish_batch_check_endpt,
                                                    files_upload_session_start_endpt,
