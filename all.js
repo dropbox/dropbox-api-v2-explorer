@@ -31366,7 +31366,7 @@ var Endpoints;
         is_cloud_doc_auth: "False",
     }, new Utils.ListParam("entries", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit")])])));
     const files_list_folder_endpt = new Utils.Endpoint("files", "list_folder", {
-        auth: "user",
+        auth: "app, user",
         host: "api",
         style: "rpc",
         is_preview: "False",
@@ -31376,7 +31376,7 @@ var Endpoints;
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("path", false), new Utils.BoolParam("recursive", true), new Utils.BoolParam("include_media_info", true), new Utils.BoolParam("include_deleted", true), new Utils.BoolParam("include_has_explicit_shared_members", true), new Utils.BoolParam("include_mounted_folders", true), new Utils.IntParam("limit", true), new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]), new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index) => new Utils.TextParam(index, false))]), new Utils.BoolParam("include_non_downloadable_files", true));
     const files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue", {
-        auth: "user",
+        auth: "app, user",
         host: "api",
         style: "rpc",
         is_preview: "False",
@@ -31535,6 +31535,36 @@ var Endpoints;
         scope: "files.metadata.read",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("cursor", false));
+    const files_tags_add_endpt = new Utils.Endpoint("files", "tags/add", {
+        auth: "user",
+        host: "api",
+        style: "rpc",
+        is_preview: "True",
+        allow_app_folder_app: "False",
+        select_admin_mode: "None",
+        scope: "files.metadata.write",
+        is_cloud_doc_auth: "False",
+    }, new Utils.TextParam("path", false), new Utils.TextParam("tag_text", false));
+    const files_tags_get_endpt = new Utils.Endpoint("files", "tags/get", {
+        auth: "user",
+        host: "api",
+        style: "rpc",
+        is_preview: "True",
+        allow_app_folder_app: "False",
+        select_admin_mode: "None",
+        scope: "files.metadata.read",
+        is_cloud_doc_auth: "False",
+    }, new Utils.ListParam("paths", false, (index) => new Utils.TextParam(index, false)));
+    const files_tags_remove_endpt = new Utils.Endpoint("files", "tags/remove", {
+        auth: "user",
+        host: "api",
+        style: "rpc",
+        is_preview: "True",
+        allow_app_folder_app: "False",
+        select_admin_mode: "None",
+        scope: "files.metadata.write",
+        is_cloud_doc_auth: "False",
+    }, new Utils.TextParam("path", false), new Utils.TextParam("tag_text", false));
     const files_unlock_file_batch_endpt = new Utils.Endpoint("files", "unlock_file_batch", {
         auth: "user",
         host: "api",
@@ -32926,6 +32956,9 @@ var Endpoints;
         files_save_url_check_job_status_endpt,
         files_search_v2_endpt,
         files_search_continue_v2_endpt,
+        files_tags_add_endpt,
+        files_tags_get_endpt,
+        files_tags_remove_endpt,
         files_unlock_file_batch_endpt,
         files_upload_endpt,
         files_upload_session_append_v2_endpt,
