@@ -749,7 +749,7 @@ module Endpoints {
     );
     const files_list_folder_endpt = new Utils.Endpoint("files", "list_folder",
         {
-            auth: "user",
+            auth: "app, user",
             host: "api",
             style: "rpc",
             is_preview: "False",
@@ -771,7 +771,7 @@ module Endpoints {
     );
     const files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue",
         {
-            auth: "user",
+            auth: "app, user",
             host: "api",
             style: "rpc",
             is_preview: "False",
@@ -1006,6 +1006,47 @@ module Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("cursor", false)
+    );
+    const files_tags_add_endpt = new Utils.Endpoint("files", "tags/add",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.metadata.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.TextParam("tag_text", false)
+    );
+    const files_tags_get_endpt = new Utils.Endpoint("files", "tags/get",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.metadata.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.ListParam("paths", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
+    );
+    const files_tags_remove_endpt = new Utils.Endpoint("files", "tags/remove",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.metadata.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("path", false),
+        new Utils.TextParam("tag_text", false)
     );
     const files_unlock_file_batch_endpt = new Utils.Endpoint("files", "unlock_file_batch",
         {
@@ -2925,6 +2966,9 @@ module Endpoints {
                                                    files_save_url_check_job_status_endpt,
                                                    files_search_v2_endpt,
                                                    files_search_continue_v2_endpt,
+                                                   files_tags_add_endpt,
+                                                   files_tags_get_endpt,
+                                                   files_tags_remove_endpt,
                                                    files_unlock_file_batch_endpt,
                                                    files_upload_endpt,
                                                    files_upload_session_append_v2_endpt,
