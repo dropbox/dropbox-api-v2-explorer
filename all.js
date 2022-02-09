@@ -31584,7 +31584,7 @@ var Endpoints;
         select_admin_mode: "team_admin",
         scope: "files.content.write",
         is_cloud_doc_auth: "False",
-    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true));
+    }, new Utils.FileParam(), new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true), new Utils.TextParam("content_hash", true));
     const files_upload_session_append_v2_endpt = new Utils.Endpoint("files", "upload_session/append_v2", {
         auth: "user",
         host: "content",
@@ -31594,7 +31594,7 @@ var Endpoints;
         select_admin_mode: "team_admin",
         scope: "files.content.write",
         is_cloud_doc_auth: "False",
-    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.BoolParam("close", true));
+    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.BoolParam("close", true), new Utils.TextParam("content_hash", true));
     const files_upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish", {
         auth: "user",
         host: "content",
@@ -31604,7 +31604,7 @@ var Endpoints;
         select_admin_mode: "team_admin",
         scope: "files.content.write",
         is_cloud_doc_auth: "False",
-    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]));
+    }, new Utils.FileParam(), new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]), new Utils.TextParam("content_hash", true));
     const files_upload_session_finish_batch_v2_endpt = new Utils.Endpoint("files", "upload_session/finish_batch_v2", {
         auth: "user",
         host: "api",
@@ -31614,7 +31614,7 @@ var Endpoints;
         select_admin_mode: "team_admin",
         scope: "files.content.write",
         is_cloud_doc_auth: "False",
-    }, new Utils.ListParam("entries", false, (index) => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)])])));
+    }, new Utils.ListParam("entries", false, (index) => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.StructParam("commit", false, [new Utils.TextParam("path", false), new Utils.UnionParam("mode", true, [new Utils.VoidParam("add"), new Utils.VoidParam("overwrite"), new Utils.TextParam("update", false)]), new Utils.BoolParam("autorename", true), new Utils.TextParam("client_modified", true), new Utils.BoolParam("mute", true), new Utils.ListParam("property_groups", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("template_id", false), new Utils.ListParam("fields", false, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("name", false), new Utils.TextParam("value", false)]))])), new Utils.BoolParam("strict_conflict", true)]), new Utils.TextParam("content_hash", true)])));
     const files_upload_session_finish_batch_check_endpt = new Utils.Endpoint("files", "upload_session/finish_batch/check", {
         auth: "user",
         host: "api",
@@ -31634,7 +31634,7 @@ var Endpoints;
         select_admin_mode: "team_admin",
         scope: "files.content.write",
         is_cloud_doc_auth: "False",
-    }, new Utils.FileParam(), new Utils.BoolParam("close", true), new Utils.UnionParam("session_type", true, [new Utils.VoidParam("sequential"), new Utils.VoidParam("concurrent")]));
+    }, new Utils.FileParam(), new Utils.BoolParam("close", true), new Utils.UnionParam("session_type", true, [new Utils.VoidParam("sequential"), new Utils.VoidParam("concurrent")]), new Utils.TextParam("content_hash", true));
     const sharing_add_file_member_endpt = new Utils.Endpoint("sharing", "add_file_member", {
         auth: "user",
         host: "api",
