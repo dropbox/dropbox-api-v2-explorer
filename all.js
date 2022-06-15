@@ -31746,7 +31746,7 @@ var Endpoints;
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("link_password", true));
     const sharing_get_shared_link_metadata_endpt = new Utils.Endpoint("sharing", "get_shared_link_metadata", {
-        auth: "user",
+        auth: "app, user",
         host: "api",
         style: "rpc",
         is_preview: "False",
@@ -32222,7 +32222,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("name", false), new Utils.ListParam("members", false, (index) => new Utils.TextParam(index, false)), new Utils.TextParam("description", true), new Utils.TextParam("start_date", true), new Utils.TextParam("end_date", true));
     const team_legal_holds_get_policy_endpt = new Utils.Endpoint("team", "legal_holds/get_policy", {
@@ -32232,7 +32232,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("id", false));
     const team_legal_holds_list_held_revisions_endpt = new Utils.Endpoint("team", "legal_holds/list_held_revisions", {
@@ -32242,7 +32242,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("id", false));
     const team_legal_holds_list_held_revisions_continue_endpt = new Utils.Endpoint("team", "legal_holds/list_held_revisions_continue", {
@@ -32252,7 +32252,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("id", false), new Utils.TextParam("cursor", true));
     const team_legal_holds_list_policies_endpt = new Utils.Endpoint("team", "legal_holds/list_policies", {
@@ -32262,7 +32262,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.BoolParam("include_released", true));
     const team_legal_holds_release_policy_endpt = new Utils.Endpoint("team", "legal_holds/release_policy", {
@@ -32272,7 +32272,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("id", false));
     const team_legal_holds_update_policy_endpt = new Utils.Endpoint("team", "legal_holds/update_policy", {
@@ -32282,7 +32282,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.member",
+        scope: "team_data.governance.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("id", false), new Utils.TextParam("name", true), new Utils.TextParam("description", true), new Utils.ListParam("members", true, (index) => new Utils.TextParam(index, false)));
     const team_linked_apps_list_member_linked_apps_endpt = new Utils.Endpoint("team", "linked_apps/list_member_linked_apps", {
@@ -32722,7 +32722,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("team_folder_id", false));
     const team_team_folder_archive_endpt = new Utils.Endpoint("team", "team_folder/archive", {
@@ -32732,7 +32732,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("team_folder_id", false), new Utils.BoolParam("force_async_off", true));
     const team_team_folder_archive_check_endpt = new Utils.Endpoint("team", "team_folder/archive/check", {
@@ -32742,7 +32742,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("async_job_id", false));
     const team_team_folder_create_endpt = new Utils.Endpoint("team", "team_folder/create", {
@@ -32752,7 +32752,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("name", false), new Utils.UnionParam("sync_setting", true, [new Utils.VoidParam("default"), new Utils.VoidParam("not_synced")]));
     const team_team_folder_get_info_endpt = new Utils.Endpoint("team", "team_folder/get_info", {
@@ -32762,7 +32762,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.read",
         is_cloud_doc_auth: "False",
     }, new Utils.ListParam("team_folder_ids", false, (index) => new Utils.TextParam(index, false)));
     const team_team_folder_list_endpt = new Utils.Endpoint("team", "team_folder/list", {
@@ -32772,7 +32772,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.read",
         is_cloud_doc_auth: "False",
     }, new Utils.IntParam("limit", true));
     const team_team_folder_list_continue_endpt = new Utils.Endpoint("team", "team_folder/list/continue", {
@@ -32782,7 +32782,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.read",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("cursor", false));
     const team_team_folder_permanently_delete_endpt = new Utils.Endpoint("team", "team_folder/permanently_delete", {
@@ -32792,7 +32792,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("team_folder_id", false));
     const team_team_folder_rename_endpt = new Utils.Endpoint("team", "team_folder/rename", {
@@ -32802,7 +32802,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("team_folder_id", false), new Utils.TextParam("name", false));
     const team_team_folder_update_sync_settings_endpt = new Utils.Endpoint("team", "team_folder/update_sync_settings", {
@@ -32812,7 +32812,7 @@ var Endpoints;
         is_preview: "False",
         allow_app_folder_app: "False",
         select_admin_mode: "None",
-        scope: "team_data.team_space",
+        scope: "team_data.content.write",
         is_cloud_doc_auth: "False",
     }, new Utils.TextParam("team_folder_id", false), new Utils.UnionParam("sync_setting", true, [new Utils.VoidParam("default"), new Utils.VoidParam("not_synced")]), new Utils.ListParam("content_sync_settings", true, (index) => new Utils.StructParam(index, false, [new Utils.TextParam("id", false), new Utils.UnionParam("sync_setting", false, [new Utils.VoidParam("default"), new Utils.VoidParam("not_synced")])])));
     const team_token_get_authenticated_admin_endpt = new Utils.Endpoint("team", "token/get_authenticated_admin", {
