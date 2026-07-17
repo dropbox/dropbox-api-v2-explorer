@@ -22,38 +22,33 @@ We are more than happy to recieve pull requests helping us improve the state of 
 
 Generated code can be updated by running the following code:
 
-```
-$ npm install
-$ git submodule init
-$ git submodule update --remote --recursive
-$ cd codegen/stone
-$ python setup.py install
-$ cd ..
-$ sh ./run_codegen.sh
+```sh
+git submodule update --init --recursive
+python3 -m pip install ./codegen/stone
+./codegen/run_codegen.sh
 ```
 
 ## Testing the Code
 
-Tests live under the test/ folder and are then broken down into the type of test it is. To run both the unit tests and the typescript tests, you can use:
+Use the Node.js 24 LTS version declared in `.nvmrc`, then install the locked dependencies and run the same checks as CI:
 
-```
-$ npm test
-```
-
-To test the build of the webpage, you can use:
-
-```
-$ npm run build
+```sh
+nvm use
+npm ci
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
 This builds the site once and places the output into the `build/` directory.
 
 ## Running the Explorer Locally
 
-You can run the explorer locally and see changes reflected live as you develop by starting up `Gulp`:
+You can run the explorer locally and see changes reflected live as you develop:
 
-```
-$ npm run watch
+```sh
+npm run watch
 ```
 
 [issues]: https://github.com/dropbox/dropbox-api-v2-explorer/issues

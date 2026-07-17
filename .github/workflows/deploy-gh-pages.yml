@@ -1,32 +1,44 @@
-name: Deploy To Github Pages
+name: Deploy to GitHub Pages
+
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
-          persist-credentials: false
-          submodules: 'recursive'
-      - name: Setup Python
-        uses: actions/setup-python@v2.2.2
+          submodules: recursive
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.7
-      - name: Install Packages
+          python-version: "3.13"
+          cache: pip
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
         run: |
-          cd codegen/stone
-          python setup.py install
-          cd ..
-          npm install
-          ./run_codegen.sh
-          cd ..
-          npm run build
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+          python -m pip install ./codegen/stone
+          npm ci
+      - name: Generate routes
+        run: ./codegen/run_codegen.sh
+      - name: Build site
+        run: npm run build
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          ACCESS_TOKEN: ${{ secrets.GH_PAGES_PUBLISH_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: build # The folder the action should deploy.
+          branch: gh-pages
+          folder: build

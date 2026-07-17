@@ -6,7 +6,7 @@
  */
 
 import * as react from 'react';
-import * as reactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as endpoints from './endpoints';
 import * as utils from './utils';
 import * as apicalls from './apicalls';
@@ -36,6 +36,7 @@ interface FileElement extends HTMLElement {
 }
 
 const ce = react.createElement;
+const root = createRoot(document.body);
 
 const developerPage = 'https://www.dropbox.com/developers';
 const displayNone = { style: { display: 'none' } };
@@ -349,7 +350,7 @@ class ListValueHandler extends ParentValueHandler {
     hasChild = (name: string) => true;
 
     value =
-      (key: string): any => this.current()[+name]; // eslint-disable-line no-restricted-globals
+      (key: string): any => this.current()[+key];
 
     updateChildValue = (name: string, value: any): void => {
       this.current()[+name] = value;
@@ -433,7 +434,7 @@ class ParamInput<P> extends react.Component<P, any> {
     super(props);
   }
 
-  public render(): any { // eslint-disable-line class-methods-use-this
+  public render(): any {
     throw new Error('Not implemented.');
   }
 }
@@ -1223,17 +1224,17 @@ const stateError: react.ReactElement<TextPageProps> = ce(TextPage, {
  */
 const renderGivenHash = (hash: string): void => {
   if (hash === '' || hash === undefined) {
-    reactDom.render(introPage, document.body);
+    root.render(introPage);
   } else if (hash === 'xkcd') {
     window.location.href = 'https://xkcd.com/1481/';
   } else if (hash === 'auth_error!') {
-    reactDom.render(stateError, document.body);
+    root.render(stateError);
   } else {
     const currEpt = utils.getEndpoint(endpoints.endpointList, decodeURIComponent(hash));
     if (currEpt === null) {
-      reactDom.render(endpointNotFound, document.body);
+      root.render(endpointNotFound);
     } else {
-      reactDom.render(ce(APIExplorer, { initEpt: currEpt }), document.body);
+      root.render(ce(APIExplorer, { initEpt: currEpt }));
     }
   }
 };
@@ -1271,7 +1272,7 @@ const main = (): void => {
   } else if ('__ept__' in hashes) { // no token, but an endpoint selected
     renderGivenHash(hashes.__ept__);
   } else { // no endpoint selected: render the intro page
-    reactDom.render(introPage, document.body);
+    root.render(introPage);
   }
 };
 

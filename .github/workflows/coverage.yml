@@ -1,29 +1,35 @@
 name: CodeCov
+
 on:
   push:
-    branches: 
-      - main
+    branches: [main]
   pull_request:
   schedule:
-    - cron: 0 0 * * *
+    - cron: "17 0 * * 1"
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   Unit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: '14'
-      - name: Install SDK
-        run: |
-          npm install
-      - name: Generate Unit Test Coverage
-        run: |
-          npm run coverage:unit
-      - name: Publish Coverage
-        uses: codecov/codecov-action@v1.3.2
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate unit test coverage
+        run: npm run coverage:unit
+      - name: Publish coverage
+        uses: codecov/codecov-action@v7
         with:
+          files: ./coverage/lcov.info
           flags: unit
           fail_ci_if_error: true
+          use_oidc: true
