@@ -197,7 +197,7 @@ const HTTPCodeViewer = (): CodeViewer => {
   const httpTemplate = (endpt: utils.Endpoint, headers: utils.Dict,
     body: string): react.ReactElement<Record<string, unknown>> => syntaxHighlight(syntax, ce('span', null,
     `POST ${endpt.getPathName()}\n`,
-    `Host: https://${endpt.getHostname()}\n`,
+    `Host: ${endpt.getHostname()}\n`,
     'User-Agent: api-explorer-client\n',
     utils.Dict.map(headers, (key: string, value: string) => ce('span', { key },
       `${key}: ${value}\n`)),
