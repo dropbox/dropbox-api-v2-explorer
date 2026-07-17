@@ -1,7 +1,10 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "module": "commonjs",
         "noImplicitAny": true,
+        "strictNullChecks": false,
+        "strictPropertyInitialization": false,
         "noEmitOnError": true,
         "noEmit": true,
         "typeRoots": [

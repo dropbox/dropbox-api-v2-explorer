@@ -1,79 +1,80 @@
 name: Spec Update
-on: 
+
+on:
   workflow_dispatch:
   repository_dispatch:
     types: [spec_update]
 
+permissions:
+  contents: read
+
 jobs:
-  Update:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
-          python-version: 3.7
-      - name: Setup Node.JS environment
-        uses: actions/setup-node@v2.1.5
+          fetch-depth: 0
+          submodules: recursive
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
-          node-version: 14
-      - name: Get current time
-        uses: 1466587594/get-current-time@v2
-        id: current-time
+          python-version: "3.13"
+          cache: pip
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          format: YYYY_MM_DD
-          utcOffset: "-08:00"
-      - name: Install SDK
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Update API specification
+        id: update-spec
+        shell: bash
         run: |
-          npm install
-      - name: Update Modules
+          old_commit="$(git rev-parse HEAD:codegen/spec)"
+          git submodule update --remote codegen/spec
+          new_commit="$(git -C codegen/spec rev-parse HEAD)"
+
+          if [[ "$old_commit" == "$new_commit" ]]; then
+            echo "has-changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          {
+            echo "has-changes=true"
+            echo "branch=spec_update_$(date -u +%Y_%m_%d)"
+            echo "commit-message<<SPEC_COMMIT_MESSAGE"
+            echo "Automated Spec Update"
+            echo
+            git -C codegen/spec log --format='- %s (%H)' "$old_commit..$new_commit"
+            echo "SPEC_COMMIT_MESSAGE"
+          } >> "$GITHUB_OUTPUT"
+      - name: Install dependencies
+        if: steps.update-spec.outputs.has-changes == 'true'
         run: |
-          git submodule init
-          git submodule update --remote --recursive
-      - name: Generate Branch Name
-        id: git-branch
+          python -m pip install ./codegen/stone
+          npm ci
+      - name: Generate routes
+        if: steps.update-spec.outputs.has-changes == 'true'
+        run: ./codegen/run_codegen.sh
+      - name: Verify generated site
+        if: steps.update-spec.outputs.has-changes == 'true'
         run: |
-          echo "::set-output name=branch::spec_update_${{ steps.current-time.outputs.formattedTime }}"
-      - name: Generate Num Diffs
-        id: git-diff-num
-        run: |
-          cd codegen/
-          diffs=$(git diff --submodule spec | grep ">" | wc -l)
-          echo "Number of Spec diffs: $diffs"
-          echo "::set-output name=num-diff::$diffs"
-          cd ..
-      - name: Generate Diff
-        id: git-diff
-        run: |
-          cd codegen/spec
-          gitdiff=$(git log -n ${{ steps.git-diff-num.outputs.num-diff }} --pretty="format:%n %H %n%n %b")
-          commit="Automated Spec Update $gitdiff"
-          commit="${commit//'%'/'%25'}"
-          commit="${commit//$'\n'/'%0A'}"
-          commit="${commit//$'\r'/'%0D'}"
-          echo "Commit Message: $commit"
-          echo "::set-output name=commit::$commit"
-          cd ../..
-      - name: Generate New Routes
-        run: |
-          cd codegen/stone
-          python setup.py install
-          cd ..
-          sh ./run_codegen.sh
-          cd ..
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3.8.2
-        if: steps.git-diff-num.outputs.num-diff != 0
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Create pull request
+        if: steps.update-spec.outputs.has-changes == 'true'
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
-          commit-message: |
-            ${{ steps.git-diff.outputs.commit}}
-          branch: ${{ steps.git-branch.outputs.branch }}
+          commit-message: ${{ steps.update-spec.outputs.commit-message }}
+          branch: ${{ steps.update-spec.outputs.branch }}
           delete-branch: true
-          title: 'Automated Spec Update'
-          body: |
-            ${{ steps.git-diff.outputs.commit}}
-          base: 'main'
+          title: Automated Spec Update
+          body: ${{ steps.update-spec.outputs.commit-message }}
+          base: main
           team-reviewers: |
             owners
             maintainers

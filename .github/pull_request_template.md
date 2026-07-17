@@ -15,5 +15,7 @@ Thank you for your pull request. Please provide a description below.
 
 **Validation**
 - [ ] Does `npm test` pass?
-- [ ] Does `npm lint` pass?
+- [ ] Does `npm run lint` pass?
+- [ ] Does `npm run typecheck` pass?
+- [ ] Does `npm run build` pass?
 - [ ] Have you tested this change locally?

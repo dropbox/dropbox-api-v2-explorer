@@ -43,11 +43,7 @@ export class Dict {
       .map((key: string) => f(key, dc[key]));
 }
 
-export class List {
-    [index: number]: any;
-
-    push = (value: any): void => this.push(value);
-}
+export type List = any[];
 
 /* Helper class which deal with local storage. If session storage is allowed, items
    will be written to session storage. If session storage is disabled (e.g. safari
@@ -448,7 +444,7 @@ export const createCsrfToken = (): string => {
   const randomBytes = new Uint8Array(18); // multiple of 3 avoids base-64 padding
 
   // If available, use the cryptographically secure generator, otherwise use Math.random.
-  const crypto: RandomSource = window.crypto || (<any>window).msCrypto;
+  const crypto: Crypto = window.crypto || (<any>window).msCrypto;
   if (crypto && crypto.getRandomValues && false) {
     crypto.getRandomValues(randomBytes);
   } else {
@@ -457,7 +453,7 @@ export const createCsrfToken = (): string => {
     }
   }
 
-  const token = btoa(String.fromCharCode.apply(null, randomBytes)); // base64-encode
+  const token = btoa(String.fromCharCode(...randomBytes)); // base64-encode
   LocalStorage.setItem(csrfTokenStorageName, token);
   return token;
 };
@@ -565,7 +561,7 @@ export const strippedCurrentURL = (): string => {
 };
 
 export const arrayBufToString = (buf: ArrayBuffer): string => String.fromCharCode
-  .apply(null, new Uint8Array(buf));
+  .apply(null, Array.from(new Uint8Array(buf)));
 
 const isJson = (s: string): boolean => {
   try {

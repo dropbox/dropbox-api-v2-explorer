@@ -2,9 +2,9 @@
 
 [![codecov](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer/branch/main/graph/badge.svg)](https://codecov.io/gh/dropbox/dropbox-api-v2-explorer)
 
-The offical API Explorer for Dropbox API v2.
+The official API Explorer for Dropbox API v2.
 
-API v2 Explorer is a client-side web app that lets you explore the different Dropbox APIs hosted via github pages.
+API v2 Explorer is a client-side web app that lets you explore the different Dropbox APIs hosted via GitHub Pages.
 
 Live Link: https://dropbox.github.io/dropbox-api-v2-explorer/
 

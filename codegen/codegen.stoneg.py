@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python3
 
 from __future__ import (
     print_function,
@@ -28,7 +28,7 @@ class APIEndpointGenerator(CodeBackend):
     endpoint_vars = []
 
     def generate(self, api):
-        with self.output_to_relative_path('../../src/endpoints.ts'):
+        with self.output_to_relative_path('endpoints.ts'):
             self.outputHeader()
             with self.indent():
                 for namespace in api.namespaces.values():
@@ -45,7 +45,7 @@ class APIEndpointGenerator(CodeBackend):
         self.emit()
         self.emit("import * as Utils from './utils';")
         self.emit()
-        self.emit('module Endpoints {')
+        self.emit('namespace Endpoints {')
 
     def outputFooter(self):
         self.emit('}')
