@@ -21987,6 +21987,38 @@
       init_utils();
       var Endpoints;
       ((Endpoints2) => {
+        const account_delete_profile_photo_endpt = new Endpoint(
+          "account",
+          "delete_profile_photo",
+          {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "account_info.write",
+            is_cloud_doc_auth: "False"
+          }
+        );
+        const account_get_photo_endpt = new Endpoint(
+          "account",
+          "get_photo",
+          {
+            auth: "user",
+            host: "content",
+            style: "download",
+            is_preview: "False",
+            allow_app_folder_app: "True",
+            select_admin_mode: "whole_team",
+            scope: "account_info.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("dbx_account_id", false),
+          new TextParam("size", false),
+          new BoolParam("circle_crop", false),
+          new BoolParam("expect_account_photo", false)
+        );
         const account_set_profile_photo_endpt = new Endpoint(
           "account",
           "set_profile_photo",
@@ -22001,22 +22033,6 @@
             is_cloud_doc_auth: "False"
           },
           new UnionParam("photo", false, [new TextParam("base64_data", false)])
-        );
-        const auth_token_from_oauth1_endpt = new Endpoint(
-          "auth",
-          "token/from_oauth1",
-          {
-            auth: "app",
-            host: "api",
-            style: "rpc",
-            is_preview: "False",
-            allow_app_folder_app: "True",
-            select_admin_mode: "None",
-            scope: "None",
-            is_cloud_doc_auth: "False"
-          },
-          new TextParam("oauth1_token", false),
-          new TextParam("oauth1_token_secret", false)
         );
         const auth_token_revoke_endpt = new Endpoint(
           "auth",
@@ -22375,7 +22391,8 @@
           new TextParam("destination", false),
           new StructParam("deadline", true, [new TextParam("deadline", false), new UnionParam("allow_late_uploads", true, [new VoidParam("one_day"), new VoidParam("two_days"), new VoidParam("seven_days"), new VoidParam("thirty_days"), new VoidParam("always")])]),
           new BoolParam("open", true),
-          new TextParam("description", true)
+          new TextParam("description", true),
+          new TextParam("video_project_id", true)
         );
         const file_requests_delete_endpt = new Endpoint(
           "file_requests",
@@ -22442,7 +22459,7 @@
             auth: "user",
             host: "api",
             style: "rpc",
-            is_preview: "True",
+            is_preview: "False",
             allow_app_folder_app: "True",
             select_admin_mode: "None",
             scope: "file_requests.read",
@@ -22457,7 +22474,7 @@
             auth: "user",
             host: "api",
             style: "rpc",
-            is_preview: "True",
+            is_preview: "False",
             allow_app_folder_app: "True",
             select_admin_mode: "None",
             scope: "file_requests.read",
@@ -22802,9 +22819,11 @@
             is_cloud_doc_auth: "False"
           },
           new TextParam("path", false),
-          new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png")]),
-          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]),
-          new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit")])
+          new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]),
+          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]),
+          new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]),
+          new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]),
+          new BoolParam("exclude_media_info", true)
         );
         const files_get_thumbnail_v2_endpt = new Endpoint(
           "files",
@@ -22820,9 +22839,11 @@
             is_cloud_doc_auth: "False"
           },
           new UnionParam("resource", false, [new TextParam("path", false), new StructParam("link", false, [new TextParam("url", false), new TextParam("path", true), new TextParam("password", true)])]),
-          new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png")]),
-          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]),
-          new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit")])
+          new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]),
+          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]),
+          new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]),
+          new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]),
+          new BoolParam("exclude_media_info", true)
         );
         const files_get_thumbnail_batch_endpt = new Endpoint(
           "files",
@@ -22837,7 +22858,7 @@
             scope: "files.content.read",
             is_cloud_doc_auth: "False"
           },
-          new ListParam("entries", false, (index) => new StructParam(index, false, [new TextParam("path", false), new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png")]), new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]), new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit")])]))
+          new ListParam("entries", false, (index) => new StructParam(index, false, [new TextParam("path", false), new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]), new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]), new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]), new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]), new BoolParam("exclude_media_info", true)]))
         );
         const files_list_folder_endpt = new Endpoint(
           "files",
@@ -22861,7 +22882,8 @@
           new IntParam("limit", true),
           new StructParam("shared_link", true, [new TextParam("url", false), new TextParam("password", true)]),
           new UnionParam("include_property_groups", true, [new ListParam("filter_some", false, (index) => new TextParam(index, false))]),
-          new BoolParam("include_non_downloadable_files", true)
+          new BoolParam("include_non_downloadable_files", true),
+          new BoolParam("include_restorable_info", true)
         );
         const files_list_folder_continue_endpt = new Endpoint(
           "files",
@@ -22900,7 +22922,8 @@
           new IntParam("limit", true),
           new StructParam("shared_link", true, [new TextParam("url", false), new TextParam("password", true)]),
           new UnionParam("include_property_groups", true, [new ListParam("filter_some", false, (index) => new TextParam(index, false))]),
-          new BoolParam("include_non_downloadable_files", true)
+          new BoolParam("include_non_downloadable_files", true),
+          new BoolParam("include_restorable_info", true)
         );
         const files_list_folder_longpoll_endpt = new Endpoint(
           "files",
@@ -22933,7 +22956,9 @@
           },
           new TextParam("path", false),
           new UnionParam("mode", true, [new VoidParam("path"), new VoidParam("id")]),
-          new IntParam("limit", true)
+          new IntParam("limit", true),
+          new TextParam("before_rev", true),
+          new BoolParam("include_restorable_info", true)
         );
         const files_lock_file_batch_endpt = new Endpoint(
           "files",
@@ -23236,6 +23261,23 @@
           new BoolParam("close", true),
           new TextParam("content_hash", true)
         );
+        const files_upload_session_append_batch_endpt = new Endpoint(
+          "files",
+          "upload_session/append_batch",
+          {
+            auth: "user",
+            host: "content",
+            style: "upload",
+            is_preview: "False",
+            allow_app_folder_app: "True",
+            select_admin_mode: "team_admin",
+            scope: "files.content.write",
+            is_cloud_doc_auth: "False"
+          },
+          new FileParam(),
+          new ListParam("entries", false, (index) => new StructParam(index, false, [new StructParam("cursor", false, [new TextParam("session_id", false), new IntParam("offset", false)]), new IntParam("length", false), new BoolParam("close", true)])),
+          new TextParam("content_hash", true)
+        );
         const files_upload_session_finish_endpt = new Endpoint(
           "files",
           "upload_session/finish",
@@ -23332,6 +23374,117 @@
             is_cloud_doc_auth: "False"
           }
         );
+        const paper_docs_get_metadata_endpt = new Endpoint(
+          "paper",
+          "docs/get_metadata",
+          {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.metadata.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("doc_id", true),
+          new TextParam("file_id", true)
+        );
+        const riviera_get_markdown_async_endpt = new Endpoint(
+          "riviera",
+          "get_markdown_async",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("file_id_or_url", true, [new TextParam("file_id", false), new TextParam("url", false), new TextParam("path", false)]),
+          new BoolParam("enable_ocr", true),
+          new BoolParam("embed_images", true)
+        );
+        const riviera_get_markdown_async_check_endpt = new Endpoint(
+          "riviera",
+          "get_markdown_async/check",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("async_job_id", false)
+        );
+        const riviera_get_metadata_async_endpt = new Endpoint(
+          "riviera",
+          "get_metadata_async",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("file_id_or_url", true, [new TextParam("file_id", false), new TextParam("url", false), new TextParam("path", false)])
+        );
+        const riviera_get_metadata_async_check_endpt = new Endpoint(
+          "riviera",
+          "get_metadata_async/check",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("async_job_id", false)
+        );
+        const riviera_get_transcript_async_endpt = new Endpoint(
+          "riviera",
+          "get_transcript_async",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("file_id_or_url", true, [new TextParam("file_id", false), new TextParam("url", false), new TextParam("path", false)]),
+          new UnionParam("timestamp_level", true, [new VoidParam("unknown"), new VoidParam("sentence"), new VoidParam("word")]),
+          new TextParam("included_special_words", true),
+          new TextParam("audio_language", true)
+        );
+        const riviera_get_transcript_async_check_endpt = new Endpoint(
+          "riviera",
+          "get_transcript_async/check",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("async_job_id", false)
+        );
         const sharing_add_file_member_endpt = new Endpoint(
           "sharing",
           "add_file_member",
@@ -23349,8 +23502,9 @@
           new ListParam("members", false, (index) => new UnionParam(index, false, [new TextParam("dropbox_id", false), new TextParam("email", false)])),
           new TextParam("custom_message", true),
           new BoolParam("quiet", true),
-          new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse")]),
-          new BoolParam("add_message_as_comment", true)
+          new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")]),
+          new BoolParam("add_message_as_comment", true),
+          new TextParam("fp_sealed_result", true)
         );
         const sharing_add_folder_member_endpt = new Endpoint(
           "sharing",
@@ -23366,9 +23520,10 @@
             is_cloud_doc_auth: "False"
           },
           new TextParam("shared_folder_id", false),
-          new ListParam("members", false, (index) => new StructParam(index, false, [new UnionParam("member", false, [new TextParam("dropbox_id", false), new TextParam("email", false)]), new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse")])])),
+          new ListParam("members", false, (index) => new StructParam(index, false, [new UnionParam("member", false, [new TextParam("dropbox_id", false), new TextParam("email", false)]), new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")])])),
           new BoolParam("quiet", true),
-          new TextParam("custom_message", true)
+          new TextParam("custom_message", true),
+          new TextParam("fp_sealed_result", true)
         );
         const sharing_check_job_status_endpt = new Endpoint(
           "sharing",
@@ -23456,7 +23611,7 @@
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "None",
+            select_admin_mode: "team_admin",
             scope: "sharing.read",
             is_cloud_doc_auth: "False"
           },
@@ -23477,13 +23632,13 @@
             is_cloud_doc_auth: "False"
           },
           new TextParam("shared_folder_id", false),
-          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("set_access_inheritance")]))
+          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("create_view_link"), new VoidParam("create_edit_link"), new VoidParam("set_access_inheritance")]))
         );
         const sharing_get_shared_link_file_endpt = new Endpoint(
           "sharing",
           "get_shared_link_file",
           {
-            auth: "user",
+            auth: "app, user",
             host: "content",
             style: "download",
             is_preview: "False",
@@ -23522,7 +23677,7 @@
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "team_admin",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False"
           },
@@ -23540,7 +23695,7 @@
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "None",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False"
           },
@@ -23556,7 +23711,7 @@
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "None",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False"
           },
@@ -23577,7 +23732,8 @@
           },
           new TextParam("shared_folder_id", false),
           new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("leave_a_copy"), new VoidParam("make_editor"), new VoidParam("make_owner"), new VoidParam("make_viewer"), new VoidParam("make_viewer_no_comment"), new VoidParam("remove")])),
-          new IntParam("limit", true)
+          new IntParam("limit", true),
+          new TextParam("path", true)
         );
         const sharing_list_folder_members_continue_endpt = new Endpoint(
           "sharing",
@@ -23608,7 +23764,7 @@
             is_cloud_doc_auth: "False"
           },
           new IntParam("limit", true),
-          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("set_access_inheritance")]))
+          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("create_view_link"), new VoidParam("create_edit_link"), new VoidParam("set_access_inheritance")]))
         );
         const sharing_list_folders_continue_endpt = new Endpoint(
           "sharing",
@@ -23639,7 +23795,7 @@
             is_cloud_doc_auth: "False"
           },
           new IntParam("limit", true),
-          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("set_access_inheritance")]))
+          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("create_view_link"), new VoidParam("create_edit_link"), new VoidParam("set_access_inheritance")]))
         );
         const sharing_list_mountable_folders_continue_endpt = new Endpoint(
           "sharing",
@@ -23696,7 +23852,7 @@
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "True",
-            select_admin_mode: "None",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False"
           },
@@ -23735,6 +23891,21 @@
             is_cloud_doc_auth: "False"
           },
           new TextParam("shared_folder_id", false)
+        );
+        const sharing_relinquish_access_endpt = new Endpoint(
+          "sharing",
+          "relinquish_access",
+          {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "True",
+            select_admin_mode: "whole_team",
+            scope: "private:sharing.write",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("file_id", false)
         );
         const sharing_relinquish_file_membership_endpt = new Endpoint(
           "sharing",
@@ -23847,12 +24018,12 @@
           new TextParam("path", false),
           new UnionParam("acl_update_policy", true, [new VoidParam("owner"), new VoidParam("editors")]),
           new BoolParam("force_async", true),
-          new UnionParam("member_policy", true, [new VoidParam("team"), new VoidParam("anyone")]),
+          new UnionParam("member_policy", true, [new VoidParam("team"), new VoidParam("anyone"), new VoidParam("team_and_approved")]),
           new UnionParam("shared_link_policy", true, [new VoidParam("anyone"), new VoidParam("team"), new VoidParam("members")]),
           new UnionParam("viewer_info_policy", true, [new VoidParam("enabled"), new VoidParam("disabled")]),
           new UnionParam("access_inheritance", true, [new VoidParam("inherit"), new VoidParam("no_inherit")]),
-          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("set_access_inheritance")])),
-          new StructParam("link_settings", true, [new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse")]), new UnionParam("audience", true, [new VoidParam("public"), new VoidParam("team"), new VoidParam("no_one"), new VoidParam("password"), new VoidParam("members")]), new UnionParam("expiry", true, [new VoidParam("remove_expiry"), new TextParam("set_expiry", false)]), new UnionParam("password", true, [new VoidParam("remove_password"), new TextParam("set_password", false)])])
+          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("create_view_link"), new VoidParam("create_edit_link"), new VoidParam("set_access_inheritance")])),
+          new StructParam("link_settings", true, [new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")]), new UnionParam("audience", true, [new VoidParam("public"), new VoidParam("team"), new VoidParam("no_one"), new VoidParam("password"), new VoidParam("members")]), new UnionParam("expiry", true, [new VoidParam("remove_expiry"), new TextParam("set_expiry", false)]), new UnionParam("password", true, [new VoidParam("remove_password"), new TextParam("set_password", false)])])
         );
         const sharing_transfer_folder_endpt = new Endpoint(
           "sharing",
@@ -23931,7 +24102,25 @@
           },
           new TextParam("file", false),
           new UnionParam("member", false, [new TextParam("dropbox_id", false), new TextParam("email", false)]),
-          new UnionParam("access_level", false, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse")])
+          new UnionParam("access_level", false, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")])
+        );
+        const sharing_update_file_policy_endpt = new Endpoint(
+          "sharing",
+          "update_file_policy",
+          {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "sharing.write",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("file", false),
+          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("invite_editor"), new VoidParam("unshare"), new VoidParam("relinquish_membership"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("create_view_link"), new VoidParam("create_edit_link")])),
+          new StructParam("link_settings", true, [new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")]), new UnionParam("audience", true, [new VoidParam("public"), new VoidParam("team"), new VoidParam("no_one"), new VoidParam("password"), new VoidParam("members")]), new UnionParam("expiry", true, [new VoidParam("remove_expiry"), new TextParam("set_expiry", false)]), new UnionParam("password", true, [new VoidParam("remove_password"), new TextParam("set_password", false)])]),
+          new UnionParam("viewer_info_policy", true, [new VoidParam("enabled"), new VoidParam("disabled")])
         );
         const sharing_update_folder_member_endpt = new Endpoint(
           "sharing",
@@ -23948,7 +24137,7 @@
           },
           new TextParam("shared_folder_id", false),
           new UnionParam("member", false, [new TextParam("dropbox_id", false), new TextParam("email", false)]),
-          new UnionParam("access_level", false, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse")])
+          new UnionParam("access_level", false, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")])
         );
         const sharing_update_folder_policy_endpt = new Endpoint(
           "sharing",
@@ -23964,12 +24153,12 @@
             is_cloud_doc_auth: "False"
           },
           new TextParam("shared_folder_id", false),
-          new UnionParam("member_policy", true, [new VoidParam("team"), new VoidParam("anyone")]),
+          new UnionParam("member_policy", true, [new VoidParam("team"), new VoidParam("anyone"), new VoidParam("team_and_approved")]),
           new UnionParam("acl_update_policy", true, [new VoidParam("owner"), new VoidParam("editors")]),
           new UnionParam("viewer_info_policy", true, [new VoidParam("enabled"), new VoidParam("disabled")]),
           new UnionParam("shared_link_policy", true, [new VoidParam("anyone"), new VoidParam("team"), new VoidParam("members")]),
-          new StructParam("link_settings", true, [new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse")]), new UnionParam("audience", true, [new VoidParam("public"), new VoidParam("team"), new VoidParam("no_one"), new VoidParam("password"), new VoidParam("members")]), new UnionParam("expiry", true, [new VoidParam("remove_expiry"), new TextParam("set_expiry", false)]), new UnionParam("password", true, [new VoidParam("remove_password"), new TextParam("set_password", false)])]),
-          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("set_access_inheritance")]))
+          new StructParam("link_settings", true, [new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")]), new UnionParam("audience", true, [new VoidParam("public"), new VoidParam("team"), new VoidParam("no_one"), new VoidParam("password"), new VoidParam("members")]), new UnionParam("expiry", true, [new VoidParam("remove_expiry"), new TextParam("set_expiry", false)]), new UnionParam("password", true, [new VoidParam("remove_password"), new TextParam("set_password", false)])]),
+          new ListParam("actions", true, (index) => new UnionParam(index, false, [new VoidParam("change_options"), new VoidParam("disable_viewer_info"), new VoidParam("edit_contents"), new VoidParam("enable_viewer_info"), new VoidParam("invite_editor"), new VoidParam("invite_viewer"), new VoidParam("invite_viewer_no_comment"), new VoidParam("relinquish_membership"), new VoidParam("unmount"), new VoidParam("unshare"), new VoidParam("leave_a_copy"), new VoidParam("share_link"), new VoidParam("create_link"), new VoidParam("create_view_link"), new VoidParam("create_edit_link"), new VoidParam("set_access_inheritance")]))
         );
         const team_devices_list_member_devices_endpt = new Endpoint(
           "team",
@@ -24050,7 +24239,7 @@
             scope: "team_info.read",
             is_cloud_doc_auth: "False"
           },
-          new ListParam("features", false, (index) => new UnionParam(index, false, [new VoidParam("upload_api_rate_limit"), new VoidParam("has_team_shared_dropbox"), new VoidParam("has_team_file_events"), new VoidParam("has_team_selective_sync")]))
+          new ListParam("features", false, (index) => new UnionParam(index, false, [new VoidParam("upload_api_rate_limit"), new VoidParam("has_team_shared_dropbox"), new VoidParam("has_team_file_events"), new VoidParam("has_team_selective_sync"), new VoidParam("has_distinct_member_homes")]))
         );
         const team_get_info_endpt = new Endpoint(
           "team",
@@ -24603,6 +24792,21 @@
           },
           new TextParam("async_job_id", false)
         );
+        const team_members_delete_former_member_files_endpt = new Endpoint(
+          "team",
+          "members/delete_former_member_files",
+          {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("user", false, [new TextParam("team_member_id", false), new TextParam("external_id", false), new TextParam("email", false)])
+        );
         const team_members_delete_profile_photo_endpt = new Endpoint(
           "team",
           "members/delete_profile_photo",
@@ -24804,7 +25008,8 @@
           new UnionParam("transfer_dest_id", true, [new TextParam("team_member_id", false), new TextParam("external_id", false), new TextParam("email", false)]),
           new UnionParam("transfer_admin_id", true, [new TextParam("team_member_id", false), new TextParam("external_id", false), new TextParam("email", false)]),
           new BoolParam("keep_account", true),
-          new BoolParam("retain_team_shares", true)
+          new BoolParam("retain_team_shares", true),
+          new BoolParam("permanently_delete_files", true)
         );
         const team_members_remove_job_status_get_endpt = new Endpoint(
           "team",
@@ -25248,6 +25453,21 @@
           new TextParam("team_folder_id", false),
           new TextParam("name", false)
         );
+        const team_team_folder_restore_endpt = new Endpoint(
+          "team",
+          "team_folder/restore",
+          {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "team_data.content.write",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("team_folder_id", false)
+        );
         const team_team_folder_update_sync_settings_endpt = new Endpoint(
           "team",
           "team_folder/update_sync_settings",
@@ -25295,8 +25515,8 @@
           new IntParam("limit", true),
           new TextParam("account_id", true),
           new StructParam("time", true, [new TextParam("start_time", true), new TextParam("end_time", true)]),
-          new UnionParam("category", true, [new VoidParam("admin_alerting"), new VoidParam("apps"), new VoidParam("comments"), new VoidParam("data_governance"), new VoidParam("devices"), new VoidParam("domains"), new VoidParam("file_operations"), new VoidParam("file_requests"), new VoidParam("groups"), new VoidParam("logins"), new VoidParam("members"), new VoidParam("paper"), new VoidParam("passwords"), new VoidParam("reports"), new VoidParam("sharing"), new VoidParam("showcase"), new VoidParam("sso"), new VoidParam("team_folders"), new VoidParam("team_policies"), new VoidParam("team_profile"), new VoidParam("tfa"), new VoidParam("trusted_teams")]),
-          new UnionParam("event_type", true, [new VoidParam("admin_alerting_alert_state_changed"), new VoidParam("admin_alerting_changed_alert_config"), new VoidParam("admin_alerting_triggered_alert"), new VoidParam("app_blocked_by_permissions"), new VoidParam("app_link_team"), new VoidParam("app_link_user"), new VoidParam("app_unlink_team"), new VoidParam("app_unlink_user"), new VoidParam("integration_connected"), new VoidParam("integration_disconnected"), new VoidParam("file_add_comment"), new VoidParam("file_change_comment_subscription"), new VoidParam("file_delete_comment"), new VoidParam("file_edit_comment"), new VoidParam("file_like_comment"), new VoidParam("file_resolve_comment"), new VoidParam("file_unlike_comment"), new VoidParam("file_unresolve_comment"), new VoidParam("governance_policy_add_folders"), new VoidParam("governance_policy_add_folder_failed"), new VoidParam("governance_policy_content_disposed"), new VoidParam("governance_policy_create"), new VoidParam("governance_policy_delete"), new VoidParam("governance_policy_edit_details"), new VoidParam("governance_policy_edit_duration"), new VoidParam("governance_policy_export_created"), new VoidParam("governance_policy_export_removed"), new VoidParam("governance_policy_remove_folders"), new VoidParam("governance_policy_report_created"), new VoidParam("governance_policy_zip_part_downloaded"), new VoidParam("legal_holds_activate_a_hold"), new VoidParam("legal_holds_add_members"), new VoidParam("legal_holds_change_hold_details"), new VoidParam("legal_holds_change_hold_name"), new VoidParam("legal_holds_export_a_hold"), new VoidParam("legal_holds_export_cancelled"), new VoidParam("legal_holds_export_downloaded"), new VoidParam("legal_holds_export_removed"), new VoidParam("legal_holds_release_a_hold"), new VoidParam("legal_holds_remove_members"), new VoidParam("legal_holds_report_a_hold"), new VoidParam("device_change_ip_desktop"), new VoidParam("device_change_ip_mobile"), new VoidParam("device_change_ip_web"), new VoidParam("device_delete_on_unlink_fail"), new VoidParam("device_delete_on_unlink_success"), new VoidParam("device_link_fail"), new VoidParam("device_link_success"), new VoidParam("device_management_disabled"), new VoidParam("device_management_enabled"), new VoidParam("device_sync_backup_status_changed"), new VoidParam("device_unlink"), new VoidParam("dropbox_passwords_exported"), new VoidParam("dropbox_passwords_new_device_enrolled"), new VoidParam("emm_refresh_auth_token"), new VoidParam("external_drive_backup_eligibility_status_checked"), new VoidParam("external_drive_backup_status_changed"), new VoidParam("account_capture_change_availability"), new VoidParam("account_capture_migrate_account"), new VoidParam("account_capture_notification_emails_sent"), new VoidParam("account_capture_relinquish_account"), new VoidParam("disabled_domain_invites"), new VoidParam("domain_invites_approve_request_to_join_team"), new VoidParam("domain_invites_decline_request_to_join_team"), new VoidParam("domain_invites_email_existing_users"), new VoidParam("domain_invites_request_to_join_team"), new VoidParam("domain_invites_set_invite_new_user_pref_to_no"), new VoidParam("domain_invites_set_invite_new_user_pref_to_yes"), new VoidParam("domain_verification_add_domain_fail"), new VoidParam("domain_verification_add_domain_success"), new VoidParam("domain_verification_remove_domain"), new VoidParam("enabled_domain_invites"), new VoidParam("apply_naming_convention"), new VoidParam("create_folder"), new VoidParam("file_add"), new VoidParam("file_copy"), new VoidParam("file_delete"), new VoidParam("file_download"), new VoidParam("file_edit"), new VoidParam("file_get_copy_reference"), new VoidParam("file_locking_lock_status_changed"), new VoidParam("file_move"), new VoidParam("file_permanently_delete"), new VoidParam("file_preview"), new VoidParam("file_rename"), new VoidParam("file_restore"), new VoidParam("file_revert"), new VoidParam("file_rollback_changes"), new VoidParam("file_save_copy_reference"), new VoidParam("folder_overview_description_changed"), new VoidParam("folder_overview_item_pinned"), new VoidParam("folder_overview_item_unpinned"), new VoidParam("object_label_added"), new VoidParam("object_label_removed"), new VoidParam("object_label_updated_value"), new VoidParam("organize_folder_with_tidy"), new VoidParam("rewind_folder"), new VoidParam("undo_naming_convention"), new VoidParam("undo_organize_folder_with_tidy"), new VoidParam("user_tags_added"), new VoidParam("user_tags_removed"), new VoidParam("email_ingest_receive_file"), new VoidParam("file_request_change"), new VoidParam("file_request_close"), new VoidParam("file_request_create"), new VoidParam("file_request_delete"), new VoidParam("file_request_receive_file"), new VoidParam("group_add_external_id"), new VoidParam("group_add_member"), new VoidParam("group_change_external_id"), new VoidParam("group_change_management_type"), new VoidParam("group_change_member_role"), new VoidParam("group_create"), new VoidParam("group_delete"), new VoidParam("group_description_updated"), new VoidParam("group_join_policy_updated"), new VoidParam("group_moved"), new VoidParam("group_remove_external_id"), new VoidParam("group_remove_member"), new VoidParam("group_rename"), new VoidParam("account_lock_or_unlocked"), new VoidParam("emm_error"), new VoidParam("guest_admin_signed_in_via_trusted_teams"), new VoidParam("guest_admin_signed_out_via_trusted_teams"), new VoidParam("login_fail"), new VoidParam("login_success"), new VoidParam("logout"), new VoidParam("reseller_support_session_end"), new VoidParam("reseller_support_session_start"), new VoidParam("sign_in_as_session_end"), new VoidParam("sign_in_as_session_start"), new VoidParam("sso_error"), new VoidParam("create_team_invite_link"), new VoidParam("delete_team_invite_link"), new VoidParam("member_add_external_id"), new VoidParam("member_add_name"), new VoidParam("member_change_admin_role"), new VoidParam("member_change_email"), new VoidParam("member_change_external_id"), new VoidParam("member_change_membership_type"), new VoidParam("member_change_name"), new VoidParam("member_change_reseller_role"), new VoidParam("member_change_status"), new VoidParam("member_delete_manual_contacts"), new VoidParam("member_delete_profile_photo"), new VoidParam("member_permanently_delete_account_contents"), new VoidParam("member_remove_external_id"), new VoidParam("member_set_profile_photo"), new VoidParam("member_space_limits_add_custom_quota"), new VoidParam("member_space_limits_change_custom_quota"), new VoidParam("member_space_limits_change_status"), new VoidParam("member_space_limits_remove_custom_quota"), new VoidParam("member_suggest"), new VoidParam("member_transfer_account_contents"), new VoidParam("pending_secondary_email_added"), new VoidParam("secondary_email_deleted"), new VoidParam("secondary_email_verified"), new VoidParam("secondary_mails_policy_changed"), new VoidParam("binder_add_page"), new VoidParam("binder_add_section"), new VoidParam("binder_remove_page"), new VoidParam("binder_remove_section"), new VoidParam("binder_rename_page"), new VoidParam("binder_rename_section"), new VoidParam("binder_reorder_page"), new VoidParam("binder_reorder_section"), new VoidParam("paper_content_add_member"), new VoidParam("paper_content_add_to_folder"), new VoidParam("paper_content_archive"), new VoidParam("paper_content_create"), new VoidParam("paper_content_permanently_delete"), new VoidParam("paper_content_remove_from_folder"), new VoidParam("paper_content_remove_member"), new VoidParam("paper_content_rename"), new VoidParam("paper_content_restore"), new VoidParam("paper_doc_add_comment"), new VoidParam("paper_doc_change_member_role"), new VoidParam("paper_doc_change_sharing_policy"), new VoidParam("paper_doc_change_subscription"), new VoidParam("paper_doc_deleted"), new VoidParam("paper_doc_delete_comment"), new VoidParam("paper_doc_download"), new VoidParam("paper_doc_edit"), new VoidParam("paper_doc_edit_comment"), new VoidParam("paper_doc_followed"), new VoidParam("paper_doc_mention"), new VoidParam("paper_doc_ownership_changed"), new VoidParam("paper_doc_request_access"), new VoidParam("paper_doc_resolve_comment"), new VoidParam("paper_doc_revert"), new VoidParam("paper_doc_slack_share"), new VoidParam("paper_doc_team_invite"), new VoidParam("paper_doc_trashed"), new VoidParam("paper_doc_unresolve_comment"), new VoidParam("paper_doc_untrashed"), new VoidParam("paper_doc_view"), new VoidParam("paper_external_view_allow"), new VoidParam("paper_external_view_default_team"), new VoidParam("paper_external_view_forbid"), new VoidParam("paper_folder_change_subscription"), new VoidParam("paper_folder_deleted"), new VoidParam("paper_folder_followed"), new VoidParam("paper_folder_team_invite"), new VoidParam("paper_published_link_change_permission"), new VoidParam("paper_published_link_create"), new VoidParam("paper_published_link_disabled"), new VoidParam("paper_published_link_view"), new VoidParam("password_change"), new VoidParam("password_reset"), new VoidParam("password_reset_all"), new VoidParam("classification_create_report"), new VoidParam("classification_create_report_fail"), new VoidParam("emm_create_exceptions_report"), new VoidParam("emm_create_usage_report"), new VoidParam("export_members_report"), new VoidParam("export_members_report_fail"), new VoidParam("external_sharing_create_report"), new VoidParam("external_sharing_report_failed"), new VoidParam("no_expiration_link_gen_create_report"), new VoidParam("no_expiration_link_gen_report_failed"), new VoidParam("no_password_link_gen_create_report"), new VoidParam("no_password_link_gen_report_failed"), new VoidParam("no_password_link_view_create_report"), new VoidParam("no_password_link_view_report_failed"), new VoidParam("outdated_link_view_create_report"), new VoidParam("outdated_link_view_report_failed"), new VoidParam("paper_admin_export_start"), new VoidParam("smart_sync_create_admin_privilege_report"), new VoidParam("team_activity_create_report"), new VoidParam("team_activity_create_report_fail"), new VoidParam("collection_share"), new VoidParam("file_transfers_file_add"), new VoidParam("file_transfers_transfer_delete"), new VoidParam("file_transfers_transfer_download"), new VoidParam("file_transfers_transfer_send"), new VoidParam("file_transfers_transfer_view"), new VoidParam("note_acl_invite_only"), new VoidParam("note_acl_link"), new VoidParam("note_acl_team_link"), new VoidParam("note_shared"), new VoidParam("note_share_receive"), new VoidParam("open_note_shared"), new VoidParam("sf_add_group"), new VoidParam("sf_allow_non_members_to_view_shared_links"), new VoidParam("sf_external_invite_warn"), new VoidParam("sf_fb_invite"), new VoidParam("sf_fb_invite_change_role"), new VoidParam("sf_fb_uninvite"), new VoidParam("sf_invite_group"), new VoidParam("sf_team_grant_access"), new VoidParam("sf_team_invite"), new VoidParam("sf_team_invite_change_role"), new VoidParam("sf_team_join"), new VoidParam("sf_team_join_from_oob_link"), new VoidParam("sf_team_uninvite"), new VoidParam("shared_content_add_invitees"), new VoidParam("shared_content_add_link_expiry"), new VoidParam("shared_content_add_link_password"), new VoidParam("shared_content_add_member"), new VoidParam("shared_content_change_downloads_policy"), new VoidParam("shared_content_change_invitee_role"), new VoidParam("shared_content_change_link_audience"), new VoidParam("shared_content_change_link_expiry"), new VoidParam("shared_content_change_link_password"), new VoidParam("shared_content_change_member_role"), new VoidParam("shared_content_change_viewer_info_policy"), new VoidParam("shared_content_claim_invitation"), new VoidParam("shared_content_copy"), new VoidParam("shared_content_download"), new VoidParam("shared_content_relinquish_membership"), new VoidParam("shared_content_remove_invitees"), new VoidParam("shared_content_remove_link_expiry"), new VoidParam("shared_content_remove_link_password"), new VoidParam("shared_content_remove_member"), new VoidParam("shared_content_request_access"), new VoidParam("shared_content_restore_invitees"), new VoidParam("shared_content_restore_member"), new VoidParam("shared_content_unshare"), new VoidParam("shared_content_view"), new VoidParam("shared_folder_change_link_policy"), new VoidParam("shared_folder_change_members_inheritance_policy"), new VoidParam("shared_folder_change_members_management_policy"), new VoidParam("shared_folder_change_members_policy"), new VoidParam("shared_folder_create"), new VoidParam("shared_folder_decline_invitation"), new VoidParam("shared_folder_mount"), new VoidParam("shared_folder_nest"), new VoidParam("shared_folder_transfer_ownership"), new VoidParam("shared_folder_unmount"), new VoidParam("shared_link_add_expiry"), new VoidParam("shared_link_change_expiry"), new VoidParam("shared_link_change_visibility"), new VoidParam("shared_link_copy"), new VoidParam("shared_link_create"), new VoidParam("shared_link_disable"), new VoidParam("shared_link_download"), new VoidParam("shared_link_remove_expiry"), new VoidParam("shared_link_settings_add_expiration"), new VoidParam("shared_link_settings_add_password"), new VoidParam("shared_link_settings_allow_download_disabled"), new VoidParam("shared_link_settings_allow_download_enabled"), new VoidParam("shared_link_settings_change_audience"), new VoidParam("shared_link_settings_change_expiration"), new VoidParam("shared_link_settings_change_password"), new VoidParam("shared_link_settings_remove_expiration"), new VoidParam("shared_link_settings_remove_password"), new VoidParam("shared_link_share"), new VoidParam("shared_link_view"), new VoidParam("shared_note_opened"), new VoidParam("shmodel_disable_downloads"), new VoidParam("shmodel_enable_downloads"), new VoidParam("shmodel_group_share"), new VoidParam("showcase_access_granted"), new VoidParam("showcase_add_member"), new VoidParam("showcase_archived"), new VoidParam("showcase_created"), new VoidParam("showcase_delete_comment"), new VoidParam("showcase_edited"), new VoidParam("showcase_edit_comment"), new VoidParam("showcase_file_added"), new VoidParam("showcase_file_download"), new VoidParam("showcase_file_removed"), new VoidParam("showcase_file_view"), new VoidParam("showcase_permanently_deleted"), new VoidParam("showcase_post_comment"), new VoidParam("showcase_remove_member"), new VoidParam("showcase_renamed"), new VoidParam("showcase_request_access"), new VoidParam("showcase_resolve_comment"), new VoidParam("showcase_restored"), new VoidParam("showcase_trashed"), new VoidParam("showcase_trashed_deprecated"), new VoidParam("showcase_unresolve_comment"), new VoidParam("showcase_untrashed"), new VoidParam("showcase_untrashed_deprecated"), new VoidParam("showcase_view"), new VoidParam("sso_add_cert"), new VoidParam("sso_add_login_url"), new VoidParam("sso_add_logout_url"), new VoidParam("sso_change_cert"), new VoidParam("sso_change_login_url"), new VoidParam("sso_change_logout_url"), new VoidParam("sso_change_saml_identity_mode"), new VoidParam("sso_remove_cert"), new VoidParam("sso_remove_login_url"), new VoidParam("sso_remove_logout_url"), new VoidParam("team_folder_change_status"), new VoidParam("team_folder_create"), new VoidParam("team_folder_downgrade"), new VoidParam("team_folder_permanently_delete"), new VoidParam("team_folder_rename"), new VoidParam("team_selective_sync_settings_changed"), new VoidParam("account_capture_change_policy"), new VoidParam("admin_email_reminders_changed"), new VoidParam("allow_download_disabled"), new VoidParam("allow_download_enabled"), new VoidParam("app_permissions_changed"), new VoidParam("camera_uploads_policy_changed"), new VoidParam("capture_transcript_policy_changed"), new VoidParam("classification_change_policy"), new VoidParam("computer_backup_policy_changed"), new VoidParam("content_administration_policy_changed"), new VoidParam("data_placement_restriction_change_policy"), new VoidParam("data_placement_restriction_satisfy_policy"), new VoidParam("device_approvals_add_exception"), new VoidParam("device_approvals_change_desktop_policy"), new VoidParam("device_approvals_change_mobile_policy"), new VoidParam("device_approvals_change_overage_action"), new VoidParam("device_approvals_change_unlink_action"), new VoidParam("device_approvals_remove_exception"), new VoidParam("directory_restrictions_add_members"), new VoidParam("directory_restrictions_remove_members"), new VoidParam("dropbox_passwords_policy_changed"), new VoidParam("email_ingest_policy_changed"), new VoidParam("emm_add_exception"), new VoidParam("emm_change_policy"), new VoidParam("emm_remove_exception"), new VoidParam("extended_version_history_change_policy"), new VoidParam("external_drive_backup_policy_changed"), new VoidParam("file_comments_change_policy"), new VoidParam("file_locking_policy_changed"), new VoidParam("file_provider_migration_policy_changed"), new VoidParam("file_requests_change_policy"), new VoidParam("file_requests_emails_enabled"), new VoidParam("file_requests_emails_restricted_to_team_only"), new VoidParam("file_transfers_policy_changed"), new VoidParam("folder_link_restriction_policy_changed"), new VoidParam("google_sso_change_policy"), new VoidParam("group_user_management_change_policy"), new VoidParam("integration_policy_changed"), new VoidParam("invite_acceptance_email_policy_changed"), new VoidParam("member_requests_change_policy"), new VoidParam("member_send_invite_policy_changed"), new VoidParam("member_space_limits_add_exception"), new VoidParam("member_space_limits_change_caps_type_policy"), new VoidParam("member_space_limits_change_policy"), new VoidParam("member_space_limits_remove_exception"), new VoidParam("member_suggestions_change_policy"), new VoidParam("microsoft_office_addin_change_policy"), new VoidParam("network_control_change_policy"), new VoidParam("paper_change_deployment_policy"), new VoidParam("paper_change_member_link_policy"), new VoidParam("paper_change_member_policy"), new VoidParam("paper_change_policy"), new VoidParam("paper_default_folder_policy_changed"), new VoidParam("paper_desktop_policy_changed"), new VoidParam("paper_enabled_users_group_addition"), new VoidParam("paper_enabled_users_group_removal"), new VoidParam("password_strength_requirements_change_policy"), new VoidParam("permanent_delete_change_policy"), new VoidParam("reseller_support_change_policy"), new VoidParam("rewind_policy_changed"), new VoidParam("send_for_signature_policy_changed"), new VoidParam("sharing_change_folder_join_policy"), new VoidParam("sharing_change_link_allow_change_expiration_policy"), new VoidParam("sharing_change_link_default_expiration_policy"), new VoidParam("sharing_change_link_enforce_password_policy"), new VoidParam("sharing_change_link_policy"), new VoidParam("sharing_change_member_policy"), new VoidParam("showcase_change_download_policy"), new VoidParam("showcase_change_enabled_policy"), new VoidParam("showcase_change_external_sharing_policy"), new VoidParam("smarter_smart_sync_policy_changed"), new VoidParam("smart_sync_change_policy"), new VoidParam("smart_sync_not_opt_out"), new VoidParam("smart_sync_opt_out"), new VoidParam("sso_change_policy"), new VoidParam("team_branding_policy_changed"), new VoidParam("team_extensions_policy_changed"), new VoidParam("team_selective_sync_policy_changed"), new VoidParam("team_sharing_whitelist_subjects_changed"), new VoidParam("tfa_add_exception"), new VoidParam("tfa_change_policy"), new VoidParam("tfa_remove_exception"), new VoidParam("two_account_change_policy"), new VoidParam("viewer_info_policy_changed"), new VoidParam("watermarking_policy_changed"), new VoidParam("web_sessions_change_active_session_limit"), new VoidParam("web_sessions_change_fixed_length_policy"), new VoidParam("web_sessions_change_idle_length_policy"), new VoidParam("data_residency_migration_request_successful"), new VoidParam("data_residency_migration_request_unsuccessful"), new VoidParam("team_merge_from"), new VoidParam("team_merge_to"), new VoidParam("team_profile_add_background"), new VoidParam("team_profile_add_logo"), new VoidParam("team_profile_change_background"), new VoidParam("team_profile_change_default_language"), new VoidParam("team_profile_change_logo"), new VoidParam("team_profile_change_name"), new VoidParam("team_profile_remove_background"), new VoidParam("team_profile_remove_logo"), new VoidParam("tfa_add_backup_phone"), new VoidParam("tfa_add_security_key"), new VoidParam("tfa_change_backup_phone"), new VoidParam("tfa_change_status"), new VoidParam("tfa_remove_backup_phone"), new VoidParam("tfa_remove_security_key"), new VoidParam("tfa_reset"), new VoidParam("changed_enterprise_admin_role"), new VoidParam("changed_enterprise_connected_team_status"), new VoidParam("ended_enterprise_admin_session"), new VoidParam("ended_enterprise_admin_session_deprecated"), new VoidParam("enterprise_settings_locking"), new VoidParam("guest_admin_change_status"), new VoidParam("started_enterprise_admin_session"), new VoidParam("team_merge_request_accepted"), new VoidParam("team_merge_request_accepted_shown_to_primary_team"), new VoidParam("team_merge_request_accepted_shown_to_secondary_team"), new VoidParam("team_merge_request_auto_canceled"), new VoidParam("team_merge_request_canceled"), new VoidParam("team_merge_request_canceled_shown_to_primary_team"), new VoidParam("team_merge_request_canceled_shown_to_secondary_team"), new VoidParam("team_merge_request_expired"), new VoidParam("team_merge_request_expired_shown_to_primary_team"), new VoidParam("team_merge_request_expired_shown_to_secondary_team"), new VoidParam("team_merge_request_rejected_shown_to_primary_team"), new VoidParam("team_merge_request_rejected_shown_to_secondary_team"), new VoidParam("team_merge_request_reminder"), new VoidParam("team_merge_request_reminder_shown_to_primary_team"), new VoidParam("team_merge_request_reminder_shown_to_secondary_team"), new VoidParam("team_merge_request_revoked"), new VoidParam("team_merge_request_sent_shown_to_primary_team"), new VoidParam("team_merge_request_sent_shown_to_secondary_team")])
+          new UnionParam("category", true, [new VoidParam("admin_alerting"), new VoidParam("apps"), new VoidParam("comments"), new VoidParam("dash"), new VoidParam("data_governance"), new VoidParam("devices"), new VoidParam("domains"), new VoidParam("encryption"), new VoidParam("file_operations"), new VoidParam("file_requests"), new VoidParam("groups"), new VoidParam("logins"), new VoidParam("members"), new VoidParam("paper"), new VoidParam("passwords"), new VoidParam("protect"), new VoidParam("reports"), new VoidParam("sharing"), new VoidParam("showcase"), new VoidParam("signatures"), new VoidParam("sso"), new VoidParam("team_folders"), new VoidParam("team_policies"), new VoidParam("team_profile"), new VoidParam("tfa"), new VoidParam("trusted_teams")]),
+          new UnionParam("event_type", true, [new VoidParam("admin_alerting_alert_state_changed"), new VoidParam("admin_alerting_changed_alert_config"), new VoidParam("admin_alerting_triggered_alert"), new VoidParam("ransomware_restore_process_completed"), new VoidParam("ransomware_restore_process_started"), new VoidParam("app_blocked_by_permissions"), new VoidParam("app_link_team"), new VoidParam("app_link_user"), new VoidParam("app_unlink_team"), new VoidParam("app_unlink_user"), new VoidParam("integration_connected"), new VoidParam("integration_disconnected"), new VoidParam("file_add_comment"), new VoidParam("file_change_comment_subscription"), new VoidParam("file_delete_comment"), new VoidParam("file_edit_comment"), new VoidParam("file_like_comment"), new VoidParam("file_resolve_comment"), new VoidParam("file_unlike_comment"), new VoidParam("file_unresolve_comment"), new VoidParam("dash_added_comment_to_stack"), new VoidParam("dash_added_connector"), new VoidParam("dash_added_link_to_stack"), new VoidParam("dash_added_team_email_domain_allowlist"), new VoidParam("dash_admin_added_org_wide_connector"), new VoidParam("dash_admin_disabled_connector"), new VoidParam("dash_admin_enabled_connector"), new VoidParam("dash_admin_removed_org_wide_connector"), new VoidParam("dash_archived_stack"), new VoidParam("dash_changed_audience_of_shared_link_to_stack"), new VoidParam("dash_cloned_stack"), new VoidParam("dash_connector_tools_call"), new VoidParam("dash_created_stack"), new VoidParam("dash_deleted_comment_from_stack"), new VoidParam("dash_deleted_stack"), new VoidParam("dash_edited_comment_in_stack"), new VoidParam("dash_external_user_opened_stack"), new VoidParam("dash_first_launched_desktop"), new VoidParam("dash_first_launched_extension"), new VoidParam("dash_first_launched_web_start_page"), new VoidParam("dash_opened_shared_link_to_stack"), new VoidParam("dash_opened_stack"), new VoidParam("dash_preview_opt_out_status_changed"), new VoidParam("dash_removed_connector"), new VoidParam("dash_removed_link_from_stack"), new VoidParam("dash_removed_shared_link_to_stack"), new VoidParam("dash_removed_team_email_domain_allowlist"), new VoidParam("dash_renamed_stack"), new VoidParam("dash_shared_link_to_stack"), new VoidParam("dash_unarchived_stack"), new VoidParam("dash_viewed_company_stack"), new VoidParam("dash_viewed_external_ai_activity_report"), new VoidParam("governance_policy_add_folders"), new VoidParam("governance_policy_add_folder_failed"), new VoidParam("governance_policy_content_disposed"), new VoidParam("governance_policy_create"), new VoidParam("governance_policy_delete"), new VoidParam("governance_policy_edit_details"), new VoidParam("governance_policy_edit_duration"), new VoidParam("governance_policy_export_created"), new VoidParam("governance_policy_export_removed"), new VoidParam("governance_policy_remove_folders"), new VoidParam("governance_policy_report_created"), new VoidParam("governance_policy_zip_part_downloaded"), new VoidParam("legal_holds_activate_a_hold"), new VoidParam("legal_holds_add_members"), new VoidParam("legal_holds_change_hold_details"), new VoidParam("legal_holds_change_hold_name"), new VoidParam("legal_holds_export_a_hold"), new VoidParam("legal_holds_export_cancelled"), new VoidParam("legal_holds_export_downloaded"), new VoidParam("legal_holds_export_removed"), new VoidParam("legal_holds_release_a_hold"), new VoidParam("legal_holds_remove_members"), new VoidParam("legal_holds_report_a_hold"), new VoidParam("device_change_ip_desktop"), new VoidParam("device_change_ip_mobile"), new VoidParam("device_change_ip_web"), new VoidParam("device_delete_on_unlink_fail"), new VoidParam("device_delete_on_unlink_success"), new VoidParam("device_link_fail"), new VoidParam("device_link_success"), new VoidParam("device_management_disabled"), new VoidParam("device_management_enabled"), new VoidParam("device_sync_backup_status_changed"), new VoidParam("device_unlink"), new VoidParam("dropbox_passwords_exported"), new VoidParam("dropbox_passwords_new_device_enrolled"), new VoidParam("emm_refresh_auth_token"), new VoidParam("external_drive_backup_eligibility_status_checked"), new VoidParam("external_drive_backup_status_changed"), new VoidParam("account_capture_change_availability"), new VoidParam("account_capture_migrate_account"), new VoidParam("account_capture_notification_emails_sent"), new VoidParam("account_capture_relinquish_account"), new VoidParam("disabled_domain_invites"), new VoidParam("domain_invites_approve_request_to_join_team"), new VoidParam("domain_invites_decline_request_to_join_team"), new VoidParam("domain_invites_email_existing_users"), new VoidParam("domain_invites_request_to_join_team"), new VoidParam("domain_invites_set_invite_new_user_pref_to_no"), new VoidParam("domain_invites_set_invite_new_user_pref_to_yes"), new VoidParam("domain_verification_add_domain_fail"), new VoidParam("domain_verification_add_domain_success"), new VoidParam("domain_verification_remove_domain"), new VoidParam("enabled_domain_invites"), new VoidParam("encrypted_folder_cancel_team_key_rotation"), new VoidParam("encrypted_folder_enroll_backup_key"), new VoidParam("encrypted_folder_enroll_client"), new VoidParam("encrypted_folder_enroll_team"), new VoidParam("encrypted_folder_finish_team_unenrollment"), new VoidParam("encrypted_folder_init_team_key_rotation"), new VoidParam("encrypted_folder_init_team_unenrollment"), new VoidParam("encrypted_folder_remove_backup_key"), new VoidParam("encrypted_folder_rotate_team_key"), new VoidParam("encrypted_folder_unenroll_client"), new VoidParam("team_encryption_key_activate_key"), new VoidParam("team_encryption_key_cancel_key_deletion"), new VoidParam("team_encryption_key_create_key"), new VoidParam("team_encryption_key_deactivate_key"), new VoidParam("team_encryption_key_delete_key"), new VoidParam("team_encryption_key_disable_key"), new VoidParam("team_encryption_key_enable_key"), new VoidParam("team_encryption_key_rotate_key"), new VoidParam("team_encryption_key_schedule_key_deletion"), new VoidParam("apply_naming_convention"), new VoidParam("create_folder"), new VoidParam("file_add"), new VoidParam("file_add_from_automation"), new VoidParam("file_copy"), new VoidParam("file_delete"), new VoidParam("file_download"), new VoidParam("file_edit"), new VoidParam("file_get_copy_reference"), new VoidParam("file_locking_lock_status_changed"), new VoidParam("file_move"), new VoidParam("file_permanently_delete"), new VoidParam("file_preview"), new VoidParam("file_rename"), new VoidParam("file_restore"), new VoidParam("file_revert"), new VoidParam("file_rollback_changes"), new VoidParam("file_save_copy_reference"), new VoidParam("folder_overview_description_changed"), new VoidParam("folder_overview_item_pinned"), new VoidParam("folder_overview_item_unpinned"), new VoidParam("media_hub_file_downloaded"), new VoidParam("object_label_added"), new VoidParam("object_label_removed"), new VoidParam("object_label_updated_value"), new VoidParam("organize_folder_with_tidy"), new VoidParam("replay_file_delete"), new VoidParam("replay_file_downloaded"), new VoidParam("replay_team_project_created"), new VoidParam("rewind_folder"), new VoidParam("undo_naming_convention"), new VoidParam("undo_organize_folder_with_tidy"), new VoidParam("user_tags_added"), new VoidParam("user_tags_removed"), new VoidParam("email_ingest_receive_file"), new VoidParam("file_request_auto_close"), new VoidParam("file_request_change"), new VoidParam("file_request_close"), new VoidParam("file_request_create"), new VoidParam("file_request_delete"), new VoidParam("file_request_receive_file"), new VoidParam("group_add_external_id"), new VoidParam("group_add_member"), new VoidParam("group_change_external_id"), new VoidParam("group_change_management_type"), new VoidParam("group_change_member_role"), new VoidParam("group_create"), new VoidParam("group_delete"), new VoidParam("group_description_updated"), new VoidParam("group_external_sharing_setting_override_changed"), new VoidParam("group_join_policy_updated"), new VoidParam("group_moved"), new VoidParam("group_remove_external_id"), new VoidParam("group_remove_member"), new VoidParam("group_rename"), new VoidParam("account_lock_or_unlocked"), new VoidParam("emm_error"), new VoidParam("guest_admin_signed_in_via_trusted_teams"), new VoidParam("guest_admin_signed_out_via_trusted_teams"), new VoidParam("login_fail"), new VoidParam("login_success"), new VoidParam("logout"), new VoidParam("reseller_support_session_end"), new VoidParam("reseller_support_session_start"), new VoidParam("sign_in_as_session_end"), new VoidParam("sign_in_as_session_start"), new VoidParam("sso_error"), new VoidParam("addon_assigned"), new VoidParam("addon_removed"), new VoidParam("backup_admin_invitation_sent"), new VoidParam("backup_invitation_opened"), new VoidParam("create_team_invite_link"), new VoidParam("delete_team_invite_link"), new VoidParam("member_add_external_id"), new VoidParam("member_add_name"), new VoidParam("member_change_admin_role"), new VoidParam("member_change_email"), new VoidParam("member_change_external_id"), new VoidParam("member_change_membership_type"), new VoidParam("member_change_name"), new VoidParam("member_change_reseller_role"), new VoidParam("member_change_status"), new VoidParam("member_delete_manual_contacts"), new VoidParam("member_delete_profile_photo"), new VoidParam("member_permanently_delete_account_contents"), new VoidParam("member_remove_external_id"), new VoidParam("member_set_profile_photo"), new VoidParam("member_space_limits_add_custom_quota"), new VoidParam("member_space_limits_change_custom_quota"), new VoidParam("member_space_limits_change_status"), new VoidParam("member_space_limits_remove_custom_quota"), new VoidParam("member_suggest"), new VoidParam("member_transfer_account_contents"), new VoidParam("pending_secondary_email_added"), new VoidParam("product_assigned_to_member"), new VoidParam("product_removed_from_member"), new VoidParam("secondary_email_deleted"), new VoidParam("secondary_email_verified"), new VoidParam("secondary_mails_policy_changed"), new VoidParam("binder_add_page"), new VoidParam("binder_add_section"), new VoidParam("binder_remove_page"), new VoidParam("binder_remove_section"), new VoidParam("binder_rename_page"), new VoidParam("binder_rename_section"), new VoidParam("binder_reorder_page"), new VoidParam("binder_reorder_section"), new VoidParam("paper_content_add_member"), new VoidParam("paper_content_add_to_folder"), new VoidParam("paper_content_archive"), new VoidParam("paper_content_create"), new VoidParam("paper_content_permanently_delete"), new VoidParam("paper_content_remove_from_folder"), new VoidParam("paper_content_remove_member"), new VoidParam("paper_content_rename"), new VoidParam("paper_content_restore"), new VoidParam("paper_doc_add_comment"), new VoidParam("paper_doc_change_member_role"), new VoidParam("paper_doc_change_sharing_policy"), new VoidParam("paper_doc_change_subscription"), new VoidParam("paper_doc_deleted"), new VoidParam("paper_doc_delete_comment"), new VoidParam("paper_doc_download"), new VoidParam("paper_doc_edit"), new VoidParam("paper_doc_edit_comment"), new VoidParam("paper_doc_followed"), new VoidParam("paper_doc_mention"), new VoidParam("paper_doc_ownership_changed"), new VoidParam("paper_doc_request_access"), new VoidParam("paper_doc_resolve_comment"), new VoidParam("paper_doc_revert"), new VoidParam("paper_doc_slack_share"), new VoidParam("paper_doc_team_invite"), new VoidParam("paper_doc_trashed"), new VoidParam("paper_doc_unresolve_comment"), new VoidParam("paper_doc_untrashed"), new VoidParam("paper_doc_view"), new VoidParam("paper_external_view_allow"), new VoidParam("paper_external_view_default_team"), new VoidParam("paper_external_view_forbid"), new VoidParam("paper_folder_change_subscription"), new VoidParam("paper_folder_deleted"), new VoidParam("paper_folder_followed"), new VoidParam("paper_folder_team_invite"), new VoidParam("paper_published_link_change_permission"), new VoidParam("paper_published_link_create"), new VoidParam("paper_published_link_disabled"), new VoidParam("paper_published_link_view"), new VoidParam("password_change"), new VoidParam("password_reset"), new VoidParam("password_reset_all"), new VoidParam("protect_internal_domains_changed"), new VoidParam("classification_create_report"), new VoidParam("classification_create_report_fail"), new VoidParam("emm_create_exceptions_report"), new VoidParam("emm_create_usage_report"), new VoidParam("export_members_report"), new VoidParam("export_members_report_fail"), new VoidParam("external_sharing_create_report"), new VoidParam("external_sharing_report_failed"), new VoidParam("member_access_details_create_report"), new VoidParam("member_access_details_create_report_failed"), new VoidParam("no_expiration_link_gen_create_report"), new VoidParam("no_expiration_link_gen_report_failed"), new VoidParam("no_password_link_gen_create_report"), new VoidParam("no_password_link_gen_report_failed"), new VoidParam("no_password_link_view_create_report"), new VoidParam("no_password_link_view_report_failed"), new VoidParam("outdated_link_view_create_report"), new VoidParam("outdated_link_view_report_failed"), new VoidParam("paper_admin_export_start"), new VoidParam("ransomware_alert_create_report"), new VoidParam("ransomware_alert_create_report_failed"), new VoidParam("shared_folders_create_report"), new VoidParam("shared_folders_create_report_failed"), new VoidParam("smart_sync_create_admin_privilege_report"), new VoidParam("team_activity_create_report"), new VoidParam("team_activity_create_report_fail"), new VoidParam("team_folders_create_report"), new VoidParam("team_folders_create_report_failed"), new VoidParam("team_storage_create_report"), new VoidParam("team_storage_create_report_failed"), new VoidParam("collection_share"), new VoidParam("file_transfers_file_add"), new VoidParam("file_transfers_transfer_delete"), new VoidParam("file_transfers_transfer_download"), new VoidParam("file_transfers_transfer_send"), new VoidParam("file_transfers_transfer_view"), new VoidParam("media_hub_project_team_add"), new VoidParam("media_hub_project_team_delete"), new VoidParam("media_hub_project_team_role_changed"), new VoidParam("media_hub_shared_link_audience_changed"), new VoidParam("media_hub_shared_link_created"), new VoidParam("media_hub_shared_link_download_setting_changed"), new VoidParam("media_hub_shared_link_revoked"), new VoidParam("note_acl_invite_only"), new VoidParam("note_acl_link"), new VoidParam("note_acl_team_link"), new VoidParam("note_shared"), new VoidParam("note_share_receive"), new VoidParam("open_note_shared"), new VoidParam("replay_file_shared_link_created"), new VoidParam("replay_file_shared_link_modified"), new VoidParam("replay_project_team_add"), new VoidParam("replay_project_team_delete"), new VoidParam("send_and_track_file_added"), new VoidParam("send_and_track_file_renamed"), new VoidParam("send_and_track_file_updated"), new VoidParam("send_and_track_link_created"), new VoidParam("send_and_track_link_deleted"), new VoidParam("send_and_track_link_updated"), new VoidParam("send_and_track_link_viewed"), new VoidParam("send_and_track_removed_file_and_associated_links"), new VoidParam("sf_add_group"), new VoidParam("sf_allow_non_members_to_view_shared_links"), new VoidParam("sf_external_invite_warn"), new VoidParam("sf_fb_invite"), new VoidParam("sf_fb_invite_change_role"), new VoidParam("sf_fb_uninvite"), new VoidParam("sf_invite_group"), new VoidParam("sf_team_grant_access"), new VoidParam("sf_team_invite"), new VoidParam("sf_team_invite_change_role"), new VoidParam("sf_team_join"), new VoidParam("sf_team_join_from_oob_link"), new VoidParam("sf_team_uninvite"), new VoidParam("shared_content_add_invitees"), new VoidParam("shared_content_add_link_expiry"), new VoidParam("shared_content_add_link_password"), new VoidParam("shared_content_add_member"), new VoidParam("shared_content_change_downloads_policy"), new VoidParam("shared_content_change_invitee_role"), new VoidParam("shared_content_change_link_audience"), new VoidParam("shared_content_change_link_expiry"), new VoidParam("shared_content_change_link_password"), new VoidParam("shared_content_change_member_role"), new VoidParam("shared_content_change_viewer_info_policy"), new VoidParam("shared_content_claim_invitation"), new VoidParam("shared_content_copy"), new VoidParam("shared_content_download"), new VoidParam("shared_content_relinquish_membership"), new VoidParam("shared_content_remove_invitees"), new VoidParam("shared_content_remove_link_expiry"), new VoidParam("shared_content_remove_link_password"), new VoidParam("shared_content_remove_member"), new VoidParam("shared_content_request_access"), new VoidParam("shared_content_restore_invitees"), new VoidParam("shared_content_restore_member"), new VoidParam("shared_content_unshare"), new VoidParam("shared_content_view"), new VoidParam("shared_folder_change_link_policy"), new VoidParam("shared_folder_change_members_inheritance_policy"), new VoidParam("shared_folder_change_members_management_policy"), new VoidParam("shared_folder_change_members_policy"), new VoidParam("shared_folder_create"), new VoidParam("shared_folder_decline_invitation"), new VoidParam("shared_folder_mount"), new VoidParam("shared_folder_nest"), new VoidParam("shared_folder_transfer_ownership"), new VoidParam("shared_folder_unmount"), new VoidParam("shared_link_add_expiry"), new VoidParam("shared_link_change_expiry"), new VoidParam("shared_link_change_visibility"), new VoidParam("shared_link_copy"), new VoidParam("shared_link_create"), new VoidParam("shared_link_disable"), new VoidParam("shared_link_download"), new VoidParam("shared_link_remove_expiry"), new VoidParam("shared_link_remove_visitor"), new VoidParam("shared_link_settings_add_expiration"), new VoidParam("shared_link_settings_add_password"), new VoidParam("shared_link_settings_allow_download_disabled"), new VoidParam("shared_link_settings_allow_download_enabled"), new VoidParam("shared_link_settings_change_audience"), new VoidParam("shared_link_settings_change_expiration"), new VoidParam("shared_link_settings_change_password"), new VoidParam("shared_link_settings_remove_expiration"), new VoidParam("shared_link_settings_remove_password"), new VoidParam("shared_link_share"), new VoidParam("shared_link_view"), new VoidParam("shared_note_opened"), new VoidParam("shmodel_disable_downloads"), new VoidParam("shmodel_enable_downloads"), new VoidParam("shmodel_group_share"), new VoidParam("showcase_access_granted"), new VoidParam("showcase_add_member"), new VoidParam("showcase_archived"), new VoidParam("showcase_created"), new VoidParam("showcase_delete_comment"), new VoidParam("showcase_edited"), new VoidParam("showcase_edit_comment"), new VoidParam("showcase_file_added"), new VoidParam("showcase_file_download"), new VoidParam("showcase_file_removed"), new VoidParam("showcase_file_view"), new VoidParam("showcase_permanently_deleted"), new VoidParam("showcase_post_comment"), new VoidParam("showcase_remove_member"), new VoidParam("showcase_renamed"), new VoidParam("showcase_request_access"), new VoidParam("showcase_resolve_comment"), new VoidParam("showcase_restored"), new VoidParam("showcase_trashed"), new VoidParam("showcase_trashed_deprecated"), new VoidParam("showcase_unresolve_comment"), new VoidParam("showcase_untrashed"), new VoidParam("showcase_untrashed_deprecated"), new VoidParam("showcase_view"), new VoidParam("sign_signature_request_canceled"), new VoidParam("sign_signature_request_completed"), new VoidParam("sign_signature_request_declined"), new VoidParam("sign_signature_request_opened"), new VoidParam("sign_signature_request_reminder_sent"), new VoidParam("sign_signature_request_sent"), new VoidParam("sign_template_created"), new VoidParam("sign_template_shared"), new VoidParam("risc_security_event"), new VoidParam("sso_add_cert"), new VoidParam("sso_add_login_url"), new VoidParam("sso_add_logout_url"), new VoidParam("sso_change_cert"), new VoidParam("sso_change_login_url"), new VoidParam("sso_change_logout_url"), new VoidParam("sso_change_saml_identity_mode"), new VoidParam("sso_remove_cert"), new VoidParam("sso_remove_login_url"), new VoidParam("sso_remove_logout_url"), new VoidParam("team_folder_change_status"), new VoidParam("team_folder_create"), new VoidParam("team_folder_downgrade"), new VoidParam("team_folder_permanently_delete"), new VoidParam("team_folder_rename"), new VoidParam("team_folder_space_limits_change_caps_type"), new VoidParam("team_folder_space_limits_change_limit"), new VoidParam("team_folder_space_limits_change_notification_target"), new VoidParam("team_selective_sync_settings_changed"), new VoidParam("account_capture_change_policy"), new VoidParam("admin_email_reminders_changed"), new VoidParam("ai_third_party_sharing_dropbox_base_policy_changed"), new VoidParam("allow_download_disabled"), new VoidParam("allow_download_enabled"), new VoidParam("apple_login_change_policy"), new VoidParam("app_permissions_changed"), new VoidParam("camera_uploads_policy_changed"), new VoidParam("capture_team_space_policy_changed"), new VoidParam("capture_transcript_policy_changed"), new VoidParam("classification_change_policy"), new VoidParam("computer_backup_policy_changed"), new VoidParam("content_administration_policy_changed"), new VoidParam("content_deletion_protection_change_policy"), new VoidParam("dash_external_sharing_policy_changed"), new VoidParam("data_placement_restriction_change_policy"), new VoidParam("data_placement_restriction_satisfy_policy"), new VoidParam("device_approvals_add_exception"), new VoidParam("device_approvals_change_desktop_policy"), new VoidParam("device_approvals_change_mobile_policy"), new VoidParam("device_approvals_change_overage_action"), new VoidParam("device_approvals_change_unlink_action"), new VoidParam("device_approvals_remove_exception"), new VoidParam("directory_restrictions_add_members"), new VoidParam("directory_restrictions_remove_members"), new VoidParam("dropbox_passwords_policy_changed"), new VoidParam("email_ingest_policy_changed"), new VoidParam("emm_add_exception"), new VoidParam("emm_change_policy"), new VoidParam("emm_remove_exception"), new VoidParam("extended_version_history_change_policy"), new VoidParam("external_drive_backup_policy_changed"), new VoidParam("file_comments_change_policy"), new VoidParam("file_locking_policy_changed"), new VoidParam("file_provider_migration_policy_changed"), new VoidParam("file_requests_change_policy"), new VoidParam("file_requests_emails_enabled"), new VoidParam("file_requests_emails_restricted_to_team_only"), new VoidParam("file_transfers_policy_changed"), new VoidParam("flexible_file_names_policy_changed"), new VoidParam("folder_link_restriction_policy_changed"), new VoidParam("google_sso_change_policy"), new VoidParam("group_user_management_change_policy"), new VoidParam("integration_policy_changed"), new VoidParam("invite_acceptance_email_policy_changed"), new VoidParam("media_hub_adding_people_policy_changed"), new VoidParam("media_hub_download_policy_changed"), new VoidParam("media_hub_link_sharing_policy_changed"), new VoidParam("member_requests_change_policy"), new VoidParam("member_send_invite_policy_changed"), new VoidParam("member_space_limits_add_exception"), new VoidParam("member_space_limits_change_caps_type_policy"), new VoidParam("member_space_limits_change_policy"), new VoidParam("member_space_limits_remove_exception"), new VoidParam("member_suggestions_change_policy"), new VoidParam("microsoft_login_change_policy"), new VoidParam("microsoft_office_addin_change_policy"), new VoidParam("multi_team_identity_policy_changed"), new VoidParam("network_control_change_policy"), new VoidParam("paper_change_deployment_policy"), new VoidParam("paper_change_member_link_policy"), new VoidParam("paper_change_member_policy"), new VoidParam("paper_change_policy"), new VoidParam("paper_default_folder_policy_changed"), new VoidParam("paper_desktop_policy_changed"), new VoidParam("paper_enabled_users_group_addition"), new VoidParam("paper_enabled_users_group_removal"), new VoidParam("passkey_login_policy_changed"), new VoidParam("password_strength_requirements_change_policy"), new VoidParam("permanent_delete_change_policy"), new VoidParam("previews_ai_policy_changed"), new VoidParam("replay_adding_people_policy_changed"), new VoidParam("replay_sharing_policy_changed"), new VoidParam("reseller_support_change_policy"), new VoidParam("rewind_policy_changed"), new VoidParam("send_and_track_policy_changed"), new VoidParam("send_external_sharing_policy_changed"), new VoidParam("send_for_signature_policy_changed"), new VoidParam("shared_link_default_permissions_policy_changed"), new VoidParam("sharing_change_folder_join_policy"), new VoidParam("sharing_change_link_allow_change_expiration_policy"), new VoidParam("sharing_change_link_default_expiration_policy"), new VoidParam("sharing_change_link_enforce_password_policy"), new VoidParam("sharing_change_link_policy"), new VoidParam("sharing_change_member_policy"), new VoidParam("showcase_change_download_policy"), new VoidParam("showcase_change_enabled_policy"), new VoidParam("showcase_change_external_sharing_policy"), new VoidParam("sign_external_sharing_policy_changed"), new VoidParam("sign_template_creation_permission_changed"), new VoidParam("smarter_smart_sync_policy_changed"), new VoidParam("smart_sync_change_policy"), new VoidParam("smart_sync_not_opt_out"), new VoidParam("smart_sync_opt_out"), new VoidParam("sso_change_policy"), new VoidParam("stack_cross_team_access_policy_changed"), new VoidParam("team_branding_policy_changed"), new VoidParam("team_extensions_policy_changed"), new VoidParam("team_member_storage_request_policy_changed"), new VoidParam("team_selective_sync_policy_changed"), new VoidParam("team_sharing_whitelist_subjects_changed"), new VoidParam("tfa_add_exception"), new VoidParam("tfa_change_policy"), new VoidParam("tfa_remove_exception"), new VoidParam("top_level_content_policy_changed"), new VoidParam("two_account_change_policy"), new VoidParam("viewer_info_policy_changed"), new VoidParam("watermarking_policy_changed"), new VoidParam("web_sessions_change_active_session_limit"), new VoidParam("web_sessions_change_fixed_length_policy"), new VoidParam("web_sessions_change_idle_length_policy"), new VoidParam("data_residency_migration_request_successful"), new VoidParam("data_residency_migration_request_unsuccessful"), new VoidParam("team_merge_from"), new VoidParam("team_merge_to"), new VoidParam("team_profile_add_background"), new VoidParam("team_profile_add_logo"), new VoidParam("team_profile_change_background"), new VoidParam("team_profile_change_default_language"), new VoidParam("team_profile_change_logo"), new VoidParam("team_profile_change_name"), new VoidParam("team_profile_remove_background"), new VoidParam("team_profile_remove_logo"), new VoidParam("passkey_add"), new VoidParam("passkey_remove"), new VoidParam("tfa_add_backup_phone"), new VoidParam("tfa_add_security_key"), new VoidParam("tfa_change_backup_phone"), new VoidParam("tfa_change_status"), new VoidParam("tfa_remove_backup_phone"), new VoidParam("tfa_remove_security_key"), new VoidParam("tfa_reset"), new VoidParam("changed_enterprise_admin_role"), new VoidParam("changed_enterprise_connected_team_status"), new VoidParam("ended_enterprise_admin_session"), new VoidParam("ended_enterprise_admin_session_deprecated"), new VoidParam("enterprise_settings_locking"), new VoidParam("guest_admin_change_status"), new VoidParam("started_enterprise_admin_session"), new VoidParam("team_merge_request_accepted"), new VoidParam("team_merge_request_accepted_shown_to_primary_team"), new VoidParam("team_merge_request_accepted_shown_to_secondary_team"), new VoidParam("team_merge_request_auto_canceled"), new VoidParam("team_merge_request_canceled"), new VoidParam("team_merge_request_canceled_shown_to_primary_team"), new VoidParam("team_merge_request_canceled_shown_to_secondary_team"), new VoidParam("team_merge_request_expired"), new VoidParam("team_merge_request_expired_shown_to_primary_team"), new VoidParam("team_merge_request_expired_shown_to_secondary_team"), new VoidParam("team_merge_request_rejected_shown_to_primary_team"), new VoidParam("team_merge_request_rejected_shown_to_secondary_team"), new VoidParam("team_merge_request_reminder"), new VoidParam("team_merge_request_reminder_shown_to_primary_team"), new VoidParam("team_merge_request_reminder_shown_to_secondary_team"), new VoidParam("team_merge_request_revoked"), new VoidParam("team_merge_request_sent_shown_to_primary_team"), new VoidParam("team_merge_request_sent_shown_to_secondary_team")])
         );
         const team_log_get_events_continue_endpt = new Endpoint(
           "team_log",
@@ -25326,7 +25546,7 @@
             scope: "account_info.read",
             is_cloud_doc_auth: "False"
           },
-          new ListParam("features", false, (index) => new UnionParam(index, false, [new VoidParam("paper_as_files"), new VoidParam("file_locking")]))
+          new ListParam("features", false, (index) => new UnionParam(index, false, [new VoidParam("paper_as_files"), new VoidParam("file_locking"), new VoidParam("team_shared_dropbox"), new VoidParam("distinct_member_home")]))
         );
         const users_get_account_endpt = new Endpoint(
           "users",
@@ -25387,8 +25607,9 @@
           }
         );
         Endpoints2.endpointList = [
+          account_delete_profile_photo_endpt,
+          account_get_photo_endpt,
           account_set_profile_photo_endpt,
-          auth_token_from_oauth1_endpt,
           auth_token_revoke_endpt,
           check_app_endpt,
           check_user_endpt,
@@ -25464,12 +25685,20 @@
           files_unlock_file_batch_endpt,
           files_upload_endpt,
           files_upload_session_append_v2_endpt,
+          files_upload_session_append_batch_endpt,
           files_upload_session_finish_endpt,
           files_upload_session_finish_batch_v2_endpt,
           files_upload_session_finish_batch_check_endpt,
           files_upload_session_start_endpt,
           files_upload_session_start_batch_endpt,
           openid_userinfo_endpt,
+          paper_docs_get_metadata_endpt,
+          riviera_get_markdown_async_endpt,
+          riviera_get_markdown_async_check_endpt,
+          riviera_get_metadata_async_endpt,
+          riviera_get_metadata_async_check_endpt,
+          riviera_get_transcript_async_endpt,
+          riviera_get_transcript_async_check_endpt,
           sharing_add_file_member_endpt,
           sharing_add_folder_member_endpt,
           sharing_check_job_status_endpt,
@@ -25495,6 +25724,7 @@
           sharing_list_shared_links_endpt,
           sharing_modify_shared_link_settings_endpt,
           sharing_mount_folder_endpt,
+          sharing_relinquish_access_endpt,
           sharing_relinquish_file_membership_endpt,
           sharing_relinquish_folder_membership_endpt,
           sharing_remove_file_member_2_endpt,
@@ -25507,6 +25737,7 @@
           sharing_unshare_file_endpt,
           sharing_unshare_folder_endpt,
           sharing_update_file_member_endpt,
+          sharing_update_file_policy_endpt,
           sharing_update_folder_member_endpt,
           sharing_update_folder_policy_endpt,
           team_devices_list_member_devices_endpt,
@@ -25549,6 +25780,7 @@
           team_members_add_v2_endpt,
           team_members_add_job_status_get_endpt,
           team_members_add_job_status_get_v2_endpt,
+          team_members_delete_former_member_files_endpt,
           team_members_delete_profile_photo_endpt,
           team_members_delete_profile_photo_v2_endpt,
           team_members_get_available_team_member_roles_endpt,
@@ -25590,6 +25822,7 @@
           team_team_folder_list_continue_endpt,
           team_team_folder_permanently_delete_endpt,
           team_team_folder_rename_endpt,
+          team_team_folder_restore_endpt,
           team_team_folder_update_sync_settings_endpt,
           team_token_get_authenticated_admin_endpt,
           team_log_get_events_endpt,
