@@ -28,6 +28,7 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }

@@ -11,8 +11,17 @@
  */
 
 import * as react from 'react';
-import { ReactNode } from 'react';
+import hljs from 'highlight.js/lib/core';
+import bash from 'highlight.js/lib/languages/bash';
+import http from 'highlight.js/lib/languages/http';
+import json from 'highlight.js/lib/languages/json';
+import python from 'highlight.js/lib/languages/python';
 import * as cookie from './cookie';
+
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('http', http);
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('python', python);
 
 type MappingFn = (key: string, value: any, i: number) => react.DetailedReactHTMLElement<any, any>;
 
@@ -589,30 +598,38 @@ react.DetailedReactHTMLElement<any, any> => {
 export const escapeUnicode = (s: string): string => s.replace(/[\u007f-\uffff]/g,
   (c: string) => `\\u${(`0000${c.charCodeAt(0).toString(16)}`).slice(-4)}`);
 
-// Used to get highlight.js to syntax-highlight the codeview and response areas.
-// Source: https://github.com/akiran/react-highlight/blob/main/src/index.jsx
+// Converts the nested React elements used by the code viewers back to source text.
+const reactNodeToText = (node: react.ReactNode): string => {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node);
+  }
+  if (Array.isArray(node)) {
+    return node.map(reactNodeToText).join('');
+  }
+  if (react.isValidElement<{ children?: react.ReactNode }>(node)) {
+    return reactNodeToText(node.props.children);
+  }
+  return '';
+};
+
 interface HltProps {
-    className: string;
-    children: react.ClassicElement<Record<string, unknown>>
+    className?: string;
+    children: react.ReactNode
 }
-export class Highlight extends react.Component<HltProps, Record<string, unknown>> {
-    defaultProps = { className: '' };
 
-    // TODO: fix this highlighting it breaks updates
-    // componentDidMount = () => this.highlightCode();
-    // componentDidUpdate = () => this.highlightCode();
+// Highlight source before rendering so highlight.js never mutates React-managed DOM.
+export const Highlight = ({ className = '', children }: HltProps): react.ReactElement => {
+  const source = reactNodeToText(children);
+  const highlighted = className === ''
+    ? hljs.highlightAuto(source)
+    : hljs.highlight(source, { language: className, ignoreIllegals: true });
 
-    // highlightCode = () => [].forEach.call(
-    //     (<Element>reactDom.findDOMNode(this)).querySelectorAll('pre code'),
-    //         (node: Node) => hljs.highlightBlock(node)
-    // );
-
-    public render(): ReactNode {
-      return react.createElement('pre', { className: this.props.className },
-        react.createElement('code', { className: this.props.className },
-          this.props.children));
-    }
-}
+  return react.createElement('pre', { className: 'hljs' },
+    react.createElement('code', {
+      className: className === '' ? undefined : `language-${className}`,
+      dangerouslySetInnerHTML: { __html: highlighted.value },
+    }));
+};
 
 // Utility functions for getting the headers for an API call
 

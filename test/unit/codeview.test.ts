@@ -14,7 +14,8 @@ test('HTTP code view renders a hostname without a URL scheme', () => {
   const request = renderToStaticMarkup(
     formats.http.renderRPCLike(endpoint, '<ACCESS_TOKEN>', {}, []),
   );
+  const requestText = request.replace(/<[^>]+>/g, '');
 
-  assert.match(request, /Host: api\.dropboxapi\.com\n/);
-  assert.doesNotMatch(request, /Host: https:\/\//);
+  assert.match(requestText, /Host: api\.dropboxapi\.com\n/);
+  assert.doesNotMatch(requestText, /Host: https:\/\//);
 });

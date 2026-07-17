@@ -21,9 +21,12 @@ const copyStaticFiles = async () => {
 };
 
 const buildOptions = {
-  entryPoints: [path.join(sourceDirectory, 'main.ts')],
+  entryPoints: {
+    all: path.join(sourceDirectory, 'main.ts'),
+    highlight: path.join(rootDirectory, 'node_modules', 'highlight.js', 'styles', 'github.css'),
+  },
   bundle: true,
-  outfile: path.join(buildDirectory, 'all.js'),
+  outdir: buildDirectory,
   platform: 'browser',
   sourcemap: true,
   target: ['es2015'],
