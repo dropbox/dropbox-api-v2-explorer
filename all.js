@@ -43,7 +43,7 @@
       "use strict";
       (function() {
         function defineDeprecationWarning(methodName, info) {
-          Object.defineProperty(Component3.prototype, methodName, {
+          Object.defineProperty(Component2.prototype, methodName, {
             get: function() {
               console.warn(
                 "%s(...) is deprecated in plain JavaScript React classes. %s",
@@ -68,7 +68,7 @@
             publicInstance
           ), didWarnStateUpdateForUnmountedComponent[warningKey] = true);
         }
-        function Component3(props, context, updater) {
+        function Component2(props, context, updater) {
           this.props = props;
           this.context = context;
           this.refs = emptyObject;
@@ -252,9 +252,9 @@
           return newKey;
         }
         function validateChildKeys(node) {
-          isValidElement(node) ? node._store && (node._store.validated = 1) : "object" === typeof node && null !== node && node.$$typeof === REACT_LAZY_TYPE && ("fulfilled" === node._payload.status ? isValidElement(node._payload.value) && node._payload.value._store && (node._payload.value._store.validated = 1) : node._store && (node._store.validated = 1));
+          isValidElement2(node) ? node._store && (node._store.validated = 1) : "object" === typeof node && null !== node && node.$$typeof === REACT_LAZY_TYPE && ("fulfilled" === node._payload.status ? isValidElement2(node._payload.value) && node._payload.value._store && (node._payload.value._store.validated = 1) : node._store && (node._store.validated = 1));
         }
-        function isValidElement(object) {
+        function isValidElement2(object) {
           return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
         }
         function escape(key) {
@@ -323,13 +323,13 @@
             var childKey = "" === nameSoFar ? "." + getElementKey(invokeCallback, 0) : nameSoFar;
             isArrayImpl(callback) ? (escapedPrefix = "", null != childKey && (escapedPrefix = childKey.replace(userProvidedKeyEscapeRegex, "$&/") + "/"), mapIntoArray(callback, array, escapedPrefix, "", function(c) {
               return c;
-            })) : null != callback && (isValidElement(callback) && (null != callback.key && (invokeCallback && invokeCallback.key === callback.key || checkKeyStringCoercion(callback.key)), escapedPrefix = cloneAndReplaceKey(
+            })) : null != callback && (isValidElement2(callback) && (null != callback.key && (invokeCallback && invokeCallback.key === callback.key || checkKeyStringCoercion(callback.key)), escapedPrefix = cloneAndReplaceKey(
               callback,
               escapedPrefix + (null == callback.key || invokeCallback && invokeCallback.key === callback.key ? "" : ("" + callback.key).replace(
                 userProvidedKeyEscapeRegex,
                 "$&/"
               ) + "/") + childKey
-            ), "" !== nameSoFar && null != invokeCallback && isValidElement(invokeCallback) && null == invokeCallback.key && invokeCallback._store && !invokeCallback._store.validated && (escapedPrefix._store.validated = 2), callback = escapedPrefix), array.push(callback));
+            ), "" !== nameSoFar && null != invokeCallback && isValidElement2(invokeCallback) && null == invokeCallback.key && invokeCallback._store && !invokeCallback._store.validated && (escapedPrefix._store.validated = 2), callback = escapedPrefix), array.push(callback));
             return 1;
           }
           invokeCallback = 0;
@@ -521,15 +521,15 @@
           }
         }, assign = Object.assign, emptyObject = {};
         Object.freeze(emptyObject);
-        Component3.prototype.isReactComponent = {};
-        Component3.prototype.setState = function(partialState, callback) {
+        Component2.prototype.isReactComponent = {};
+        Component2.prototype.setState = function(partialState, callback) {
           if ("object" !== typeof partialState && "function" !== typeof partialState && null != partialState)
             throw Error(
               "takes an object of state variables to update or a function which returns an object of state variables."
             );
           this.updater.enqueueSetState(this, partialState, callback, "setState");
         };
-        Component3.prototype.forceUpdate = function(callback) {
+        Component2.prototype.forceUpdate = function(callback) {
           this.updater.enqueueForceUpdate(this, callback, "forceUpdate");
         };
         var deprecatedAPIs = {
@@ -544,10 +544,10 @@
         };
         for (fnName in deprecatedAPIs)
           deprecatedAPIs.hasOwnProperty(fnName) && defineDeprecationWarning(fnName, deprecatedAPIs[fnName]);
-        ComponentDummy.prototype = Component3.prototype;
+        ComponentDummy.prototype = Component2.prototype;
         deprecatedAPIs = PureComponent.prototype = new ComponentDummy();
         deprecatedAPIs.constructor = PureComponent;
-        assign(deprecatedAPIs, Component3.prototype);
+        assign(deprecatedAPIs, Component2.prototype);
         deprecatedAPIs.isPureReactComponent = true;
         var isArrayImpl = Array.isArray, REACT_CLIENT_REFERENCE = /* @__PURE__ */ Symbol.for("react.client.reference"), ReactSharedInternals = {
           H: null,
@@ -626,7 +626,7 @@
             }) || [];
           },
           only: function(children) {
-            if (!isValidElement(children))
+            if (!isValidElement2(children))
               throw Error(
                 "React.Children.only expected to receive a single React element child."
               );
@@ -635,7 +635,7 @@
         };
         exports.Activity = REACT_ACTIVITY_TYPE;
         exports.Children = fnName;
-        exports.Component = Component3;
+        exports.Component = Component2;
         exports.Fragment = REACT_FRAGMENT_TYPE;
         exports.Profiler = REACT_PROFILER_TYPE;
         exports.PureComponent = PureComponent;
@@ -860,7 +860,7 @@
           });
           return elementType;
         };
-        exports.isValidElement = isValidElement;
+        exports.isValidElement = isValidElement2;
         exports.lazy = function(ctor) {
           ctor = { _status: -1, _result: ctor };
           var lazyType = {
@@ -4894,9 +4894,9 @@
           this._debugHookTypes = null;
           hasBadMapPolyfill || "function" !== typeof Object.preventExtensions || Object.preventExtensions(this);
         }
-        function shouldConstruct(Component3) {
-          Component3 = Component3.prototype;
-          return !(!Component3 || !Component3.isReactComponent);
+        function shouldConstruct(Component2) {
+          Component2 = Component2.prototype;
+          return !(!Component2 || !Component2.isReactComponent);
         }
         function createWorkInProgress(current2, pendingProps) {
           var workInProgress2 = current2.alternate;
@@ -6905,13 +6905,13 @@
             if (!objectIs(nextDeps[i], prevDeps[i])) return false;
           return true;
         }
-        function renderWithHooks(current2, workInProgress2, Component3, props, secondArg, nextRenderLanes) {
+        function renderWithHooks(current2, workInProgress2, Component2, props, secondArg, nextRenderLanes) {
           renderLanes = nextRenderLanes;
           currentlyRenderingFiber = workInProgress2;
           hookTypesDev = null !== current2 ? current2._debugHookTypes : null;
           hookTypesUpdateIndexDev = -1;
           ignorePreviousDependencies = null !== current2 && current2.type !== workInProgress2.type;
-          if ("[object AsyncFunction]" === Object.prototype.toString.call(Component3) || "[object AsyncGeneratorFunction]" === Object.prototype.toString.call(Component3))
+          if ("[object AsyncFunction]" === Object.prototype.toString.call(Component2) || "[object AsyncGeneratorFunction]" === Object.prototype.toString.call(Component2))
             nextRenderLanes = getComponentNameFromFiber(currentlyRenderingFiber), didWarnAboutAsyncClientComponent.has(nextRenderLanes) || (didWarnAboutAsyncClientComponent.add(nextRenderLanes), console.error(
               "%s is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.",
               null === nextRenderLanes ? "An unknown Component" : "<" + nextRenderLanes + ">"
@@ -6921,11 +6921,11 @@
           workInProgress2.lanes = 0;
           ReactSharedInternals.H = null !== current2 && null !== current2.memoizedState ? HooksDispatcherOnUpdateInDEV : null !== hookTypesDev ? HooksDispatcherOnMountWithHookTypesInDEV : HooksDispatcherOnMountInDEV;
           shouldDoubleInvokeUserFnsInHooksDEV = nextRenderLanes = (workInProgress2.mode & StrictLegacyMode) !== NoMode;
-          var children = callComponentInDEV(Component3, props, secondArg);
+          var children = callComponentInDEV(Component2, props, secondArg);
           shouldDoubleInvokeUserFnsInHooksDEV = false;
           didScheduleRenderPhaseUpdateDuringThisPass && (children = renderWithHooksAgain(
             workInProgress2,
-            Component3,
+            Component2,
             props,
             secondArg
           ));
@@ -6934,7 +6934,7 @@
             try {
               children = renderWithHooksAgain(
                 workInProgress2,
-                Component3,
+                Component2,
                 props,
                 secondArg
               );
@@ -6973,7 +6973,7 @@
             "`use` was called from inside a try/catch block. This is not allowed and can lead to unexpected behavior. To handle errors triggered by `use`, wrap your component in a error boundary."
           )));
         }
-        function renderWithHooksAgain(workInProgress2, Component3, props, secondArg) {
+        function renderWithHooksAgain(workInProgress2, Component2, props, secondArg) {
           currentlyRenderingFiber = workInProgress2;
           var numberOfReRenders = 0;
           do {
@@ -6996,7 +6996,7 @@
             }
             hookTypesUpdateIndexDev = -1;
             ReactSharedInternals.H = HooksDispatcherOnRerenderInDEV;
-            children = callComponentInDEV(Component3, props, secondArg);
+            children = callComponentInDEV(Component2, props, secondArg);
           } while (didScheduleRenderPhaseUpdateDuringThisPass);
           return children;
         }
@@ -8217,17 +8217,17 @@
             null
           ));
         }
-        function resolveClassComponentProps(Component3, baseProps) {
+        function resolveClassComponentProps(Component2, baseProps) {
           var newProps = baseProps;
           if ("ref" in baseProps) {
             newProps = {};
             for (var propName in baseProps)
               "ref" !== propName && (newProps[propName] = baseProps[propName]);
           }
-          if (Component3 = Component3.defaultProps) {
+          if (Component2 = Component2.defaultProps) {
             newProps === baseProps && (newProps = assign({}, newProps));
-            for (var _propName in Component3)
-              void 0 === newProps[_propName] && (newProps[_propName] = Component3[_propName]);
+            for (var _propName in Component2)
+              void 0 === newProps[_propName] && (newProps[_propName] = Component2[_propName]);
           }
           return newProps;
         }
@@ -8456,8 +8456,8 @@
             renderLanes2
           );
         }
-        function updateForwardRef(current2, workInProgress2, Component3, nextProps, renderLanes2) {
-          Component3 = Component3.render;
+        function updateForwardRef(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+          Component2 = Component2.render;
           var ref = workInProgress2.ref;
           if ("ref" in nextProps) {
             var propsWithoutRef = {};
@@ -8468,7 +8468,7 @@
           nextProps = renderWithHooks(
             current2,
             workInProgress2,
-            Component3,
+            Component2,
             propsWithoutRef,
             ref,
             renderLanes2
@@ -8481,19 +8481,19 @@
           reconcileChildren(current2, workInProgress2, nextProps, renderLanes2);
           return workInProgress2.child;
         }
-        function updateMemoComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
+        function updateMemoComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
           if (null === current2) {
-            var type = Component3.type;
-            if ("function" === typeof type && !shouldConstruct(type) && void 0 === type.defaultProps && null === Component3.compare)
-              return Component3 = resolveFunctionForHotReloading(type), workInProgress2.tag = 15, workInProgress2.type = Component3, validateFunctionComponentInDev(workInProgress2, type), updateSimpleMemoComponent(
+            var type = Component2.type;
+            if ("function" === typeof type && !shouldConstruct(type) && void 0 === type.defaultProps && null === Component2.compare)
+              return Component2 = resolveFunctionForHotReloading(type), workInProgress2.tag = 15, workInProgress2.type = Component2, validateFunctionComponentInDev(workInProgress2, type), updateSimpleMemoComponent(
                 current2,
                 workInProgress2,
-                Component3,
+                Component2,
                 nextProps,
                 renderLanes2
               );
             current2 = createFiberFromTypeAndProps(
-              Component3.type,
+              Component2.type,
               null,
               nextProps,
               workInProgress2,
@@ -8507,9 +8507,9 @@
           type = current2.child;
           if (!checkScheduledUpdateOrContext(current2, renderLanes2)) {
             var prevProps = type.memoizedProps;
-            Component3 = Component3.compare;
-            Component3 = null !== Component3 ? Component3 : shallowEqual;
-            if (Component3(prevProps, nextProps) && current2.ref === workInProgress2.ref)
+            Component2 = Component2.compare;
+            Component2 = null !== Component2 ? Component2 : shallowEqual;
+            if (Component2(prevProps, nextProps) && current2.ref === workInProgress2.ref)
               return bailoutOnAlreadyFinishedWork(
                 current2,
                 workInProgress2,
@@ -8522,7 +8522,7 @@
           current2.return = workInProgress2;
           return workInProgress2.child = current2;
         }
-        function updateSimpleMemoComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
+        function updateSimpleMemoComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
           if (null !== current2) {
             var prevProps = current2.memoizedProps;
             if (shallowEqual(prevProps, nextProps) && current2.ref === workInProgress2.ref && workInProgress2.type === current2.type)
@@ -8534,7 +8534,7 @@
           return updateFunctionComponent(
             current2,
             workInProgress2,
-            Component3,
+            Component2,
             nextProps,
             renderLanes2
           );
@@ -8724,9 +8724,9 @@
               workInProgress2.flags |= 4194816;
           }
         }
-        function updateFunctionComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
-          if (Component3.prototype && "function" === typeof Component3.prototype.render) {
-            var componentName2 = getComponentNameFromType(Component3) || "Unknown";
+        function updateFunctionComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
+          if (Component2.prototype && "function" === typeof Component2.prototype.render) {
+            var componentName2 = getComponentNameFromType(Component2) || "Unknown";
             didWarnAboutBadClass[componentName2] || (console.error(
               "The <%s /> component appears to have a render method, but doesn't extend React.Component. This is likely to cause errors. Change %s to extend React.Component instead.",
               componentName2,
@@ -8737,15 +8737,15 @@
             workInProgress2,
             null
           );
-          null === current2 && (validateFunctionComponentInDev(workInProgress2, workInProgress2.type), Component3.contextTypes && (componentName2 = getComponentNameFromType(Component3) || "Unknown", didWarnAboutContextTypes[componentName2] || (didWarnAboutContextTypes[componentName2] = true, console.error(
+          null === current2 && (validateFunctionComponentInDev(workInProgress2, workInProgress2.type), Component2.contextTypes && (componentName2 = getComponentNameFromType(Component2) || "Unknown", didWarnAboutContextTypes[componentName2] || (didWarnAboutContextTypes[componentName2] = true, console.error(
             "%s uses the legacy contextTypes API which was removed in React 19. Use React.createContext() with React.useContext() instead. (https://react.dev/link/legacy-context)",
             componentName2
           ))));
           prepareToReadContext(workInProgress2);
-          Component3 = renderWithHooks(
+          Component2 = renderWithHooks(
             current2,
             workInProgress2,
-            Component3,
+            Component2,
             nextProps,
             void 0,
             renderLanes2
@@ -8755,30 +8755,30 @@
             return bailoutHooks(current2, workInProgress2, renderLanes2), bailoutOnAlreadyFinishedWork(current2, workInProgress2, renderLanes2);
           isHydrating && nextProps && pushMaterializedTreeId(workInProgress2);
           workInProgress2.flags |= 1;
-          reconcileChildren(current2, workInProgress2, Component3, renderLanes2);
+          reconcileChildren(current2, workInProgress2, Component2, renderLanes2);
           return workInProgress2.child;
         }
-        function replayFunctionComponent(current2, workInProgress2, nextProps, Component3, secondArg, renderLanes2) {
+        function replayFunctionComponent(current2, workInProgress2, nextProps, Component2, secondArg, renderLanes2) {
           prepareToReadContext(workInProgress2);
           hookTypesUpdateIndexDev = -1;
           ignorePreviousDependencies = null !== current2 && current2.type !== workInProgress2.type;
           workInProgress2.updateQueue = null;
           nextProps = renderWithHooksAgain(
             workInProgress2,
-            Component3,
+            Component2,
             nextProps,
             secondArg
           );
           finishRenderingHooks(current2, workInProgress2);
-          Component3 = checkDidRenderIdHook();
+          Component2 = checkDidRenderIdHook();
           if (null !== current2 && !didReceiveUpdate)
             return bailoutHooks(current2, workInProgress2, renderLanes2), bailoutOnAlreadyFinishedWork(current2, workInProgress2, renderLanes2);
-          isHydrating && Component3 && pushMaterializedTreeId(workInProgress2);
+          isHydrating && Component2 && pushMaterializedTreeId(workInProgress2);
           workInProgress2.flags |= 1;
           reconcileChildren(current2, workInProgress2, nextProps, renderLanes2);
           return workInProgress2.child;
         }
-        function updateClassComponent(current2, workInProgress2, Component3, nextProps, renderLanes2) {
+        function updateClassComponent(current2, workInProgress2, Component2, nextProps, renderLanes2) {
           switch (shouldErrorImpl(workInProgress2)) {
             case false:
               var _instance = workInProgress2.stateNode, state = new workInProgress2.type(
@@ -8810,18 +8810,18 @@
           prepareToReadContext(workInProgress2);
           if (null === workInProgress2.stateNode) {
             state = emptyContextObject;
-            _instance = Component3.contextType;
-            "contextType" in Component3 && null !== _instance && (void 0 === _instance || _instance.$$typeof !== REACT_CONTEXT_TYPE) && !didWarnAboutInvalidateContextType.has(Component3) && (didWarnAboutInvalidateContextType.add(Component3), lane = void 0 === _instance ? " However, it is set to undefined. This can be caused by a typo or by mixing up named and default imports. This can also happen due to a circular dependency, so try moving the createContext() call to a separate file." : "object" !== typeof _instance ? " However, it is set to a " + typeof _instance + "." : _instance.$$typeof === REACT_CONSUMER_TYPE ? " Did you accidentally pass the Context.Consumer instead?" : " However, it is set to an object with keys {" + Object.keys(_instance).join(", ") + "}.", console.error(
+            _instance = Component2.contextType;
+            "contextType" in Component2 && null !== _instance && (void 0 === _instance || _instance.$$typeof !== REACT_CONTEXT_TYPE) && !didWarnAboutInvalidateContextType.has(Component2) && (didWarnAboutInvalidateContextType.add(Component2), lane = void 0 === _instance ? " However, it is set to undefined. This can be caused by a typo or by mixing up named and default imports. This can also happen due to a circular dependency, so try moving the createContext() call to a separate file." : "object" !== typeof _instance ? " However, it is set to a " + typeof _instance + "." : _instance.$$typeof === REACT_CONSUMER_TYPE ? " Did you accidentally pass the Context.Consumer instead?" : " However, it is set to an object with keys {" + Object.keys(_instance).join(", ") + "}.", console.error(
               "%s defines an invalid contextType. contextType should point to the Context object returned by React.createContext().%s",
-              getComponentNameFromType(Component3) || "Component",
+              getComponentNameFromType(Component2) || "Component",
               lane
             ));
             "object" === typeof _instance && null !== _instance && (state = readContext(_instance));
-            _instance = new Component3(nextProps, state);
+            _instance = new Component2(nextProps, state);
             if (workInProgress2.mode & StrictLegacyMode) {
               setIsStrictModeForDevtools(true);
               try {
-                _instance = new Component3(nextProps, state);
+                _instance = new Component2(nextProps, state);
               } finally {
                 setIsStrictModeForDevtools(false);
               }
@@ -8831,20 +8831,20 @@
             workInProgress2.stateNode = _instance;
             _instance._reactInternals = workInProgress2;
             _instance._reactInternalInstance = fakeInternalInstance;
-            "function" === typeof Component3.getDerivedStateFromProps && null === state && (state = getComponentNameFromType(Component3) || "Component", didWarnAboutUninitializedState.has(state) || (didWarnAboutUninitializedState.add(state), console.error(
+            "function" === typeof Component2.getDerivedStateFromProps && null === state && (state = getComponentNameFromType(Component2) || "Component", didWarnAboutUninitializedState.has(state) || (didWarnAboutUninitializedState.add(state), console.error(
               "`%s` uses `getDerivedStateFromProps` but its initial state is %s. This is not recommended. Instead, define the initial state by assigning an object to `this.state` in the constructor of `%s`. This ensures that `getDerivedStateFromProps` arguments have a consistent shape.",
               state,
               null === _instance.state ? "null" : "undefined",
               state
             )));
-            if ("function" === typeof Component3.getDerivedStateFromProps || "function" === typeof _instance.getSnapshotBeforeUpdate) {
+            if ("function" === typeof Component2.getDerivedStateFromProps || "function" === typeof _instance.getSnapshotBeforeUpdate) {
               var foundWillUpdateName = lane = state = null;
               "function" === typeof _instance.componentWillMount && true !== _instance.componentWillMount.__suppressDeprecationWarning ? state = "componentWillMount" : "function" === typeof _instance.UNSAFE_componentWillMount && (state = "UNSAFE_componentWillMount");
               "function" === typeof _instance.componentWillReceiveProps && true !== _instance.componentWillReceiveProps.__suppressDeprecationWarning ? lane = "componentWillReceiveProps" : "function" === typeof _instance.UNSAFE_componentWillReceiveProps && (lane = "UNSAFE_componentWillReceiveProps");
               "function" === typeof _instance.componentWillUpdate && true !== _instance.componentWillUpdate.__suppressDeprecationWarning ? foundWillUpdateName = "componentWillUpdate" : "function" === typeof _instance.UNSAFE_componentWillUpdate && (foundWillUpdateName = "UNSAFE_componentWillUpdate");
               if (null !== state || null !== lane || null !== foundWillUpdateName) {
-                _instance = getComponentNameFromType(Component3) || "Component";
-                var newApiName = "function" === typeof Component3.getDerivedStateFromProps ? "getDerivedStateFromProps()" : "getSnapshotBeforeUpdate()";
+                _instance = getComponentNameFromType(Component2) || "Component";
+                var newApiName = "function" === typeof Component2.getDerivedStateFromProps ? "getDerivedStateFromProps()" : "getSnapshotBeforeUpdate()";
                 didWarnAboutLegacyLifecyclesAndDerivedState.has(_instance) || (didWarnAboutLegacyLifecyclesAndDerivedState.add(_instance), console.error(
                   "Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n%s uses %s but also contains the following legacy lifecycles:%s%s%s\n\nThe above lifecycles should be removed. Learn more about this warning here:\nhttps://react.dev/link/unsafe-component-lifecycles",
                   _instance,
@@ -8856,8 +8856,8 @@
               }
             }
             _instance = workInProgress2.stateNode;
-            state = getComponentNameFromType(Component3) || "Component";
-            _instance.render || (Component3.prototype && "function" === typeof Component3.prototype.render ? console.error(
+            state = getComponentNameFromType(Component2) || "Component";
+            _instance.render || (Component2.prototype && "function" === typeof Component2.prototype.render ? console.error(
               "No `render` method found on the %s instance: did you accidentally return an object from the constructor?",
               state
             ) : console.error(
@@ -8876,11 +8876,11 @@
               "contextType was defined as an instance property on %s. Use a static property to define contextType instead.",
               state
             );
-            Component3.childContextTypes && !didWarnAboutChildContextTypes.has(Component3) && (didWarnAboutChildContextTypes.add(Component3), console.error(
+            Component2.childContextTypes && !didWarnAboutChildContextTypes.has(Component2) && (didWarnAboutChildContextTypes.add(Component2), console.error(
               "%s uses the legacy childContextTypes API which was removed in React 19. Use React.createContext() instead. (https://react.dev/link/legacy-context)",
               state
             ));
-            Component3.contextTypes && !didWarnAboutContextTypes$1.has(Component3) && (didWarnAboutContextTypes$1.add(Component3), console.error(
+            Component2.contextTypes && !didWarnAboutContextTypes$1.has(Component2) && (didWarnAboutContextTypes$1.add(Component2), console.error(
               "%s uses the legacy contextTypes API which was removed in React 19. Use React.createContext() with static contextType instead. (https://react.dev/link/legacy-context)",
               state
             ));
@@ -8888,9 +8888,9 @@
               "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
               state
             );
-            Component3.prototype && Component3.prototype.isPureReactComponent && "undefined" !== typeof _instance.shouldComponentUpdate && console.error(
+            Component2.prototype && Component2.prototype.isPureReactComponent && "undefined" !== typeof _instance.shouldComponentUpdate && console.error(
               "%s has a method called shouldComponentUpdate(). shouldComponentUpdate should not be used when extending React.PureComponent. Please extend React.Component if shouldComponentUpdate is used.",
-              getComponentNameFromType(Component3) || "A pure component"
+              getComponentNameFromType(Component2) || "A pure component"
             );
             "function" === typeof _instance.componentDidUnmount && console.error(
               "%s has a method called componentDidUnmount(). But there is no such lifecycle method. Did you mean componentWillUnmount()?",
@@ -8918,9 +8918,9 @@
               state,
               state
             );
-            "function" !== typeof _instance.getSnapshotBeforeUpdate || "function" === typeof _instance.componentDidUpdate || didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(Component3) || (didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(Component3), console.error(
+            "function" !== typeof _instance.getSnapshotBeforeUpdate || "function" === typeof _instance.componentDidUpdate || didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.has(Component2) || (didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate.add(Component2), console.error(
               "%s: getSnapshotBeforeUpdate() should be used with componentDidUpdate(). This component defines getSnapshotBeforeUpdate() only.",
-              getComponentNameFromType(Component3)
+              getComponentNameFromType(Component2)
             ));
             "function" === typeof _instance.getDerivedStateFromProps && console.error(
               "%s: getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.",
@@ -8930,12 +8930,12 @@
               "%s: getDerivedStateFromError() is defined as an instance method and will be ignored. Instead, declare it as a static method.",
               state
             );
-            "function" === typeof Component3.getSnapshotBeforeUpdate && console.error(
+            "function" === typeof Component2.getSnapshotBeforeUpdate && console.error(
               "%s: getSnapshotBeforeUpdate() is defined as a static method and will be ignored. Instead, declare it as an instance method.",
               state
             );
             (lane = _instance.state) && ("object" !== typeof lane || isArrayImpl(lane)) && console.error("%s.state: must be set to an object or null", state);
-            "function" === typeof _instance.getChildContext && "object" !== typeof Component3.childContextTypes && console.error(
+            "function" === typeof _instance.getChildContext && "object" !== typeof Component2.childContextTypes && console.error(
               "%s.getChildContext(): childContextTypes must be defined in order to use getChildContext().",
               state
             );
@@ -8944,9 +8944,9 @@
             _instance.state = workInProgress2.memoizedState;
             _instance.refs = {};
             initializeUpdateQueue(workInProgress2);
-            state = Component3.contextType;
+            state = Component2.contextType;
             _instance.context = "object" === typeof state && null !== state ? readContext(state) : emptyContextObject;
-            _instance.state === nextProps && (state = getComponentNameFromType(Component3) || "Component", didWarnAboutDirectlyAssigningPropsToState.has(state) || (didWarnAboutDirectlyAssigningPropsToState.add(state), console.error(
+            _instance.state === nextProps && (state = getComponentNameFromType(Component2) || "Component", didWarnAboutDirectlyAssigningPropsToState.has(state) || (didWarnAboutDirectlyAssigningPropsToState.add(state), console.error(
               "%s: It is not recommended to assign props directly to state because updates to props won't be reflected in state. In most cases, it is better to use props directly.",
               state
             )));
@@ -8959,14 +8959,14 @@
               _instance
             );
             _instance.state = workInProgress2.memoizedState;
-            state = Component3.getDerivedStateFromProps;
+            state = Component2.getDerivedStateFromProps;
             "function" === typeof state && (applyDerivedStateFromProps(
               workInProgress2,
-              Component3,
+              Component2,
               state,
               nextProps
             ), _instance.state = workInProgress2.memoizedState);
-            "function" === typeof Component3.getDerivedStateFromProps || "function" === typeof _instance.getSnapshotBeforeUpdate || "function" !== typeof _instance.UNSAFE_componentWillMount && "function" !== typeof _instance.componentWillMount || (state = _instance.state, "function" === typeof _instance.componentWillMount && _instance.componentWillMount(), "function" === typeof _instance.UNSAFE_componentWillMount && _instance.UNSAFE_componentWillMount(), state !== _instance.state && (console.error(
+            "function" === typeof Component2.getDerivedStateFromProps || "function" === typeof _instance.getSnapshotBeforeUpdate || "function" !== typeof _instance.UNSAFE_componentWillMount && "function" !== typeof _instance.componentWillMount || (state = _instance.state, "function" === typeof _instance.componentWillMount && _instance.componentWillMount(), "function" === typeof _instance.UNSAFE_componentWillMount && _instance.UNSAFE_componentWillMount(), state !== _instance.state && (console.error(
               "%s.componentWillMount(): Assigning directly to this.state is deprecated (except inside a component's constructor). Use setState instead.",
               getComponentNameFromFiber(workInProgress2) || "Component"
             ), classComponentUpdater.enqueueReplaceState(
@@ -8980,13 +8980,13 @@
           } else if (null === current2) {
             _instance = workInProgress2.stateNode;
             var unresolvedOldProps = workInProgress2.memoizedProps;
-            lane = resolveClassComponentProps(Component3, unresolvedOldProps);
+            lane = resolveClassComponentProps(Component2, unresolvedOldProps);
             _instance.props = lane;
             var oldContext = _instance.context;
-            foundWillUpdateName = Component3.contextType;
+            foundWillUpdateName = Component2.contextType;
             state = emptyContextObject;
             "object" === typeof foundWillUpdateName && null !== foundWillUpdateName && (state = readContext(foundWillUpdateName));
-            newApiName = Component3.getDerivedStateFromProps;
+            newApiName = Component2.getDerivedStateFromProps;
             foundWillUpdateName = "function" === typeof newApiName || "function" === typeof _instance.getSnapshotBeforeUpdate;
             unresolvedOldProps = workInProgress2.pendingProps !== unresolvedOldProps;
             foundWillUpdateName || "function" !== typeof _instance.UNSAFE_componentWillReceiveProps && "function" !== typeof _instance.componentWillReceiveProps || (unresolvedOldProps || oldContext !== state) && callComponentWillReceiveProps(
@@ -9003,12 +9003,12 @@
             oldContext = workInProgress2.memoizedState;
             unresolvedOldProps || oldState !== oldContext || hasForceUpdate ? ("function" === typeof newApiName && (applyDerivedStateFromProps(
               workInProgress2,
-              Component3,
+              Component2,
               newApiName,
               nextProps
             ), oldContext = workInProgress2.memoizedState), (lane = hasForceUpdate || checkShouldComponentUpdate(
               workInProgress2,
-              Component3,
+              Component2,
               lane,
               nextProps,
               oldState,
@@ -9019,14 +9019,14 @@
             _instance = workInProgress2.stateNode;
             cloneUpdateQueue(current2, workInProgress2);
             state = workInProgress2.memoizedProps;
-            foundWillUpdateName = resolveClassComponentProps(Component3, state);
+            foundWillUpdateName = resolveClassComponentProps(Component2, state);
             _instance.props = foundWillUpdateName;
             newApiName = workInProgress2.pendingProps;
             oldState = _instance.context;
-            oldContext = Component3.contextType;
+            oldContext = Component2.contextType;
             lane = emptyContextObject;
             "object" === typeof oldContext && null !== oldContext && (lane = readContext(oldContext));
-            unresolvedOldProps = Component3.getDerivedStateFromProps;
+            unresolvedOldProps = Component2.getDerivedStateFromProps;
             (oldContext = "function" === typeof unresolvedOldProps || "function" === typeof _instance.getSnapshotBeforeUpdate) || "function" !== typeof _instance.UNSAFE_componentWillReceiveProps && "function" !== typeof _instance.componentWillReceiveProps || (state !== newApiName || oldState !== lane) && callComponentWillReceiveProps(
               workInProgress2,
               _instance,
@@ -9041,12 +9041,12 @@
             var newState = workInProgress2.memoizedState;
             state !== newApiName || oldState !== newState || hasForceUpdate || null !== current2 && null !== current2.dependencies && checkIfContextChanged(current2.dependencies) ? ("function" === typeof unresolvedOldProps && (applyDerivedStateFromProps(
               workInProgress2,
-              Component3,
+              Component2,
               unresolvedOldProps,
               nextProps
             ), newState = workInProgress2.memoizedState), (foundWillUpdateName = hasForceUpdate || checkShouldComponentUpdate(
               workInProgress2,
-              Component3,
+              Component2,
               foundWillUpdateName,
               nextProps,
               oldState,
@@ -9064,9 +9064,9 @@
           if (lane || state) {
             lane = workInProgress2.stateNode;
             setCurrentFiber(workInProgress2);
-            if (state && "function" !== typeof Component3.getDerivedStateFromError)
-              Component3 = null, profilerStartTime = -1;
-            else if (Component3 = callRenderInDEV(lane), workInProgress2.mode & StrictLegacyMode) {
+            if (state && "function" !== typeof Component2.getDerivedStateFromError)
+              Component2 = null, profilerStartTime = -1;
+            else if (Component2 = callRenderInDEV(lane), workInProgress2.mode & StrictLegacyMode) {
               setIsStrictModeForDevtools(true);
               try {
                 callRenderInDEV(lane);
@@ -9083,9 +9083,9 @@
             ), workInProgress2.child = reconcileChildFibers(
               workInProgress2,
               null,
-              Component3,
+              Component2,
               renderLanes2
-            )) : reconcileChildren(current2, workInProgress2, Component3, renderLanes2);
+            )) : reconcileChildren(current2, workInProgress2, Component2, renderLanes2);
             workInProgress2.memoizedState = lane.state;
             current2 = workInProgress2.child;
           } else
@@ -9107,19 +9107,19 @@
           reconcileChildren(current2, workInProgress2, nextChildren, renderLanes2);
           return workInProgress2.child;
         }
-        function validateFunctionComponentInDev(workInProgress2, Component3) {
-          Component3 && Component3.childContextTypes && console.error(
+        function validateFunctionComponentInDev(workInProgress2, Component2) {
+          Component2 && Component2.childContextTypes && console.error(
             "childContextTypes cannot be defined on a function component.\n  %s.childContextTypes = ...",
-            Component3.displayName || Component3.name || "Component"
+            Component2.displayName || Component2.name || "Component"
           );
-          "function" === typeof Component3.getDerivedStateFromProps && (workInProgress2 = getComponentNameFromType(Component3) || "Unknown", didWarnAboutGetDerivedStateOnFunctionComponent[workInProgress2] || (console.error(
+          "function" === typeof Component2.getDerivedStateFromProps && (workInProgress2 = getComponentNameFromType(Component2) || "Unknown", didWarnAboutGetDerivedStateOnFunctionComponent[workInProgress2] || (console.error(
             "%s: Function components do not support getDerivedStateFromProps.",
             workInProgress2
           ), didWarnAboutGetDerivedStateOnFunctionComponent[workInProgress2] = true));
-          "object" === typeof Component3.contextType && null !== Component3.contextType && (Component3 = getComponentNameFromType(Component3) || "Unknown", didWarnAboutContextTypeOnFunctionComponent[Component3] || (console.error(
+          "object" === typeof Component2.contextType && null !== Component2.contextType && (Component2 = getComponentNameFromType(Component2) || "Unknown", didWarnAboutContextTypeOnFunctionComponent[Component2] || (console.error(
             "%s: Function components do not support contextType.",
-            Component3
-          ), didWarnAboutContextTypeOnFunctionComponent[Component3] = true));
+            Component2
+          ), didWarnAboutContextTypeOnFunctionComponent[Component2] = true));
         }
         function mountSuspenseOffscreenState(renderLanes2) {
           return { baseLanes: renderLanes2, cachePool: getSuspendedCache() };
@@ -19772,11 +19772,11 @@
           pendingLegacyContextWarning = /* @__PURE__ */ new Map();
         };
         var callComponent = {
-          react_stack_bottom_frame: function(Component3, props, secondArg) {
+          react_stack_bottom_frame: function(Component2, props, secondArg) {
             var wasRendering = isRendering;
             isRendering = true;
             try {
-              return Component3(props, secondArg);
+              return Component2(props, secondArg);
             } finally {
               isRendering = wasRendering;
             }
@@ -21461,6 +21461,2506 @@
     }
   });
 
+  // node_modules/highlight.js/lib/core.js
+  var require_core = __commonJS({
+    "node_modules/highlight.js/lib/core.js"(exports, module) {
+      function deepFreeze(obj) {
+        if (obj instanceof Map) {
+          obj.clear = obj.delete = obj.set = function() {
+            throw new Error("map is read-only");
+          };
+        } else if (obj instanceof Set) {
+          obj.add = obj.clear = obj.delete = function() {
+            throw new Error("set is read-only");
+          };
+        }
+        Object.freeze(obj);
+        Object.getOwnPropertyNames(obj).forEach((name) => {
+          const prop = obj[name];
+          const type = typeof prop;
+          if ((type === "object" || type === "function") && !Object.isFrozen(prop)) {
+            deepFreeze(prop);
+          }
+        });
+        return obj;
+      }
+      var Response = class {
+        /**
+         * @param {CompiledMode} mode
+         */
+        constructor(mode) {
+          if (mode.data === void 0) mode.data = {};
+          this.data = mode.data;
+          this.isMatchIgnored = false;
+        }
+        ignoreMatch() {
+          this.isMatchIgnored = true;
+        }
+      };
+      function escapeHTML(value) {
+        return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
+      }
+      function inherit$1(original, ...objects) {
+        const result = /* @__PURE__ */ Object.create(null);
+        for (const key in original) {
+          result[key] = original[key];
+        }
+        objects.forEach(function(obj) {
+          for (const key in obj) {
+            result[key] = obj[key];
+          }
+        });
+        return (
+          /** @type {T} */
+          result
+        );
+      }
+      var SPAN_CLOSE = "</span>";
+      var emitsWrappingTags = (node) => {
+        return !!node.scope;
+      };
+      var scopeToCSSClass = (name, { prefix }) => {
+        if (name.startsWith("language:")) {
+          return name.replace("language:", "language-");
+        }
+        if (name.includes(".")) {
+          const pieces = name.split(".");
+          return [
+            `${prefix}${pieces.shift()}`,
+            ...pieces.map((x, i) => `${x}${"_".repeat(i + 1)}`)
+          ].join(" ");
+        }
+        return `${prefix}${name}`;
+      };
+      var HTMLRenderer = class {
+        /**
+         * Creates a new HTMLRenderer
+         *
+         * @param {Tree} parseTree - the parse tree (must support `walk` API)
+         * @param {{classPrefix: string}} options
+         */
+        constructor(parseTree, options) {
+          this.buffer = "";
+          this.classPrefix = options.classPrefix;
+          parseTree.walk(this);
+        }
+        /**
+         * Adds texts to the output stream
+         *
+         * @param {string} text */
+        addText(text) {
+          this.buffer += escapeHTML(text);
+        }
+        /**
+         * Adds a node open to the output stream (if needed)
+         *
+         * @param {Node} node */
+        openNode(node) {
+          if (!emitsWrappingTags(node)) return;
+          const className = scopeToCSSClass(
+            node.scope,
+            { prefix: this.classPrefix }
+          );
+          this.span(className);
+        }
+        /**
+         * Adds a node close to the output stream (if needed)
+         *
+         * @param {Node} node */
+        closeNode(node) {
+          if (!emitsWrappingTags(node)) return;
+          this.buffer += SPAN_CLOSE;
+        }
+        /**
+         * returns the accumulated buffer
+        */
+        value() {
+          return this.buffer;
+        }
+        // helpers
+        /**
+         * Builds a span element
+         *
+         * @param {string} className */
+        span(className) {
+          this.buffer += `<span class="${className}">`;
+        }
+      };
+      var newNode = (opts = {}) => {
+        const result = { children: [] };
+        Object.assign(result, opts);
+        return result;
+      };
+      var TokenTree = class _TokenTree {
+        constructor() {
+          this.rootNode = newNode();
+          this.stack = [this.rootNode];
+        }
+        get top() {
+          return this.stack[this.stack.length - 1];
+        }
+        get root() {
+          return this.rootNode;
+        }
+        /** @param {Node} node */
+        add(node) {
+          this.top.children.push(node);
+        }
+        /** @param {string} scope */
+        openNode(scope) {
+          const node = newNode({ scope });
+          this.add(node);
+          this.stack.push(node);
+        }
+        closeNode() {
+          if (this.stack.length > 1) {
+            return this.stack.pop();
+          }
+          return void 0;
+        }
+        closeAllNodes() {
+          while (this.closeNode()) ;
+        }
+        toJSON() {
+          return JSON.stringify(this.rootNode, null, 4);
+        }
+        /**
+         * @typedef { import("./html_renderer").Renderer } Renderer
+         * @param {Renderer} builder
+         */
+        walk(builder) {
+          return this.constructor._walk(builder, this.rootNode);
+        }
+        /**
+         * @param {Renderer} builder
+         * @param {Node} node
+         */
+        static _walk(builder, node) {
+          if (typeof node === "string") {
+            builder.addText(node);
+          } else if (node.children) {
+            builder.openNode(node);
+            node.children.forEach((child) => this._walk(builder, child));
+            builder.closeNode(node);
+          }
+          return builder;
+        }
+        /**
+         * @param {Node} node
+         */
+        static _collapse(node) {
+          if (typeof node === "string") return;
+          if (!node.children) return;
+          if (node.children.every((el) => typeof el === "string")) {
+            node.children = [node.children.join("")];
+          } else {
+            node.children.forEach((child) => {
+              _TokenTree._collapse(child);
+            });
+          }
+        }
+      };
+      var TokenTreeEmitter = class extends TokenTree {
+        /**
+         * @param {*} options
+         */
+        constructor(options) {
+          super();
+          this.options = options;
+        }
+        /**
+         * @param {string} text
+         */
+        addText(text) {
+          if (text === "") {
+            return;
+          }
+          this.add(text);
+        }
+        /** @param {string} scope */
+        startScope(scope) {
+          this.openNode(scope);
+        }
+        endScope() {
+          this.closeNode();
+        }
+        /**
+         * @param {Emitter & {root: DataNode}} emitter
+         * @param {string} name
+         */
+        __addSublanguage(emitter, name) {
+          const node = emitter.root;
+          if (name) node.scope = `language:${name}`;
+          this.add(node);
+        }
+        toHTML() {
+          const renderer = new HTMLRenderer(this, this.options);
+          return renderer.value();
+        }
+        finalize() {
+          this.closeAllNodes();
+          return true;
+        }
+      };
+      function source(re) {
+        if (!re) return null;
+        if (typeof re === "string") return re;
+        return re.source;
+      }
+      function lookahead(re) {
+        return concat("(?=", re, ")");
+      }
+      function anyNumberOfTimes(re) {
+        return concat("(?:", re, ")*");
+      }
+      function optional(re) {
+        return concat("(?:", re, ")?");
+      }
+      function concat(...args) {
+        const joined = args.map((x) => source(x)).join("");
+        return joined;
+      }
+      function stripOptionsFromArgs(args) {
+        const opts = args[args.length - 1];
+        if (typeof opts === "object" && opts.constructor === Object) {
+          args.splice(args.length - 1, 1);
+          return opts;
+        } else {
+          return {};
+        }
+      }
+      function either(...args) {
+        const opts = stripOptionsFromArgs(args);
+        const joined = "(" + (opts.capture ? "" : "?:") + args.map((x) => source(x)).join("|") + ")";
+        return joined;
+      }
+      function countMatchGroups(re) {
+        return new RegExp(re.toString() + "|").exec("").length - 1;
+      }
+      function startsWith(re, lexeme) {
+        const match = re && re.exec(lexeme);
+        return match && match.index === 0;
+      }
+      var BACKREF_RE = /\[(?:[^\\\]]|\\.)*\]|\(\??|\\([1-9][0-9]*)|\\./;
+      function _rewriteBackreferences(regexps, { joinWith }) {
+        let numCaptures = 0;
+        return regexps.map((regex) => {
+          numCaptures += 1;
+          const offset = numCaptures;
+          let re = source(regex);
+          let out = "";
+          while (re.length > 0) {
+            const match = BACKREF_RE.exec(re);
+            if (!match) {
+              out += re;
+              break;
+            }
+            out += re.substring(0, match.index);
+            re = re.substring(match.index + match[0].length);
+            if (match[0][0] === "\\" && match[1]) {
+              out += "\\" + String(Number(match[1]) + offset);
+            } else {
+              out += match[0];
+              if (match[0] === "(") {
+                numCaptures++;
+              }
+            }
+          }
+          return out;
+        }).map((re) => `(${re})`).join(joinWith);
+      }
+      var MATCH_NOTHING_RE = /\b\B/;
+      var IDENT_RE = "[a-zA-Z]\\w*";
+      var UNDERSCORE_IDENT_RE = "[a-zA-Z_]\\w*";
+      var NUMBER_RE = "\\b\\d+(\\.\\d+)?";
+      var C_NUMBER_RE = "(-?)(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";
+      var BINARY_NUMBER_RE = "\\b(0b[01]+)";
+      var RE_STARTERS_RE = "!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";
+      var SHEBANG = (opts = {}) => {
+        const beginShebang = /^#![ ]*\//;
+        if (opts.binary) {
+          opts.begin = concat(
+            beginShebang,
+            /.*\b/,
+            opts.binary,
+            /\b.*/
+          );
+        }
+        return inherit$1({
+          scope: "meta",
+          begin: beginShebang,
+          end: /$/,
+          relevance: 0,
+          /** @type {ModeCallback} */
+          "on:begin": (m, resp) => {
+            if (m.index !== 0) resp.ignoreMatch();
+          }
+        }, opts);
+      };
+      var BACKSLASH_ESCAPE = {
+        begin: "\\\\[\\s\\S]",
+        relevance: 0
+      };
+      var APOS_STRING_MODE = {
+        scope: "string",
+        begin: "'",
+        end: "'",
+        illegal: "\\n",
+        contains: [BACKSLASH_ESCAPE]
+      };
+      var QUOTE_STRING_MODE = {
+        scope: "string",
+        begin: '"',
+        end: '"',
+        illegal: "\\n",
+        contains: [BACKSLASH_ESCAPE]
+      };
+      var PHRASAL_WORDS_MODE = {
+        begin: /\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|they|like|more)\b/
+      };
+      var COMMENT = function(begin, end, modeOptions = {}) {
+        const mode = inherit$1(
+          {
+            scope: "comment",
+            begin,
+            end,
+            contains: []
+          },
+          modeOptions
+        );
+        mode.contains.push({
+          scope: "doctag",
+          // hack to avoid the space from being included. the space is necessary to
+          // match here to prevent the plain text rule below from gobbling up doctags
+          begin: "[ ]*(?=(TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):)",
+          end: /(TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):/,
+          excludeBegin: true,
+          relevance: 0
+        });
+        const ENGLISH_WORD = either(
+          // list of common 1 and 2 letter words in English
+          "I",
+          "a",
+          "is",
+          "so",
+          "us",
+          "to",
+          "at",
+          "if",
+          "in",
+          "it",
+          "on",
+          // note: this is not an exhaustive list of contractions, just popular ones
+          /[A-Za-z]+['](d|ve|re|ll|t|s|n)/,
+          // contractions - can't we'd they're let's, etc
+          /[A-Za-z]+[-][a-z]+/,
+          // `no-way`, etc.
+          /[A-Za-z][a-z]{2,}/
+          // allow capitalized words at beginning of sentences
+        );
+        mode.contains.push(
+          {
+            // TODO: how to include ", (, ) without breaking grammars that use these for
+            // comment delimiters?
+            // begin: /[ ]+([()"]?([A-Za-z'-]{3,}|is|a|I|so|us|[tT][oO]|at|if|in|it|on)[.]?[()":]?([.][ ]|[ ]|\))){3}/
+            // ---
+            // this tries to find sequences of 3 english words in a row (without any
+            // "programming" type syntax) this gives us a strong signal that we've
+            // TRULY found a comment - vs perhaps scanning with the wrong language.
+            // It's possible to find something that LOOKS like the start of the
+            // comment - but then if there is no readable text - good chance it is a
+            // false match and not a comment.
+            //
+            // for a visual example please see:
+            // https://github.com/highlightjs/highlight.js/issues/2827
+            begin: concat(
+              /[ ]+/,
+              // necessary to prevent us gobbling up doctags like /* @author Bob Mcgill */
+              "(",
+              ENGLISH_WORD,
+              /[.]?[:]?([.][ ]|[ ])/,
+              "){3}"
+            )
+            // look for 3 words in a row
+          }
+        );
+        return mode;
+      };
+      var C_LINE_COMMENT_MODE = COMMENT("//", "$");
+      var C_BLOCK_COMMENT_MODE = COMMENT("/\\*", "\\*/");
+      var HASH_COMMENT_MODE = COMMENT("#", "$");
+      var NUMBER_MODE = {
+        scope: "number",
+        begin: NUMBER_RE,
+        relevance: 0
+      };
+      var C_NUMBER_MODE = {
+        scope: "number",
+        begin: C_NUMBER_RE,
+        relevance: 0
+      };
+      var BINARY_NUMBER_MODE = {
+        scope: "number",
+        begin: BINARY_NUMBER_RE,
+        relevance: 0
+      };
+      var REGEXP_MODE = {
+        scope: "regexp",
+        begin: /\/(?=[^/\n]*\/)/,
+        end: /\/[gimuy]*/,
+        contains: [
+          BACKSLASH_ESCAPE,
+          {
+            begin: /\[/,
+            end: /\]/,
+            relevance: 0,
+            contains: [BACKSLASH_ESCAPE]
+          }
+        ]
+      };
+      var TITLE_MODE = {
+        scope: "title",
+        begin: IDENT_RE,
+        relevance: 0
+      };
+      var UNDERSCORE_TITLE_MODE = {
+        scope: "title",
+        begin: UNDERSCORE_IDENT_RE,
+        relevance: 0
+      };
+      var METHOD_GUARD = {
+        // excludes method names from keyword processing
+        begin: "\\.\\s*" + UNDERSCORE_IDENT_RE,
+        relevance: 0
+      };
+      var END_SAME_AS_BEGIN = function(mode) {
+        return Object.assign(
+          mode,
+          {
+            /** @type {ModeCallback} */
+            "on:begin": (m, resp) => {
+              resp.data._beginMatch = m[1];
+            },
+            /** @type {ModeCallback} */
+            "on:end": (m, resp) => {
+              if (resp.data._beginMatch !== m[1]) resp.ignoreMatch();
+            }
+          }
+        );
+      };
+      var MODES = /* @__PURE__ */ Object.freeze({
+        __proto__: null,
+        APOS_STRING_MODE,
+        BACKSLASH_ESCAPE,
+        BINARY_NUMBER_MODE,
+        BINARY_NUMBER_RE,
+        COMMENT,
+        C_BLOCK_COMMENT_MODE,
+        C_LINE_COMMENT_MODE,
+        C_NUMBER_MODE,
+        C_NUMBER_RE,
+        END_SAME_AS_BEGIN,
+        HASH_COMMENT_MODE,
+        IDENT_RE,
+        MATCH_NOTHING_RE,
+        METHOD_GUARD,
+        NUMBER_MODE,
+        NUMBER_RE,
+        PHRASAL_WORDS_MODE,
+        QUOTE_STRING_MODE,
+        REGEXP_MODE,
+        RE_STARTERS_RE,
+        SHEBANG,
+        TITLE_MODE,
+        UNDERSCORE_IDENT_RE,
+        UNDERSCORE_TITLE_MODE
+      });
+      function skipIfHasPrecedingDot(match, response) {
+        const before = match.input[match.index - 1];
+        if (before === ".") {
+          response.ignoreMatch();
+        }
+      }
+      function scopeClassName(mode, _parent) {
+        if (mode.className !== void 0) {
+          mode.scope = mode.className;
+          delete mode.className;
+        }
+      }
+      function beginKeywords(mode, parent) {
+        if (!parent) return;
+        if (!mode.beginKeywords) return;
+        mode.begin = "\\b(" + mode.beginKeywords.split(" ").join("|") + ")(?!\\.)(?=\\b|\\s)";
+        mode.__beforeBegin = skipIfHasPrecedingDot;
+        mode.keywords = mode.keywords || mode.beginKeywords;
+        delete mode.beginKeywords;
+        if (mode.relevance === void 0) mode.relevance = 0;
+      }
+      function compileIllegal(mode, _parent) {
+        if (!Array.isArray(mode.illegal)) return;
+        mode.illegal = either(...mode.illegal);
+      }
+      function compileMatch(mode, _parent) {
+        if (!mode.match) return;
+        if (mode.begin || mode.end) throw new Error("begin & end are not supported with match");
+        mode.begin = mode.match;
+        delete mode.match;
+      }
+      function compileRelevance(mode, _parent) {
+        if (mode.relevance === void 0) mode.relevance = 1;
+      }
+      var beforeMatchExt = (mode, parent) => {
+        if (!mode.beforeMatch) return;
+        if (mode.starts) throw new Error("beforeMatch cannot be used with starts");
+        const originalMode = Object.assign({}, mode);
+        Object.keys(mode).forEach((key) => {
+          delete mode[key];
+        });
+        mode.keywords = originalMode.keywords;
+        mode.begin = concat(originalMode.beforeMatch, lookahead(originalMode.begin));
+        mode.starts = {
+          relevance: 0,
+          contains: [
+            Object.assign(originalMode, { endsParent: true })
+          ]
+        };
+        mode.relevance = 0;
+        delete originalMode.beforeMatch;
+      };
+      var COMMON_KEYWORDS = [
+        "of",
+        "and",
+        "for",
+        "in",
+        "not",
+        "or",
+        "if",
+        "then",
+        "parent",
+        // common variable name
+        "list",
+        // common variable name
+        "value"
+        // common variable name
+      ];
+      var DEFAULT_KEYWORD_SCOPE = "keyword";
+      function compileKeywords(rawKeywords, caseInsensitive, scopeName = DEFAULT_KEYWORD_SCOPE) {
+        const compiledKeywords = /* @__PURE__ */ Object.create(null);
+        if (typeof rawKeywords === "string") {
+          compileList(scopeName, rawKeywords.split(" "));
+        } else if (Array.isArray(rawKeywords)) {
+          compileList(scopeName, rawKeywords);
+        } else {
+          Object.keys(rawKeywords).forEach(function(scopeName2) {
+            Object.assign(
+              compiledKeywords,
+              compileKeywords(rawKeywords[scopeName2], caseInsensitive, scopeName2)
+            );
+          });
+        }
+        return compiledKeywords;
+        function compileList(scopeName2, keywordList) {
+          if (caseInsensitive) {
+            keywordList = keywordList.map((x) => x.toLowerCase());
+          }
+          keywordList.forEach(function(keyword) {
+            const pair = keyword.split("|");
+            compiledKeywords[pair[0]] = [scopeName2, scoreForKeyword(pair[0], pair[1])];
+          });
+        }
+      }
+      function scoreForKeyword(keyword, providedScore) {
+        if (providedScore) {
+          return Number(providedScore);
+        }
+        return commonKeyword(keyword) ? 0 : 1;
+      }
+      function commonKeyword(keyword) {
+        return COMMON_KEYWORDS.includes(keyword.toLowerCase());
+      }
+      var seenDeprecations = {};
+      var error = (message) => {
+        console.error(message);
+      };
+      var warn = (message, ...args) => {
+        console.log(`WARN: ${message}`, ...args);
+      };
+      var deprecated = (version2, message) => {
+        if (seenDeprecations[`${version2}/${message}`]) return;
+        console.log(`Deprecated as of ${version2}. ${message}`);
+        seenDeprecations[`${version2}/${message}`] = true;
+      };
+      var MultiClassError = new Error();
+      function remapScopeNames(mode, regexes, { key }) {
+        let offset = 0;
+        const scopeNames = mode[key];
+        const emit = {};
+        const positions = {};
+        for (let i = 1; i <= regexes.length; i++) {
+          positions[i + offset] = scopeNames[i];
+          emit[i + offset] = true;
+          offset += countMatchGroups(regexes[i - 1]);
+        }
+        mode[key] = positions;
+        mode[key]._emit = emit;
+        mode[key]._multi = true;
+      }
+      function beginMultiClass(mode) {
+        if (!Array.isArray(mode.begin)) return;
+        if (mode.skip || mode.excludeBegin || mode.returnBegin) {
+          error("skip, excludeBegin, returnBegin not compatible with beginScope: {}");
+          throw MultiClassError;
+        }
+        if (typeof mode.beginScope !== "object" || mode.beginScope === null) {
+          error("beginScope must be object");
+          throw MultiClassError;
+        }
+        remapScopeNames(mode, mode.begin, { key: "beginScope" });
+        mode.begin = _rewriteBackreferences(mode.begin, { joinWith: "" });
+      }
+      function endMultiClass(mode) {
+        if (!Array.isArray(mode.end)) return;
+        if (mode.skip || mode.excludeEnd || mode.returnEnd) {
+          error("skip, excludeEnd, returnEnd not compatible with endScope: {}");
+          throw MultiClassError;
+        }
+        if (typeof mode.endScope !== "object" || mode.endScope === null) {
+          error("endScope must be object");
+          throw MultiClassError;
+        }
+        remapScopeNames(mode, mode.end, { key: "endScope" });
+        mode.end = _rewriteBackreferences(mode.end, { joinWith: "" });
+      }
+      function scopeSugar(mode) {
+        if (mode.scope && typeof mode.scope === "object" && mode.scope !== null) {
+          mode.beginScope = mode.scope;
+          delete mode.scope;
+        }
+      }
+      function MultiClass(mode) {
+        scopeSugar(mode);
+        if (typeof mode.beginScope === "string") {
+          mode.beginScope = { _wrap: mode.beginScope };
+        }
+        if (typeof mode.endScope === "string") {
+          mode.endScope = { _wrap: mode.endScope };
+        }
+        beginMultiClass(mode);
+        endMultiClass(mode);
+      }
+      function compileLanguage(language) {
+        function langRe(value, global) {
+          return new RegExp(
+            source(value),
+            "m" + (language.case_insensitive ? "i" : "") + (language.unicodeRegex ? "u" : "") + (global ? "g" : "")
+          );
+        }
+        class MultiRegex {
+          constructor() {
+            this.matchIndexes = {};
+            this.regexes = [];
+            this.matchAt = 1;
+            this.position = 0;
+          }
+          // @ts-ignore
+          addRule(re, opts) {
+            opts.position = this.position++;
+            this.matchIndexes[this.matchAt] = opts;
+            this.regexes.push([opts, re]);
+            this.matchAt += countMatchGroups(re) + 1;
+          }
+          compile() {
+            if (this.regexes.length === 0) {
+              this.exec = () => null;
+            }
+            const terminators = this.regexes.map((el) => el[1]);
+            this.matcherRe = langRe(_rewriteBackreferences(terminators, { joinWith: "|" }), true);
+            this.lastIndex = 0;
+          }
+          /** @param {string} s */
+          exec(s) {
+            this.matcherRe.lastIndex = this.lastIndex;
+            const match = this.matcherRe.exec(s);
+            if (!match) {
+              return null;
+            }
+            const i = match.findIndex((el, i2) => i2 > 0 && el !== void 0);
+            const matchData = this.matchIndexes[i];
+            match.splice(0, i);
+            return Object.assign(match, matchData);
+          }
+        }
+        class ResumableMultiRegex {
+          constructor() {
+            this.rules = [];
+            this.multiRegexes = [];
+            this.count = 0;
+            this.lastIndex = 0;
+            this.regexIndex = 0;
+          }
+          // @ts-ignore
+          getMatcher(index) {
+            if (this.multiRegexes[index]) return this.multiRegexes[index];
+            const matcher = new MultiRegex();
+            this.rules.slice(index).forEach(([re, opts]) => matcher.addRule(re, opts));
+            matcher.compile();
+            this.multiRegexes[index] = matcher;
+            return matcher;
+          }
+          resumingScanAtSamePosition() {
+            return this.regexIndex !== 0;
+          }
+          considerAll() {
+            this.regexIndex = 0;
+          }
+          // @ts-ignore
+          addRule(re, opts) {
+            this.rules.push([re, opts]);
+            if (opts.type === "begin") this.count++;
+          }
+          /** @param {string} s */
+          exec(s) {
+            const m = this.getMatcher(this.regexIndex);
+            m.lastIndex = this.lastIndex;
+            let result = m.exec(s);
+            if (this.resumingScanAtSamePosition()) {
+              if (result && result.index === this.lastIndex) ;
+              else {
+                const m2 = this.getMatcher(0);
+                m2.lastIndex = this.lastIndex + 1;
+                result = m2.exec(s);
+              }
+            }
+            if (result) {
+              this.regexIndex += result.position + 1;
+              if (this.regexIndex === this.count) {
+                this.considerAll();
+              }
+            }
+            return result;
+          }
+        }
+        function buildModeRegex(mode) {
+          const mm = new ResumableMultiRegex();
+          mode.contains.forEach((term) => mm.addRule(term.begin, { rule: term, type: "begin" }));
+          if (mode.terminatorEnd) {
+            mm.addRule(mode.terminatorEnd, { type: "end" });
+          }
+          if (mode.illegal) {
+            mm.addRule(mode.illegal, { type: "illegal" });
+          }
+          return mm;
+        }
+        function compileMode(mode, parent) {
+          const cmode = (
+            /** @type CompiledMode */
+            mode
+          );
+          if (mode.isCompiled) return cmode;
+          [
+            scopeClassName,
+            // do this early so compiler extensions generally don't have to worry about
+            // the distinction between match/begin
+            compileMatch,
+            MultiClass,
+            beforeMatchExt
+          ].forEach((ext) => ext(mode, parent));
+          language.compilerExtensions.forEach((ext) => ext(mode, parent));
+          mode.__beforeBegin = null;
+          [
+            beginKeywords,
+            // do this later so compiler extensions that come earlier have access to the
+            // raw array if they wanted to perhaps manipulate it, etc.
+            compileIllegal,
+            // default to 1 relevance if not specified
+            compileRelevance
+          ].forEach((ext) => ext(mode, parent));
+          mode.isCompiled = true;
+          let keywordPattern = null;
+          if (typeof mode.keywords === "object" && mode.keywords.$pattern) {
+            mode.keywords = Object.assign({}, mode.keywords);
+            keywordPattern = mode.keywords.$pattern;
+            delete mode.keywords.$pattern;
+          }
+          keywordPattern = keywordPattern || /\w+/;
+          if (mode.keywords) {
+            mode.keywords = compileKeywords(mode.keywords, language.case_insensitive);
+          }
+          cmode.keywordPatternRe = langRe(keywordPattern, true);
+          if (parent) {
+            if (!mode.begin) mode.begin = /\B|\b/;
+            cmode.beginRe = langRe(cmode.begin);
+            if (!mode.end && !mode.endsWithParent) mode.end = /\B|\b/;
+            if (mode.end) cmode.endRe = langRe(cmode.end);
+            cmode.terminatorEnd = source(cmode.end) || "";
+            if (mode.endsWithParent && parent.terminatorEnd) {
+              cmode.terminatorEnd += (mode.end ? "|" : "") + parent.terminatorEnd;
+            }
+          }
+          if (mode.illegal) cmode.illegalRe = langRe(
+            /** @type {RegExp | string} */
+            mode.illegal
+          );
+          if (!mode.contains) mode.contains = [];
+          mode.contains = [].concat(...mode.contains.map(function(c) {
+            return expandOrCloneMode(c === "self" ? mode : c);
+          }));
+          mode.contains.forEach(function(c) {
+            compileMode(
+              /** @type Mode */
+              c,
+              cmode
+            );
+          });
+          if (mode.starts) {
+            compileMode(mode.starts, parent);
+          }
+          cmode.matcher = buildModeRegex(cmode);
+          return cmode;
+        }
+        if (!language.compilerExtensions) language.compilerExtensions = [];
+        if (language.contains && language.contains.includes("self")) {
+          throw new Error("ERR: contains `self` is not supported at the top-level of a language.  See documentation.");
+        }
+        language.classNameAliases = inherit$1(language.classNameAliases || {});
+        return compileMode(
+          /** @type Mode */
+          language
+        );
+      }
+      function dependencyOnParent(mode) {
+        if (!mode) return false;
+        return mode.endsWithParent || dependencyOnParent(mode.starts);
+      }
+      function expandOrCloneMode(mode) {
+        if (mode.variants && !mode.cachedVariants) {
+          mode.cachedVariants = mode.variants.map(function(variant) {
+            return inherit$1(mode, { variants: null }, variant);
+          });
+        }
+        if (mode.cachedVariants) {
+          return mode.cachedVariants;
+        }
+        if (dependencyOnParent(mode)) {
+          return inherit$1(mode, { starts: mode.starts ? inherit$1(mode.starts) : null });
+        }
+        if (Object.isFrozen(mode)) {
+          return inherit$1(mode);
+        }
+        return mode;
+      }
+      var version = "11.11.1";
+      var HTMLInjectionError = class extends Error {
+        constructor(reason, html) {
+          super(reason);
+          this.name = "HTMLInjectionError";
+          this.html = html;
+        }
+      };
+      var escape = escapeHTML;
+      var inherit = inherit$1;
+      var NO_MATCH = /* @__PURE__ */ Symbol("nomatch");
+      var MAX_KEYWORD_HITS = 7;
+      var HLJS = function(hljs) {
+        const languages = /* @__PURE__ */ Object.create(null);
+        const aliases = /* @__PURE__ */ Object.create(null);
+        const plugins = [];
+        let SAFE_MODE = true;
+        const LANGUAGE_NOT_FOUND = "Could not find the language '{}', did you forget to load/include a language module?";
+        const PLAINTEXT_LANGUAGE = { disableAutodetect: true, name: "Plain text", contains: [] };
+        let options = {
+          ignoreUnescapedHTML: false,
+          throwUnescapedHTML: false,
+          noHighlightRe: /^(no-?highlight)$/i,
+          languageDetectRe: /\blang(?:uage)?-([\w-]+)\b/i,
+          classPrefix: "hljs-",
+          cssSelector: "pre code",
+          languages: null,
+          // beta configuration options, subject to change, welcome to discuss
+          // https://github.com/highlightjs/highlight.js/issues/1086
+          __emitter: TokenTreeEmitter
+        };
+        function shouldNotHighlight(languageName) {
+          return options.noHighlightRe.test(languageName);
+        }
+        function blockLanguage(block) {
+          let classes = block.className + " ";
+          classes += block.parentNode ? block.parentNode.className : "";
+          const match = options.languageDetectRe.exec(classes);
+          if (match) {
+            const language = getLanguage(match[1]);
+            if (!language) {
+              warn(LANGUAGE_NOT_FOUND.replace("{}", match[1]));
+              warn("Falling back to no-highlight mode for this block.", block);
+            }
+            return language ? match[1] : "no-highlight";
+          }
+          return classes.split(/\s+/).find((_class) => shouldNotHighlight(_class) || getLanguage(_class));
+        }
+        function highlight2(codeOrLanguageName, optionsOrCode, ignoreIllegals) {
+          let code = "";
+          let languageName = "";
+          if (typeof optionsOrCode === "object") {
+            code = codeOrLanguageName;
+            ignoreIllegals = optionsOrCode.ignoreIllegals;
+            languageName = optionsOrCode.language;
+          } else {
+            deprecated("10.7.0", "highlight(lang, code, ...args) has been deprecated.");
+            deprecated("10.7.0", "Please use highlight(code, options) instead.\nhttps://github.com/highlightjs/highlight.js/issues/2277");
+            languageName = codeOrLanguageName;
+            code = optionsOrCode;
+          }
+          if (ignoreIllegals === void 0) {
+            ignoreIllegals = true;
+          }
+          const context = {
+            code,
+            language: languageName
+          };
+          fire("before:highlight", context);
+          const result = context.result ? context.result : _highlight(context.language, context.code, ignoreIllegals);
+          result.code = context.code;
+          fire("after:highlight", result);
+          return result;
+        }
+        function _highlight(languageName, codeToHighlight, ignoreIllegals, continuation) {
+          const keywordHits = /* @__PURE__ */ Object.create(null);
+          function keywordData(mode, matchText) {
+            return mode.keywords[matchText];
+          }
+          function processKeywords() {
+            if (!top.keywords) {
+              emitter.addText(modeBuffer);
+              return;
+            }
+            let lastIndex = 0;
+            top.keywordPatternRe.lastIndex = 0;
+            let match = top.keywordPatternRe.exec(modeBuffer);
+            let buf = "";
+            while (match) {
+              buf += modeBuffer.substring(lastIndex, match.index);
+              const word = language.case_insensitive ? match[0].toLowerCase() : match[0];
+              const data = keywordData(top, word);
+              if (data) {
+                const [kind, keywordRelevance] = data;
+                emitter.addText(buf);
+                buf = "";
+                keywordHits[word] = (keywordHits[word] || 0) + 1;
+                if (keywordHits[word] <= MAX_KEYWORD_HITS) relevance += keywordRelevance;
+                if (kind.startsWith("_")) {
+                  buf += match[0];
+                } else {
+                  const cssClass = language.classNameAliases[kind] || kind;
+                  emitKeyword(match[0], cssClass);
+                }
+              } else {
+                buf += match[0];
+              }
+              lastIndex = top.keywordPatternRe.lastIndex;
+              match = top.keywordPatternRe.exec(modeBuffer);
+            }
+            buf += modeBuffer.substring(lastIndex);
+            emitter.addText(buf);
+          }
+          function processSubLanguage() {
+            if (modeBuffer === "") return;
+            let result2 = null;
+            if (typeof top.subLanguage === "string") {
+              if (!languages[top.subLanguage]) {
+                emitter.addText(modeBuffer);
+                return;
+              }
+              result2 = _highlight(top.subLanguage, modeBuffer, true, continuations[top.subLanguage]);
+              continuations[top.subLanguage] = /** @type {CompiledMode} */
+              result2._top;
+            } else {
+              result2 = highlightAuto(modeBuffer, top.subLanguage.length ? top.subLanguage : null);
+            }
+            if (top.relevance > 0) {
+              relevance += result2.relevance;
+            }
+            emitter.__addSublanguage(result2._emitter, result2.language);
+          }
+          function processBuffer() {
+            if (top.subLanguage != null) {
+              processSubLanguage();
+            } else {
+              processKeywords();
+            }
+            modeBuffer = "";
+          }
+          function emitKeyword(keyword, scope) {
+            if (keyword === "") return;
+            emitter.startScope(scope);
+            emitter.addText(keyword);
+            emitter.endScope();
+          }
+          function emitMultiClass(scope, match) {
+            let i = 1;
+            const max = match.length - 1;
+            while (i <= max) {
+              if (!scope._emit[i]) {
+                i++;
+                continue;
+              }
+              const klass = language.classNameAliases[scope[i]] || scope[i];
+              const text = match[i];
+              if (klass) {
+                emitKeyword(text, klass);
+              } else {
+                modeBuffer = text;
+                processKeywords();
+                modeBuffer = "";
+              }
+              i++;
+            }
+          }
+          function startNewMode(mode, match) {
+            if (mode.scope && typeof mode.scope === "string") {
+              emitter.openNode(language.classNameAliases[mode.scope] || mode.scope);
+            }
+            if (mode.beginScope) {
+              if (mode.beginScope._wrap) {
+                emitKeyword(modeBuffer, language.classNameAliases[mode.beginScope._wrap] || mode.beginScope._wrap);
+                modeBuffer = "";
+              } else if (mode.beginScope._multi) {
+                emitMultiClass(mode.beginScope, match);
+                modeBuffer = "";
+              }
+            }
+            top = Object.create(mode, { parent: { value: top } });
+            return top;
+          }
+          function endOfMode(mode, match, matchPlusRemainder) {
+            let matched = startsWith(mode.endRe, matchPlusRemainder);
+            if (matched) {
+              if (mode["on:end"]) {
+                const resp = new Response(mode);
+                mode["on:end"](match, resp);
+                if (resp.isMatchIgnored) matched = false;
+              }
+              if (matched) {
+                while (mode.endsParent && mode.parent) {
+                  mode = mode.parent;
+                }
+                return mode;
+              }
+            }
+            if (mode.endsWithParent) {
+              return endOfMode(mode.parent, match, matchPlusRemainder);
+            }
+          }
+          function doIgnore(lexeme) {
+            if (top.matcher.regexIndex === 0) {
+              modeBuffer += lexeme[0];
+              return 1;
+            } else {
+              resumeScanAtSamePosition = true;
+              return 0;
+            }
+          }
+          function doBeginMatch(match) {
+            const lexeme = match[0];
+            const newMode = match.rule;
+            const resp = new Response(newMode);
+            const beforeCallbacks = [newMode.__beforeBegin, newMode["on:begin"]];
+            for (const cb of beforeCallbacks) {
+              if (!cb) continue;
+              cb(match, resp);
+              if (resp.isMatchIgnored) return doIgnore(lexeme);
+            }
+            if (newMode.skip) {
+              modeBuffer += lexeme;
+            } else {
+              if (newMode.excludeBegin) {
+                modeBuffer += lexeme;
+              }
+              processBuffer();
+              if (!newMode.returnBegin && !newMode.excludeBegin) {
+                modeBuffer = lexeme;
+              }
+            }
+            startNewMode(newMode, match);
+            return newMode.returnBegin ? 0 : lexeme.length;
+          }
+          function doEndMatch(match) {
+            const lexeme = match[0];
+            const matchPlusRemainder = codeToHighlight.substring(match.index);
+            const endMode = endOfMode(top, match, matchPlusRemainder);
+            if (!endMode) {
+              return NO_MATCH;
+            }
+            const origin = top;
+            if (top.endScope && top.endScope._wrap) {
+              processBuffer();
+              emitKeyword(lexeme, top.endScope._wrap);
+            } else if (top.endScope && top.endScope._multi) {
+              processBuffer();
+              emitMultiClass(top.endScope, match);
+            } else if (origin.skip) {
+              modeBuffer += lexeme;
+            } else {
+              if (!(origin.returnEnd || origin.excludeEnd)) {
+                modeBuffer += lexeme;
+              }
+              processBuffer();
+              if (origin.excludeEnd) {
+                modeBuffer = lexeme;
+              }
+            }
+            do {
+              if (top.scope) {
+                emitter.closeNode();
+              }
+              if (!top.skip && !top.subLanguage) {
+                relevance += top.relevance;
+              }
+              top = top.parent;
+            } while (top !== endMode.parent);
+            if (endMode.starts) {
+              startNewMode(endMode.starts, match);
+            }
+            return origin.returnEnd ? 0 : lexeme.length;
+          }
+          function processContinuations() {
+            const list = [];
+            for (let current = top; current !== language; current = current.parent) {
+              if (current.scope) {
+                list.unshift(current.scope);
+              }
+            }
+            list.forEach((item) => emitter.openNode(item));
+          }
+          let lastMatch = {};
+          function processLexeme(textBeforeMatch, match) {
+            const lexeme = match && match[0];
+            modeBuffer += textBeforeMatch;
+            if (lexeme == null) {
+              processBuffer();
+              return 0;
+            }
+            if (lastMatch.type === "begin" && match.type === "end" && lastMatch.index === match.index && lexeme === "") {
+              modeBuffer += codeToHighlight.slice(match.index, match.index + 1);
+              if (!SAFE_MODE) {
+                const err = new Error(`0 width match regex (${languageName})`);
+                err.languageName = languageName;
+                err.badRule = lastMatch.rule;
+                throw err;
+              }
+              return 1;
+            }
+            lastMatch = match;
+            if (match.type === "begin") {
+              return doBeginMatch(match);
+            } else if (match.type === "illegal" && !ignoreIllegals) {
+              const err = new Error('Illegal lexeme "' + lexeme + '" for mode "' + (top.scope || "<unnamed>") + '"');
+              err.mode = top;
+              throw err;
+            } else if (match.type === "end") {
+              const processed = doEndMatch(match);
+              if (processed !== NO_MATCH) {
+                return processed;
+              }
+            }
+            if (match.type === "illegal" && lexeme === "") {
+              modeBuffer += "\n";
+              return 1;
+            }
+            if (iterations > 1e5 && iterations > match.index * 3) {
+              const err = new Error("potential infinite loop, way more iterations than matches");
+              throw err;
+            }
+            modeBuffer += lexeme;
+            return lexeme.length;
+          }
+          const language = getLanguage(languageName);
+          if (!language) {
+            error(LANGUAGE_NOT_FOUND.replace("{}", languageName));
+            throw new Error('Unknown language: "' + languageName + '"');
+          }
+          const md = compileLanguage(language);
+          let result = "";
+          let top = continuation || md;
+          const continuations = {};
+          const emitter = new options.__emitter(options);
+          processContinuations();
+          let modeBuffer = "";
+          let relevance = 0;
+          let index = 0;
+          let iterations = 0;
+          let resumeScanAtSamePosition = false;
+          try {
+            if (!language.__emitTokens) {
+              top.matcher.considerAll();
+              for (; ; ) {
+                iterations++;
+                if (resumeScanAtSamePosition) {
+                  resumeScanAtSamePosition = false;
+                } else {
+                  top.matcher.considerAll();
+                }
+                top.matcher.lastIndex = index;
+                const match = top.matcher.exec(codeToHighlight);
+                if (!match) break;
+                const beforeMatch = codeToHighlight.substring(index, match.index);
+                const processedCount = processLexeme(beforeMatch, match);
+                index = match.index + processedCount;
+              }
+              processLexeme(codeToHighlight.substring(index));
+            } else {
+              language.__emitTokens(codeToHighlight, emitter);
+            }
+            emitter.finalize();
+            result = emitter.toHTML();
+            return {
+              language: languageName,
+              value: result,
+              relevance,
+              illegal: false,
+              _emitter: emitter,
+              _top: top
+            };
+          } catch (err) {
+            if (err.message && err.message.includes("Illegal")) {
+              return {
+                language: languageName,
+                value: escape(codeToHighlight),
+                illegal: true,
+                relevance: 0,
+                _illegalBy: {
+                  message: err.message,
+                  index,
+                  context: codeToHighlight.slice(index - 100, index + 100),
+                  mode: err.mode,
+                  resultSoFar: result
+                },
+                _emitter: emitter
+              };
+            } else if (SAFE_MODE) {
+              return {
+                language: languageName,
+                value: escape(codeToHighlight),
+                illegal: false,
+                relevance: 0,
+                errorRaised: err,
+                _emitter: emitter,
+                _top: top
+              };
+            } else {
+              throw err;
+            }
+          }
+        }
+        function justTextHighlightResult(code) {
+          const result = {
+            value: escape(code),
+            illegal: false,
+            relevance: 0,
+            _top: PLAINTEXT_LANGUAGE,
+            _emitter: new options.__emitter(options)
+          };
+          result._emitter.addText(code);
+          return result;
+        }
+        function highlightAuto(code, languageSubset) {
+          languageSubset = languageSubset || options.languages || Object.keys(languages);
+          const plaintext = justTextHighlightResult(code);
+          const results = languageSubset.filter(getLanguage).filter(autoDetection).map(
+            (name) => _highlight(name, code, false)
+          );
+          results.unshift(plaintext);
+          const sorted = results.sort((a, b) => {
+            if (a.relevance !== b.relevance) return b.relevance - a.relevance;
+            if (a.language && b.language) {
+              if (getLanguage(a.language).supersetOf === b.language) {
+                return 1;
+              } else if (getLanguage(b.language).supersetOf === a.language) {
+                return -1;
+              }
+            }
+            return 0;
+          });
+          const [best, secondBest] = sorted;
+          const result = best;
+          result.secondBest = secondBest;
+          return result;
+        }
+        function updateClassName(element, currentLang, resultLang) {
+          const language = currentLang && aliases[currentLang] || resultLang;
+          element.classList.add("hljs");
+          element.classList.add(`language-${language}`);
+        }
+        function highlightElement(element) {
+          let node = null;
+          const language = blockLanguage(element);
+          if (shouldNotHighlight(language)) return;
+          fire(
+            "before:highlightElement",
+            { el: element, language }
+          );
+          if (element.dataset.highlighted) {
+            console.log("Element previously highlighted. To highlight again, first unset `dataset.highlighted`.", element);
+            return;
+          }
+          if (element.children.length > 0) {
+            if (!options.ignoreUnescapedHTML) {
+              console.warn("One of your code blocks includes unescaped HTML. This is a potentially serious security risk.");
+              console.warn("https://github.com/highlightjs/highlight.js/wiki/security");
+              console.warn("The element with unescaped HTML:");
+              console.warn(element);
+            }
+            if (options.throwUnescapedHTML) {
+              const err = new HTMLInjectionError(
+                "One of your code blocks includes unescaped HTML.",
+                element.innerHTML
+              );
+              throw err;
+            }
+          }
+          node = element;
+          const text = node.textContent;
+          const result = language ? highlight2(text, { language, ignoreIllegals: true }) : highlightAuto(text);
+          element.innerHTML = result.value;
+          element.dataset.highlighted = "yes";
+          updateClassName(element, language, result.language);
+          element.result = {
+            language: result.language,
+            // TODO: remove with version 11.0
+            re: result.relevance,
+            relevance: result.relevance
+          };
+          if (result.secondBest) {
+            element.secondBest = {
+              language: result.secondBest.language,
+              relevance: result.secondBest.relevance
+            };
+          }
+          fire("after:highlightElement", { el: element, result, text });
+        }
+        function configure(userOptions) {
+          options = inherit(options, userOptions);
+        }
+        const initHighlighting = () => {
+          highlightAll();
+          deprecated("10.6.0", "initHighlighting() deprecated.  Use highlightAll() now.");
+        };
+        function initHighlightingOnLoad() {
+          highlightAll();
+          deprecated("10.6.0", "initHighlightingOnLoad() deprecated.  Use highlightAll() now.");
+        }
+        let wantsHighlight = false;
+        function highlightAll() {
+          function boot() {
+            highlightAll();
+          }
+          if (document.readyState === "loading") {
+            if (!wantsHighlight) {
+              window.addEventListener("DOMContentLoaded", boot, false);
+            }
+            wantsHighlight = true;
+            return;
+          }
+          const blocks = document.querySelectorAll(options.cssSelector);
+          blocks.forEach(highlightElement);
+        }
+        function registerLanguage(languageName, languageDefinition) {
+          let lang = null;
+          try {
+            lang = languageDefinition(hljs);
+          } catch (error$1) {
+            error("Language definition for '{}' could not be registered.".replace("{}", languageName));
+            if (!SAFE_MODE) {
+              throw error$1;
+            } else {
+              error(error$1);
+            }
+            lang = PLAINTEXT_LANGUAGE;
+          }
+          if (!lang.name) lang.name = languageName;
+          languages[languageName] = lang;
+          lang.rawDefinition = languageDefinition.bind(null, hljs);
+          if (lang.aliases) {
+            registerAliases(lang.aliases, { languageName });
+          }
+        }
+        function unregisterLanguage(languageName) {
+          delete languages[languageName];
+          for (const alias of Object.keys(aliases)) {
+            if (aliases[alias] === languageName) {
+              delete aliases[alias];
+            }
+          }
+        }
+        function listLanguages() {
+          return Object.keys(languages);
+        }
+        function getLanguage(name) {
+          name = (name || "").toLowerCase();
+          return languages[name] || languages[aliases[name]];
+        }
+        function registerAliases(aliasList, { languageName }) {
+          if (typeof aliasList === "string") {
+            aliasList = [aliasList];
+          }
+          aliasList.forEach((alias) => {
+            aliases[alias.toLowerCase()] = languageName;
+          });
+        }
+        function autoDetection(name) {
+          const lang = getLanguage(name);
+          return lang && !lang.disableAutodetect;
+        }
+        function upgradePluginAPI(plugin) {
+          if (plugin["before:highlightBlock"] && !plugin["before:highlightElement"]) {
+            plugin["before:highlightElement"] = (data) => {
+              plugin["before:highlightBlock"](
+                Object.assign({ block: data.el }, data)
+              );
+            };
+          }
+          if (plugin["after:highlightBlock"] && !plugin["after:highlightElement"]) {
+            plugin["after:highlightElement"] = (data) => {
+              plugin["after:highlightBlock"](
+                Object.assign({ block: data.el }, data)
+              );
+            };
+          }
+        }
+        function addPlugin(plugin) {
+          upgradePluginAPI(plugin);
+          plugins.push(plugin);
+        }
+        function removePlugin(plugin) {
+          const index = plugins.indexOf(plugin);
+          if (index !== -1) {
+            plugins.splice(index, 1);
+          }
+        }
+        function fire(event, args) {
+          const cb = event;
+          plugins.forEach(function(plugin) {
+            if (plugin[cb]) {
+              plugin[cb](args);
+            }
+          });
+        }
+        function deprecateHighlightBlock(el) {
+          deprecated("10.7.0", "highlightBlock will be removed entirely in v12.0");
+          deprecated("10.7.0", "Please use highlightElement now.");
+          return highlightElement(el);
+        }
+        Object.assign(hljs, {
+          highlight: highlight2,
+          highlightAuto,
+          highlightAll,
+          highlightElement,
+          // TODO: Remove with v12 API
+          highlightBlock: deprecateHighlightBlock,
+          configure,
+          initHighlighting,
+          initHighlightingOnLoad,
+          registerLanguage,
+          unregisterLanguage,
+          listLanguages,
+          getLanguage,
+          registerAliases,
+          autoDetection,
+          inherit,
+          addPlugin,
+          removePlugin
+        });
+        hljs.debugMode = function() {
+          SAFE_MODE = false;
+        };
+        hljs.safeMode = function() {
+          SAFE_MODE = true;
+        };
+        hljs.versionString = version;
+        hljs.regex = {
+          concat,
+          lookahead,
+          either,
+          optional,
+          anyNumberOfTimes
+        };
+        for (const key in MODES) {
+          if (typeof MODES[key] === "object") {
+            deepFreeze(MODES[key]);
+          }
+        }
+        Object.assign(hljs, MODES);
+        return hljs;
+      };
+      var highlight = HLJS({});
+      highlight.newInstance = () => HLJS({});
+      module.exports = highlight;
+      highlight.HighlightJS = highlight;
+      highlight.default = highlight;
+    }
+  });
+
+  // node_modules/highlight.js/es/core.js
+  var import_core, core_default;
+  var init_core = __esm({
+    "node_modules/highlight.js/es/core.js"() {
+      import_core = __toESM(require_core(), 1);
+      core_default = import_core.default;
+    }
+  });
+
+  // node_modules/highlight.js/es/languages/bash.js
+  function bash(hljs) {
+    const regex = hljs.regex;
+    const VAR = {};
+    const BRACED_VAR = {
+      begin: /\$\{/,
+      end: /\}/,
+      contains: [
+        "self",
+        {
+          begin: /:-/,
+          contains: [VAR]
+        }
+        // default values
+      ]
+    };
+    Object.assign(VAR, {
+      className: "variable",
+      variants: [
+        { begin: regex.concat(
+          /\$[\w\d#@][\w\d_]*/,
+          // negative look-ahead tries to avoid matching patterns that are not
+          // Perl at all like $ident$, @ident@, etc.
+          `(?![\\w\\d])(?![$])`
+        ) },
+        BRACED_VAR
+      ]
+    });
+    const SUBST = {
+      className: "subst",
+      begin: /\$\(/,
+      end: /\)/,
+      contains: [hljs.BACKSLASH_ESCAPE]
+    };
+    const COMMENT = hljs.inherit(
+      hljs.COMMENT(),
+      {
+        match: [
+          /(^|\s)/,
+          /#.*$/
+        ],
+        scope: {
+          2: "comment"
+        }
+      }
+    );
+    const HERE_DOC = {
+      begin: /<<-?\s*(?=\w+)/,
+      starts: { contains: [
+        hljs.END_SAME_AS_BEGIN({
+          begin: /(\w+)/,
+          end: /(\w+)/,
+          className: "string"
+        })
+      ] }
+    };
+    const QUOTE_STRING = {
+      className: "string",
+      begin: /"/,
+      end: /"/,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        VAR,
+        SUBST
+      ]
+    };
+    SUBST.contains.push(QUOTE_STRING);
+    const ESCAPED_QUOTE = {
+      match: /\\"/
+    };
+    const APOS_STRING = {
+      className: "string",
+      begin: /'/,
+      end: /'/
+    };
+    const ESCAPED_APOS = {
+      match: /\\'/
+    };
+    const ARITHMETIC = {
+      begin: /\$?\(\(/,
+      end: /\)\)/,
+      contains: [
+        {
+          begin: /\d+#[0-9a-f]+/,
+          className: "number"
+        },
+        hljs.NUMBER_MODE,
+        VAR
+      ]
+    };
+    const SH_LIKE_SHELLS = [
+      "fish",
+      "bash",
+      "zsh",
+      "sh",
+      "csh",
+      "ksh",
+      "tcsh",
+      "dash",
+      "scsh"
+    ];
+    const KNOWN_SHEBANG = hljs.SHEBANG({
+      binary: `(${SH_LIKE_SHELLS.join("|")})`,
+      relevance: 10
+    });
+    const FUNCTION = {
+      className: "function",
+      begin: /\w[\w\d_]*\s*\(\s*\)\s*\{/,
+      returnBegin: true,
+      contains: [hljs.inherit(hljs.TITLE_MODE, { begin: /\w[\w\d_]*/ })],
+      relevance: 0
+    };
+    const KEYWORDS = [
+      "if",
+      "then",
+      "else",
+      "elif",
+      "fi",
+      "time",
+      "for",
+      "while",
+      "until",
+      "in",
+      "do",
+      "done",
+      "case",
+      "esac",
+      "coproc",
+      "function",
+      "select"
+    ];
+    const LITERALS = [
+      "true",
+      "false"
+    ];
+    const PATH_MODE = { match: /(\/[a-z._-]+)+/ };
+    const SHELL_BUILT_INS = [
+      "break",
+      "cd",
+      "continue",
+      "eval",
+      "exec",
+      "exit",
+      "export",
+      "getopts",
+      "hash",
+      "pwd",
+      "readonly",
+      "return",
+      "shift",
+      "test",
+      "times",
+      "trap",
+      "umask",
+      "unset"
+    ];
+    const BASH_BUILT_INS = [
+      "alias",
+      "bind",
+      "builtin",
+      "caller",
+      "command",
+      "declare",
+      "echo",
+      "enable",
+      "help",
+      "let",
+      "local",
+      "logout",
+      "mapfile",
+      "printf",
+      "read",
+      "readarray",
+      "source",
+      "sudo",
+      "type",
+      "typeset",
+      "ulimit",
+      "unalias"
+    ];
+    const ZSH_BUILT_INS = [
+      "autoload",
+      "bg",
+      "bindkey",
+      "bye",
+      "cap",
+      "chdir",
+      "clone",
+      "comparguments",
+      "compcall",
+      "compctl",
+      "compdescribe",
+      "compfiles",
+      "compgroups",
+      "compquote",
+      "comptags",
+      "comptry",
+      "compvalues",
+      "dirs",
+      "disable",
+      "disown",
+      "echotc",
+      "echoti",
+      "emulate",
+      "fc",
+      "fg",
+      "float",
+      "functions",
+      "getcap",
+      "getln",
+      "history",
+      "integer",
+      "jobs",
+      "kill",
+      "limit",
+      "log",
+      "noglob",
+      "popd",
+      "print",
+      "pushd",
+      "pushln",
+      "rehash",
+      "sched",
+      "setcap",
+      "setopt",
+      "stat",
+      "suspend",
+      "ttyctl",
+      "unfunction",
+      "unhash",
+      "unlimit",
+      "unsetopt",
+      "vared",
+      "wait",
+      "whence",
+      "where",
+      "which",
+      "zcompile",
+      "zformat",
+      "zftp",
+      "zle",
+      "zmodload",
+      "zparseopts",
+      "zprof",
+      "zpty",
+      "zregexparse",
+      "zsocket",
+      "zstyle",
+      "ztcp"
+    ];
+    const GNU_CORE_UTILS = [
+      "chcon",
+      "chgrp",
+      "chown",
+      "chmod",
+      "cp",
+      "dd",
+      "df",
+      "dir",
+      "dircolors",
+      "ln",
+      "ls",
+      "mkdir",
+      "mkfifo",
+      "mknod",
+      "mktemp",
+      "mv",
+      "realpath",
+      "rm",
+      "rmdir",
+      "shred",
+      "sync",
+      "touch",
+      "truncate",
+      "vdir",
+      "b2sum",
+      "base32",
+      "base64",
+      "cat",
+      "cksum",
+      "comm",
+      "csplit",
+      "cut",
+      "expand",
+      "fmt",
+      "fold",
+      "head",
+      "join",
+      "md5sum",
+      "nl",
+      "numfmt",
+      "od",
+      "paste",
+      "ptx",
+      "pr",
+      "sha1sum",
+      "sha224sum",
+      "sha256sum",
+      "sha384sum",
+      "sha512sum",
+      "shuf",
+      "sort",
+      "split",
+      "sum",
+      "tac",
+      "tail",
+      "tr",
+      "tsort",
+      "unexpand",
+      "uniq",
+      "wc",
+      "arch",
+      "basename",
+      "chroot",
+      "date",
+      "dirname",
+      "du",
+      "echo",
+      "env",
+      "expr",
+      "factor",
+      // "false", // keyword literal already
+      "groups",
+      "hostid",
+      "id",
+      "link",
+      "logname",
+      "nice",
+      "nohup",
+      "nproc",
+      "pathchk",
+      "pinky",
+      "printenv",
+      "printf",
+      "pwd",
+      "readlink",
+      "runcon",
+      "seq",
+      "sleep",
+      "stat",
+      "stdbuf",
+      "stty",
+      "tee",
+      "test",
+      "timeout",
+      // "true", // keyword literal already
+      "tty",
+      "uname",
+      "unlink",
+      "uptime",
+      "users",
+      "who",
+      "whoami",
+      "yes"
+    ];
+    return {
+      name: "Bash",
+      aliases: [
+        "sh",
+        "zsh"
+      ],
+      keywords: {
+        $pattern: /\b[a-z][a-z0-9._-]+\b/,
+        keyword: KEYWORDS,
+        literal: LITERALS,
+        built_in: [
+          ...SHELL_BUILT_INS,
+          ...BASH_BUILT_INS,
+          // Shell modifiers
+          "set",
+          "shopt",
+          ...ZSH_BUILT_INS,
+          ...GNU_CORE_UTILS
+        ]
+      },
+      contains: [
+        KNOWN_SHEBANG,
+        // to catch known shells and boost relevancy
+        hljs.SHEBANG(),
+        // to catch unknown shells but still highlight the shebang
+        FUNCTION,
+        ARITHMETIC,
+        COMMENT,
+        HERE_DOC,
+        PATH_MODE,
+        QUOTE_STRING,
+        ESCAPED_QUOTE,
+        APOS_STRING,
+        ESCAPED_APOS,
+        VAR
+      ]
+    };
+  }
+  var init_bash = __esm({
+    "node_modules/highlight.js/es/languages/bash.js"() {
+    }
+  });
+
+  // node_modules/highlight.js/es/languages/http.js
+  function http(hljs) {
+    const regex = hljs.regex;
+    const VERSION = "HTTP/([32]|1\\.[01])";
+    const HEADER_NAME = /[A-Za-z][A-Za-z0-9-]*/;
+    const HEADER = {
+      className: "attribute",
+      begin: regex.concat("^", HEADER_NAME, "(?=\\:\\s)"),
+      starts: { contains: [
+        {
+          className: "punctuation",
+          begin: /: /,
+          relevance: 0,
+          starts: {
+            end: "$",
+            relevance: 0
+          }
+        }
+      ] }
+    };
+    const HEADERS_AND_BODY = [
+      HEADER,
+      {
+        begin: "\\n\\n",
+        starts: {
+          subLanguage: [],
+          endsWithParent: true
+        }
+      }
+    ];
+    return {
+      name: "HTTP",
+      aliases: ["https"],
+      illegal: /\S/,
+      contains: [
+        // response
+        {
+          begin: "^(?=" + VERSION + " \\d{3})",
+          end: /$/,
+          contains: [
+            {
+              className: "meta",
+              begin: VERSION
+            },
+            {
+              className: "number",
+              begin: "\\b\\d{3}\\b"
+            }
+          ],
+          starts: {
+            end: /\b\B/,
+            illegal: /\S/,
+            contains: HEADERS_AND_BODY
+          }
+        },
+        // request
+        {
+          begin: "(?=^[A-Z]+ (.*?) " + VERSION + "$)",
+          end: /$/,
+          contains: [
+            {
+              className: "string",
+              begin: " ",
+              end: " ",
+              excludeBegin: true,
+              excludeEnd: true
+            },
+            {
+              className: "meta",
+              begin: VERSION
+            },
+            {
+              className: "keyword",
+              begin: "[A-Z]+"
+            }
+          ],
+          starts: {
+            end: /\b\B/,
+            illegal: /\S/,
+            contains: HEADERS_AND_BODY
+          }
+        },
+        // to allow headers to work even without a preamble
+        hljs.inherit(HEADER, { relevance: 0 })
+      ]
+    };
+  }
+  var init_http = __esm({
+    "node_modules/highlight.js/es/languages/http.js"() {
+    }
+  });
+
+  // node_modules/highlight.js/es/languages/json.js
+  function json(hljs) {
+    const ATTRIBUTE = {
+      className: "attr",
+      begin: /"(\\.|[^\\"\r\n])*"(?=\s*:)/,
+      relevance: 1.01
+    };
+    const PUNCTUATION = {
+      match: /[{}[\],:]/,
+      className: "punctuation",
+      relevance: 0
+    };
+    const LITERALS = [
+      "true",
+      "false",
+      "null"
+    ];
+    const LITERALS_MODE = {
+      scope: "literal",
+      beginKeywords: LITERALS.join(" ")
+    };
+    return {
+      name: "JSON",
+      aliases: ["jsonc"],
+      keywords: {
+        literal: LITERALS
+      },
+      contains: [
+        ATTRIBUTE,
+        PUNCTUATION,
+        hljs.QUOTE_STRING_MODE,
+        LITERALS_MODE,
+        hljs.C_NUMBER_MODE,
+        hljs.C_LINE_COMMENT_MODE,
+        hljs.C_BLOCK_COMMENT_MODE
+      ],
+      illegal: "\\S"
+    };
+  }
+  var init_json = __esm({
+    "node_modules/highlight.js/es/languages/json.js"() {
+    }
+  });
+
+  // node_modules/highlight.js/es/languages/python.js
+  function python(hljs) {
+    const regex = hljs.regex;
+    const IDENT_RE = new RegExp("[\\p{XID_Start}_]\\p{XID_Continue}*", "u");
+    const RESERVED_WORDS = [
+      "and",
+      "as",
+      "assert",
+      "async",
+      "await",
+      "break",
+      "case",
+      "class",
+      "continue",
+      "def",
+      "del",
+      "elif",
+      "else",
+      "except",
+      "finally",
+      "for",
+      "from",
+      "global",
+      "if",
+      "import",
+      "in",
+      "is",
+      "lambda",
+      "match",
+      "nonlocal|10",
+      "not",
+      "or",
+      "pass",
+      "raise",
+      "return",
+      "try",
+      "while",
+      "with",
+      "yield"
+    ];
+    const BUILT_INS = [
+      "__import__",
+      "abs",
+      "all",
+      "any",
+      "ascii",
+      "bin",
+      "bool",
+      "breakpoint",
+      "bytearray",
+      "bytes",
+      "callable",
+      "chr",
+      "classmethod",
+      "compile",
+      "complex",
+      "delattr",
+      "dict",
+      "dir",
+      "divmod",
+      "enumerate",
+      "eval",
+      "exec",
+      "filter",
+      "float",
+      "format",
+      "frozenset",
+      "getattr",
+      "globals",
+      "hasattr",
+      "hash",
+      "help",
+      "hex",
+      "id",
+      "input",
+      "int",
+      "isinstance",
+      "issubclass",
+      "iter",
+      "len",
+      "list",
+      "locals",
+      "map",
+      "max",
+      "memoryview",
+      "min",
+      "next",
+      "object",
+      "oct",
+      "open",
+      "ord",
+      "pow",
+      "print",
+      "property",
+      "range",
+      "repr",
+      "reversed",
+      "round",
+      "set",
+      "setattr",
+      "slice",
+      "sorted",
+      "staticmethod",
+      "str",
+      "sum",
+      "super",
+      "tuple",
+      "type",
+      "vars",
+      "zip"
+    ];
+    const LITERALS = [
+      "__debug__",
+      "Ellipsis",
+      "False",
+      "None",
+      "NotImplemented",
+      "True"
+    ];
+    const TYPES = [
+      "Any",
+      "Callable",
+      "Coroutine",
+      "Dict",
+      "List",
+      "Literal",
+      "Generic",
+      "Optional",
+      "Sequence",
+      "Set",
+      "Tuple",
+      "Type",
+      "Union"
+    ];
+    const KEYWORDS = {
+      $pattern: /[A-Za-z]\w+|__\w+__/,
+      keyword: RESERVED_WORDS,
+      built_in: BUILT_INS,
+      literal: LITERALS,
+      type: TYPES
+    };
+    const PROMPT = {
+      className: "meta",
+      begin: /^(>>>|\.\.\.) /
+    };
+    const SUBST = {
+      className: "subst",
+      begin: /\{/,
+      end: /\}/,
+      keywords: KEYWORDS,
+      illegal: /#/
+    };
+    const LITERAL_BRACKET = {
+      begin: /\{\{/,
+      relevance: 0
+    };
+    const STRING = {
+      className: "string",
+      contains: [hljs.BACKSLASH_ESCAPE],
+      variants: [
+        {
+          begin: /([uU]|[bB]|[rR]|[bB][rR]|[rR][bB])?'''/,
+          end: /'''/,
+          contains: [
+            hljs.BACKSLASH_ESCAPE,
+            PROMPT
+          ],
+          relevance: 10
+        },
+        {
+          begin: /([uU]|[bB]|[rR]|[bB][rR]|[rR][bB])?"""/,
+          end: /"""/,
+          contains: [
+            hljs.BACKSLASH_ESCAPE,
+            PROMPT
+          ],
+          relevance: 10
+        },
+        {
+          begin: /([fF][rR]|[rR][fF]|[fF])'''/,
+          end: /'''/,
+          contains: [
+            hljs.BACKSLASH_ESCAPE,
+            PROMPT,
+            LITERAL_BRACKET,
+            SUBST
+          ]
+        },
+        {
+          begin: /([fF][rR]|[rR][fF]|[fF])"""/,
+          end: /"""/,
+          contains: [
+            hljs.BACKSLASH_ESCAPE,
+            PROMPT,
+            LITERAL_BRACKET,
+            SUBST
+          ]
+        },
+        {
+          begin: /([uU]|[rR])'/,
+          end: /'/,
+          relevance: 10
+        },
+        {
+          begin: /([uU]|[rR])"/,
+          end: /"/,
+          relevance: 10
+        },
+        {
+          begin: /([bB]|[bB][rR]|[rR][bB])'/,
+          end: /'/
+        },
+        {
+          begin: /([bB]|[bB][rR]|[rR][bB])"/,
+          end: /"/
+        },
+        {
+          begin: /([fF][rR]|[rR][fF]|[fF])'/,
+          end: /'/,
+          contains: [
+            hljs.BACKSLASH_ESCAPE,
+            LITERAL_BRACKET,
+            SUBST
+          ]
+        },
+        {
+          begin: /([fF][rR]|[rR][fF]|[fF])"/,
+          end: /"/,
+          contains: [
+            hljs.BACKSLASH_ESCAPE,
+            LITERAL_BRACKET,
+            SUBST
+          ]
+        },
+        hljs.APOS_STRING_MODE,
+        hljs.QUOTE_STRING_MODE
+      ]
+    };
+    const digitpart = "[0-9](_?[0-9])*";
+    const pointfloat = `(\\b(${digitpart}))?\\.(${digitpart})|\\b(${digitpart})\\.`;
+    const lookahead = `\\b|${RESERVED_WORDS.join("|")}`;
+    const NUMBER = {
+      className: "number",
+      relevance: 0,
+      variants: [
+        // exponentfloat, pointfloat
+        // https://docs.python.org/3.9/reference/lexical_analysis.html#floating-point-literals
+        // optionally imaginary
+        // https://docs.python.org/3.9/reference/lexical_analysis.html#imaginary-literals
+        // Note: no leading \b because floats can start with a decimal point
+        // and we don't want to mishandle e.g. `fn(.5)`,
+        // no trailing \b for pointfloat because it can end with a decimal point
+        // and we don't want to mishandle e.g. `0..hex()`; this should be safe
+        // because both MUST contain a decimal point and so cannot be confused with
+        // the interior part of an identifier
+        {
+          begin: `(\\b(${digitpart})|(${pointfloat}))[eE][+-]?(${digitpart})[jJ]?(?=${lookahead})`
+        },
+        {
+          begin: `(${pointfloat})[jJ]?`
+        },
+        // decinteger, bininteger, octinteger, hexinteger
+        // https://docs.python.org/3.9/reference/lexical_analysis.html#integer-literals
+        // optionally "long" in Python 2
+        // https://docs.python.org/2.7/reference/lexical_analysis.html#integer-and-long-integer-literals
+        // decinteger is optionally imaginary
+        // https://docs.python.org/3.9/reference/lexical_analysis.html#imaginary-literals
+        {
+          begin: `\\b([1-9](_?[0-9])*|0+(_?0)*)[lLjJ]?(?=${lookahead})`
+        },
+        {
+          begin: `\\b0[bB](_?[01])+[lL]?(?=${lookahead})`
+        },
+        {
+          begin: `\\b0[oO](_?[0-7])+[lL]?(?=${lookahead})`
+        },
+        {
+          begin: `\\b0[xX](_?[0-9a-fA-F])+[lL]?(?=${lookahead})`
+        },
+        // imagnumber (digitpart-based)
+        // https://docs.python.org/3.9/reference/lexical_analysis.html#imaginary-literals
+        {
+          begin: `\\b(${digitpart})[jJ](?=${lookahead})`
+        }
+      ]
+    };
+    const COMMENT_TYPE = {
+      className: "comment",
+      begin: regex.lookahead(/# type:/),
+      end: /$/,
+      keywords: KEYWORDS,
+      contains: [
+        {
+          // prevent keywords from coloring `type`
+          begin: /# type:/
+        },
+        // comment within a datatype comment includes no keywords
+        {
+          begin: /#/,
+          end: /\b\B/,
+          endsWithParent: true
+        }
+      ]
+    };
+    const PARAMS = {
+      className: "params",
+      variants: [
+        // Exclude params in functions without params
+        {
+          className: "",
+          begin: /\(\s*\)/,
+          skip: true
+        },
+        {
+          begin: /\(/,
+          end: /\)/,
+          excludeBegin: true,
+          excludeEnd: true,
+          keywords: KEYWORDS,
+          contains: [
+            "self",
+            PROMPT,
+            NUMBER,
+            STRING,
+            hljs.HASH_COMMENT_MODE
+          ]
+        }
+      ]
+    };
+    SUBST.contains = [
+      STRING,
+      NUMBER,
+      PROMPT
+    ];
+    return {
+      name: "Python",
+      aliases: [
+        "py",
+        "gyp",
+        "ipython"
+      ],
+      unicodeRegex: true,
+      keywords: KEYWORDS,
+      illegal: /(<\/|\?)|=>/,
+      contains: [
+        PROMPT,
+        NUMBER,
+        {
+          // very common convention
+          scope: "variable.language",
+          match: /\bself\b/
+        },
+        {
+          // eat "if" prior to string so that it won't accidentally be
+          // labeled as an f-string
+          beginKeywords: "if",
+          relevance: 0
+        },
+        { match: /\bor\b/, scope: "keyword" },
+        STRING,
+        COMMENT_TYPE,
+        hljs.HASH_COMMENT_MODE,
+        {
+          match: [
+            /\bdef/,
+            /\s+/,
+            IDENT_RE
+          ],
+          scope: {
+            1: "keyword",
+            3: "title.function"
+          },
+          contains: [PARAMS]
+        },
+        {
+          variants: [
+            {
+              match: [
+                /\bclass/,
+                /\s+/,
+                IDENT_RE,
+                /\s*/,
+                /\(\s*/,
+                IDENT_RE,
+                /\s*\)/
+              ]
+            },
+            {
+              match: [
+                /\bclass/,
+                /\s+/,
+                IDENT_RE
+              ]
+            }
+          ],
+          scope: {
+            1: "keyword",
+            3: "title.class",
+            6: "title.class.inherited"
+          }
+        },
+        {
+          className: "meta",
+          begin: /^[\t ]*@/,
+          end: /(?=#)|$/,
+          contains: [
+            NUMBER,
+            PARAMS,
+            STRING
+          ]
+        }
+      ]
+    };
+  }
+  var init_python = __esm({
+    "node_modules/highlight.js/es/languages/python.js"() {
+    }
+  });
+
   // src/cookie.ts
   var setItem, getItem, getAll;
   var init_cookie = __esm({
@@ -21487,11 +23987,20 @@
   });
 
   // src/utils.ts
-  var react, ce, allowedHeaders, Dict, LocalStorage, Endpoint, Header, Parameter, parameterInput, TextParam, IntParam, FloatParam, VoidParam, SelectorParam, BoolParam, FileParam, StructParam, UnionParam, RootUnionParam, ListParam, csrfTokenStorageName, tokenStorageName, clientIdStorageName, getAuthType, createCsrfToken, checkCsrfToken, getHashDict, putToken, getToken, putClientId, getClientId, getEndpoint, initialValues, getDownloadName, currentURL, strippedCurrentURL, arrayBufToString, isJson, prettyJson, errorHandler, escapeUnicode, Highlight, RPCLikeHeaders, uploadLikeHeaders, downloadLikeHeaders, getHeaders;
+  var react, ce, allowedHeaders, Dict, LocalStorage, Endpoint, Header, Parameter, parameterInput, TextParam, IntParam, FloatParam, VoidParam, SelectorParam, BoolParam, FileParam, StructParam, UnionParam, RootUnionParam, ListParam, csrfTokenStorageName, tokenStorageName, clientIdStorageName, getAuthType, createCsrfToken, checkCsrfToken, getHashDict, putToken, getToken, putClientId, getClientId, getEndpoint, initialValues, getDownloadName, currentURL, strippedCurrentURL, arrayBufToString, isJson, prettyJson, errorHandler, escapeUnicode, reactNodeToText, Highlight, RPCLikeHeaders, uploadLikeHeaders, downloadLikeHeaders, getHeaders;
   var init_utils = __esm({
     "src/utils.ts"() {
       react = __toESM(require_react());
+      init_core();
+      init_bash();
+      init_http();
+      init_json();
+      init_python();
       init_cookie();
+      core_default.registerLanguage("bash", bash);
+      core_default.registerLanguage("http", http);
+      core_default.registerLanguage("json", json);
+      core_default.registerLanguage("python", python);
       ce = react.createElement;
       allowedHeaders = [
         "Dropbox-Api-Select-User",
@@ -21908,29 +24417,29 @@
         /[\u007f-\uffff]/g,
         (c) => `\\u${`0000${c.charCodeAt(0).toString(16)}`.slice(-4)}`
       );
-      Highlight = class extends react.Component {
-        constructor() {
-          super(...arguments);
-          this.defaultProps = { className: "" };
+      reactNodeToText = (node) => {
+        if (typeof node === "string" || typeof node === "number") {
+          return String(node);
         }
-        // TODO: fix this highlighting it breaks updates
-        // componentDidMount = () => this.highlightCode();
-        // componentDidUpdate = () => this.highlightCode();
-        // highlightCode = () => [].forEach.call(
-        //     (<Element>reactDom.findDOMNode(this)).querySelectorAll('pre code'),
-        //         (node: Node) => hljs.highlightBlock(node)
-        // );
-        render() {
-          return react.createElement(
-            "pre",
-            { className: this.props.className },
-            react.createElement(
-              "code",
-              { className: this.props.className },
-              this.props.children
-            )
-          );
+        if (Array.isArray(node)) {
+          return node.map(reactNodeToText).join("");
         }
+        if (react.isValidElement(node)) {
+          return reactNodeToText(node.props.children);
+        }
+        return "";
+      };
+      Highlight = ({ className = "", children }) => {
+        const source = reactNodeToText(children);
+        const highlighted = className === "" ? core_default.highlightAuto(source) : core_default.highlight(source, { language: className, ignoreIllegals: true });
+        return react.createElement(
+          "pre",
+          { className: "hljs" },
+          react.createElement("code", {
+            className: className === "" ? void 0 : `language-${className}`,
+            dangerouslySetInnerHTML: { __html: highlighted.value }
+          })
+        );
       };
       RPCLikeHeaders = (token, authType) => {
         const toReturn = {};
