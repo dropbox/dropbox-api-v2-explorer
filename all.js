@@ -26123,7 +26123,7 @@
       null,
       `POST ${endpt.getPathName()}
 `,
-      `Host: https://${endpt.getHostname()}
+      `Host: ${endpt.getHostname()}
 `,
       "User-Agent: api-explorer-client\n",
       Dict.map(headers, (key, value) => ce2(
