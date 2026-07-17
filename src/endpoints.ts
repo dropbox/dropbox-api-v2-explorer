@@ -3,6 +3,34 @@
 import * as Utils from './utils';
 
 namespace Endpoints {
+    const account_delete_profile_photo_endpt = new Utils.Endpoint("account", "delete_profile_photo",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "account_info.write",
+            is_cloud_doc_auth: "False",
+        }
+    );
+    const account_get_photo_endpt = new Utils.Endpoint("account", "get_photo",
+        {
+            auth: "user",
+            host: "content",
+            style: "download",
+            is_preview: "False",
+            allow_app_folder_app: "True",
+            select_admin_mode: "whole_team",
+            scope: "account_info.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("dbx_account_id", false),
+        new Utils.TextParam("size", false),
+        new Utils.BoolParam("circle_crop", false),
+        new Utils.BoolParam("expect_account_photo", false)
+    );
     const account_set_profile_photo_endpt = new Utils.Endpoint("account", "set_profile_photo",
         {
             auth: "user",
@@ -15,20 +43,6 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.UnionParam("photo", false, [new Utils.TextParam("base64_data", false)])
-    );
-    const auth_token_from_oauth1_endpt = new Utils.Endpoint("auth", "token/from_oauth1",
-        {
-            auth: "app",
-            host: "api",
-            style: "rpc",
-            is_preview: "False",
-            allow_app_folder_app: "True",
-            select_admin_mode: "None",
-            scope: "None",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("oauth1_token", false),
-        new Utils.TextParam("oauth1_token_secret", false)
     );
     const auth_token_revoke_endpt = new Utils.Endpoint("auth", "token/revoke",
         {
@@ -341,7 +355,8 @@ namespace Endpoints {
         new Utils.TextParam("destination", false),
         new Utils.StructParam("deadline", true, [new Utils.TextParam("deadline", false), new Utils.UnionParam("allow_late_uploads", true, [new Utils.VoidParam("one_day"), new Utils.VoidParam("two_days"), new Utils.VoidParam("seven_days"), new Utils.VoidParam("thirty_days"), new Utils.VoidParam("always")])]),
         new Utils.BoolParam("open", true),
-        new Utils.TextParam("description", true)
+        new Utils.TextParam("description", true),
+        new Utils.TextParam("video_project_id", true)
     );
     const file_requests_delete_endpt = new Utils.Endpoint("file_requests", "delete",
         {
@@ -398,7 +413,7 @@ namespace Endpoints {
             auth: "user",
             host: "api",
             style: "rpc",
-            is_preview: "True",
+            is_preview: "False",
             allow_app_folder_app: "True",
             select_admin_mode: "None",
             scope: "file_requests.read",
@@ -411,7 +426,7 @@ namespace Endpoints {
             auth: "user",
             host: "api",
             style: "rpc",
-            is_preview: "True",
+            is_preview: "False",
             allow_app_folder_app: "True",
             select_admin_mode: "None",
             scope: "file_requests.read",
@@ -714,9 +729,11 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("path", false),
-        new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]),
-        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]),
-        new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit")])
+        new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]),
+        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]),
+        new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]),
+        new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]),
+        new Utils.BoolParam("exclude_media_info", true)
     );
     const files_get_thumbnail_v2_endpt = new Utils.Endpoint("files", "get_thumbnail_v2",
         {
@@ -730,9 +747,11 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.UnionParam("resource", false, [new Utils.TextParam("path", false), new Utils.StructParam("link", false, [new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("password", true)])]),
-        new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]),
-        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]),
-        new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit")])
+        new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]),
+        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]),
+        new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]),
+        new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]),
+        new Utils.BoolParam("exclude_media_info", true)
     );
     const files_get_thumbnail_batch_endpt = new Utils.Endpoint("files", "get_thumbnail_batch",
         {
@@ -745,7 +764,7 @@ namespace Endpoints {
             scope: "files.content.read",
             is_cloud_doc_auth: "False",
         },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit")])]))
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]), new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]), new Utils.BoolParam("exclude_media_info", true)]))
     );
     const files_list_folder_endpt = new Utils.Endpoint("files", "list_folder",
         {
@@ -767,7 +786,8 @@ namespace Endpoints {
         new Utils.IntParam("limit", true),
         new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]),
         new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))]),
-        new Utils.BoolParam("include_non_downloadable_files", true)
+        new Utils.BoolParam("include_non_downloadable_files", true),
+        new Utils.BoolParam("include_restorable_info", true)
     );
     const files_list_folder_continue_endpt = new Utils.Endpoint("files", "list_folder/continue",
         {
@@ -802,7 +822,8 @@ namespace Endpoints {
         new Utils.IntParam("limit", true),
         new Utils.StructParam("shared_link", true, [new Utils.TextParam("url", false), new Utils.TextParam("password", true)]),
         new Utils.UnionParam("include_property_groups", true, [new Utils.ListParam("filter_some", false, (index: string): Utils.Parameter => new Utils.TextParam(index, false))]),
-        new Utils.BoolParam("include_non_downloadable_files", true)
+        new Utils.BoolParam("include_non_downloadable_files", true),
+        new Utils.BoolParam("include_restorable_info", true)
     );
     const files_list_folder_longpoll_endpt = new Utils.Endpoint("files", "list_folder/longpoll",
         {
@@ -831,7 +852,9 @@ namespace Endpoints {
         },
         new Utils.TextParam("path", false),
         new Utils.UnionParam("mode", true, [new Utils.VoidParam("path"), new Utils.VoidParam("id")]),
-        new Utils.IntParam("limit", true)
+        new Utils.IntParam("limit", true),
+        new Utils.TextParam("before_rev", true),
+        new Utils.BoolParam("include_restorable_info", true)
     );
     const files_lock_file_batch_endpt = new Utils.Endpoint("files", "lock_file_batch",
         {
@@ -1098,6 +1121,21 @@ namespace Endpoints {
         new Utils.BoolParam("close", true),
         new Utils.TextParam("content_hash", true)
     );
+    const files_upload_session_append_batch_endpt = new Utils.Endpoint("files", "upload_session/append_batch",
+        {
+            auth: "user",
+            host: "content",
+            style: "upload",
+            is_preview: "False",
+            allow_app_folder_app: "True",
+            select_admin_mode: "team_admin",
+            scope: "files.content.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.FileParam(),
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.StructParam("cursor", false, [new Utils.TextParam("session_id", false), new Utils.IntParam("offset", false)]), new Utils.IntParam("length", false), new Utils.BoolParam("close", true)])),
+        new Utils.TextParam("content_hash", true)
+    );
     const files_upload_session_finish_endpt = new Utils.Endpoint("files", "upload_session/finish",
         {
             auth: "user",
@@ -1182,6 +1220,103 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         }
     );
+    const paper_docs_get_metadata_endpt = new Utils.Endpoint("paper", "docs/get_metadata",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.metadata.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("doc_id", true),
+        new Utils.TextParam("file_id", true)
+    );
+    const riviera_get_markdown_async_endpt = new Utils.Endpoint("riviera", "get_markdown_async",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)]),
+        new Utils.BoolParam("enable_ocr", true),
+        new Utils.BoolParam("embed_images", true)
+    );
+    const riviera_get_markdown_async_check_endpt = new Utils.Endpoint("riviera", "get_markdown_async/check",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const riviera_get_metadata_async_endpt = new Utils.Endpoint("riviera", "get_metadata_async",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)])
+    );
+    const riviera_get_metadata_async_check_endpt = new Utils.Endpoint("riviera", "get_metadata_async/check",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const riviera_get_transcript_async_endpt = new Utils.Endpoint("riviera", "get_transcript_async",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)]),
+        new Utils.UnionParam("timestamp_level", true, [new Utils.VoidParam("unknown"), new Utils.VoidParam("sentence"), new Utils.VoidParam("word")]),
+        new Utils.TextParam("included_special_words", true),
+        new Utils.TextParam("audio_language", true)
+    );
+    const riviera_get_transcript_async_check_endpt = new Utils.Endpoint("riviera", "get_transcript_async/check",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
     const sharing_add_file_member_endpt = new Utils.Endpoint("sharing", "add_file_member",
         {
             auth: "user",
@@ -1197,8 +1332,9 @@ namespace Endpoints {
         new Utils.ListParam("members", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)])),
         new Utils.TextParam("custom_message", true),
         new Utils.BoolParam("quiet", true),
-        new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse")]),
-        new Utils.BoolParam("add_message_as_comment", true)
+        new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")]),
+        new Utils.BoolParam("add_message_as_comment", true),
+        new Utils.TextParam("fp_sealed_result", true)
     );
     const sharing_add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member",
         {
@@ -1212,9 +1348,10 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("shared_folder_id", false),
-        new Utils.ListParam("members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse")])])),
+        new Utils.ListParam("members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")])])),
         new Utils.BoolParam("quiet", true),
-        new Utils.TextParam("custom_message", true)
+        new Utils.TextParam("custom_message", true),
+        new Utils.TextParam("fp_sealed_result", true)
     );
     const sharing_check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status",
         {
@@ -1290,7 +1427,7 @@ namespace Endpoints {
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "None",
+            select_admin_mode: "team_admin",
             scope: "sharing.read",
             is_cloud_doc_auth: "False",
         },
@@ -1309,11 +1446,11 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("shared_folder_id", false),
-        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")]))
+        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("create_view_link"), new Utils.VoidParam("create_edit_link"), new Utils.VoidParam("set_access_inheritance")]))
     );
     const sharing_get_shared_link_file_endpt = new Utils.Endpoint("sharing", "get_shared_link_file",
         {
-            auth: "user",
+            auth: "app, user",
             host: "content",
             style: "download",
             is_preview: "False",
@@ -1348,7 +1485,7 @@ namespace Endpoints {
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "team_admin",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False",
         },
@@ -1364,7 +1501,7 @@ namespace Endpoints {
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "None",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False",
         },
@@ -1378,7 +1515,7 @@ namespace Endpoints {
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "False",
-            select_admin_mode: "None",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False",
         },
@@ -1397,7 +1534,8 @@ namespace Endpoints {
         },
         new Utils.TextParam("shared_folder_id", false),
         new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("make_editor"), new Utils.VoidParam("make_owner"), new Utils.VoidParam("make_viewer"), new Utils.VoidParam("make_viewer_no_comment"), new Utils.VoidParam("remove")])),
-        new Utils.IntParam("limit", true)
+        new Utils.IntParam("limit", true),
+        new Utils.TextParam("path", true)
     );
     const sharing_list_folder_members_continue_endpt = new Utils.Endpoint("sharing", "list_folder_members/continue",
         {
@@ -1424,7 +1562,7 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.IntParam("limit", true),
-        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")]))
+        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("create_view_link"), new Utils.VoidParam("create_edit_link"), new Utils.VoidParam("set_access_inheritance")]))
     );
     const sharing_list_folders_continue_endpt = new Utils.Endpoint("sharing", "list_folders/continue",
         {
@@ -1451,7 +1589,7 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.IntParam("limit", true),
-        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")]))
+        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("create_view_link"), new Utils.VoidParam("create_edit_link"), new Utils.VoidParam("set_access_inheritance")]))
     );
     const sharing_list_mountable_folders_continue_endpt = new Utils.Endpoint("sharing", "list_mountable_folders/continue",
         {
@@ -1500,7 +1638,7 @@ namespace Endpoints {
             style: "rpc",
             is_preview: "False",
             allow_app_folder_app: "True",
-            select_admin_mode: "None",
+            select_admin_mode: "whole_team",
             scope: "sharing.read",
             is_cloud_doc_auth: "False",
         },
@@ -1535,6 +1673,19 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("shared_folder_id", false)
+    );
+    const sharing_relinquish_access_endpt = new Utils.Endpoint("sharing", "relinquish_access",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "True",
+            select_admin_mode: "whole_team",
+            scope: "private:sharing.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("file_id", false)
     );
     const sharing_relinquish_file_membership_endpt = new Utils.Endpoint("sharing", "relinquish_file_membership",
         {
@@ -1633,12 +1784,12 @@ namespace Endpoints {
         new Utils.TextParam("path", false),
         new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors")]),
         new Utils.BoolParam("force_async", true),
-        new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone")]),
+        new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("team_and_approved")]),
         new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members")]),
         new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled")]),
         new Utils.UnionParam("access_inheritance", true, [new Utils.VoidParam("inherit"), new Utils.VoidParam("no_inherit")]),
-        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")])),
-        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])])
+        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("create_view_link"), new Utils.VoidParam("create_edit_link"), new Utils.VoidParam("set_access_inheritance")])),
+        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])])
     );
     const sharing_transfer_folder_endpt = new Utils.Endpoint("sharing", "transfer_folder",
         {
@@ -1707,7 +1858,23 @@ namespace Endpoints {
         },
         new Utils.TextParam("file", false),
         new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)]),
-        new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse")])
+        new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")])
+    );
+    const sharing_update_file_policy_endpt = new Utils.Endpoint("sharing", "update_file_policy",
+        {
+            auth: "user",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "sharing.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("file", false),
+        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("unshare"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("create_view_link"), new Utils.VoidParam("create_edit_link")])),
+        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])]),
+        new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled")])
     );
     const sharing_update_folder_member_endpt = new Utils.Endpoint("sharing", "update_folder_member",
         {
@@ -1722,7 +1889,7 @@ namespace Endpoints {
         },
         new Utils.TextParam("shared_folder_id", false),
         new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)]),
-        new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse")])
+        new Utils.UnionParam("access_level", false, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")])
     );
     const sharing_update_folder_policy_endpt = new Utils.Endpoint("sharing", "update_folder_policy",
         {
@@ -1736,12 +1903,12 @@ namespace Endpoints {
             is_cloud_doc_auth: "False",
         },
         new Utils.TextParam("shared_folder_id", false),
-        new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone")]),
+        new Utils.UnionParam("member_policy", true, [new Utils.VoidParam("team"), new Utils.VoidParam("anyone"), new Utils.VoidParam("team_and_approved")]),
         new Utils.UnionParam("acl_update_policy", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editors")]),
         new Utils.UnionParam("viewer_info_policy", true, [new Utils.VoidParam("enabled"), new Utils.VoidParam("disabled")]),
         new Utils.UnionParam("shared_link_policy", true, [new Utils.VoidParam("anyone"), new Utils.VoidParam("team"), new Utils.VoidParam("members")]),
-        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])]),
-        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("set_access_inheritance")]))
+        new Utils.StructParam("link_settings", true, [new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")]), new Utils.UnionParam("audience", true, [new Utils.VoidParam("public"), new Utils.VoidParam("team"), new Utils.VoidParam("no_one"), new Utils.VoidParam("password"), new Utils.VoidParam("members")]), new Utils.UnionParam("expiry", true, [new Utils.VoidParam("remove_expiry"), new Utils.TextParam("set_expiry", false)]), new Utils.UnionParam("password", true, [new Utils.VoidParam("remove_password"), new Utils.TextParam("set_password", false)])]),
+        new Utils.ListParam("actions", true, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("change_options"), new Utils.VoidParam("disable_viewer_info"), new Utils.VoidParam("edit_contents"), new Utils.VoidParam("enable_viewer_info"), new Utils.VoidParam("invite_editor"), new Utils.VoidParam("invite_viewer"), new Utils.VoidParam("invite_viewer_no_comment"), new Utils.VoidParam("relinquish_membership"), new Utils.VoidParam("unmount"), new Utils.VoidParam("unshare"), new Utils.VoidParam("leave_a_copy"), new Utils.VoidParam("share_link"), new Utils.VoidParam("create_link"), new Utils.VoidParam("create_view_link"), new Utils.VoidParam("create_edit_link"), new Utils.VoidParam("set_access_inheritance")]))
     );
     const team_devices_list_member_devices_endpt = new Utils.Endpoint("team", "devices/list_member_devices",
         {
@@ -1812,7 +1979,7 @@ namespace Endpoints {
             scope: "team_info.read",
             is_cloud_doc_auth: "False",
         },
-        new Utils.ListParam("features", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("upload_api_rate_limit"), new Utils.VoidParam("has_team_shared_dropbox"), new Utils.VoidParam("has_team_file_events"), new Utils.VoidParam("has_team_selective_sync")]))
+        new Utils.ListParam("features", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("upload_api_rate_limit"), new Utils.VoidParam("has_team_shared_dropbox"), new Utils.VoidParam("has_team_file_events"), new Utils.VoidParam("has_team_selective_sync"), new Utils.VoidParam("has_distinct_member_homes")]))
     );
     const team_get_info_endpt = new Utils.Endpoint("team", "get_info",
         {
@@ -2295,6 +2462,19 @@ namespace Endpoints {
         },
         new Utils.TextParam("async_job_id", false)
     );
+    const team_members_delete_former_member_files_endpt = new Utils.Endpoint("team", "members/delete_former_member_files",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "False",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "members.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("user", false, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)])
+    );
     const team_members_delete_profile_photo_endpt = new Utils.Endpoint("team", "members/delete_profile_photo",
         {
             auth: "team",
@@ -2470,7 +2650,8 @@ namespace Endpoints {
         new Utils.UnionParam("transfer_dest_id", true, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
         new Utils.UnionParam("transfer_admin_id", true, [new Utils.TextParam("team_member_id", false), new Utils.TextParam("external_id", false), new Utils.TextParam("email", false)]),
         new Utils.BoolParam("keep_account", true),
-        new Utils.BoolParam("retain_team_shares", true)
+        new Utils.BoolParam("retain_team_shares", true),
+        new Utils.BoolParam("permanently_delete_files", true)
     );
     const team_members_remove_job_status_get_endpt = new Utils.Endpoint("team", "members/remove/job_status/get",
         {
@@ -2858,6 +3039,19 @@ namespace Endpoints {
         new Utils.TextParam("team_folder_id", false),
         new Utils.TextParam("name", false)
     );
+    const team_team_folder_restore_endpt = new Utils.Endpoint("team", "team_folder/restore",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "team_data.content.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("team_folder_id", false)
+    );
     const team_team_folder_update_sync_settings_endpt = new Utils.Endpoint("team", "team_folder/update_sync_settings",
         {
             auth: "team",
@@ -2899,8 +3093,8 @@ namespace Endpoints {
         new Utils.IntParam("limit", true),
         new Utils.TextParam("account_id", true),
         new Utils.StructParam("time", true, [new Utils.TextParam("start_time", true), new Utils.TextParam("end_time", true)]),
-        new Utils.UnionParam("category", true, [new Utils.VoidParam("admin_alerting"), new Utils.VoidParam("apps"), new Utils.VoidParam("comments"), new Utils.VoidParam("data_governance"), new Utils.VoidParam("devices"), new Utils.VoidParam("domains"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("reports"), new Utils.VoidParam("sharing"), new Utils.VoidParam("showcase"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa"), new Utils.VoidParam("trusted_teams")]),
-        new Utils.UnionParam("event_type", true, [new Utils.VoidParam("admin_alerting_alert_state_changed"), new Utils.VoidParam("admin_alerting_changed_alert_config"), new Utils.VoidParam("admin_alerting_triggered_alert"), new Utils.VoidParam("app_blocked_by_permissions"), new Utils.VoidParam("app_link_team"), new Utils.VoidParam("app_link_user"), new Utils.VoidParam("app_unlink_team"), new Utils.VoidParam("app_unlink_user"), new Utils.VoidParam("integration_connected"), new Utils.VoidParam("integration_disconnected"), new Utils.VoidParam("file_add_comment"), new Utils.VoidParam("file_change_comment_subscription"), new Utils.VoidParam("file_delete_comment"), new Utils.VoidParam("file_edit_comment"), new Utils.VoidParam("file_like_comment"), new Utils.VoidParam("file_resolve_comment"), new Utils.VoidParam("file_unlike_comment"), new Utils.VoidParam("file_unresolve_comment"), new Utils.VoidParam("governance_policy_add_folders"), new Utils.VoidParam("governance_policy_add_folder_failed"), new Utils.VoidParam("governance_policy_content_disposed"), new Utils.VoidParam("governance_policy_create"), new Utils.VoidParam("governance_policy_delete"), new Utils.VoidParam("governance_policy_edit_details"), new Utils.VoidParam("governance_policy_edit_duration"), new Utils.VoidParam("governance_policy_export_created"), new Utils.VoidParam("governance_policy_export_removed"), new Utils.VoidParam("governance_policy_remove_folders"), new Utils.VoidParam("governance_policy_report_created"), new Utils.VoidParam("governance_policy_zip_part_downloaded"), new Utils.VoidParam("legal_holds_activate_a_hold"), new Utils.VoidParam("legal_holds_add_members"), new Utils.VoidParam("legal_holds_change_hold_details"), new Utils.VoidParam("legal_holds_change_hold_name"), new Utils.VoidParam("legal_holds_export_a_hold"), new Utils.VoidParam("legal_holds_export_cancelled"), new Utils.VoidParam("legal_holds_export_downloaded"), new Utils.VoidParam("legal_holds_export_removed"), new Utils.VoidParam("legal_holds_release_a_hold"), new Utils.VoidParam("legal_holds_remove_members"), new Utils.VoidParam("legal_holds_report_a_hold"), new Utils.VoidParam("device_change_ip_desktop"), new Utils.VoidParam("device_change_ip_mobile"), new Utils.VoidParam("device_change_ip_web"), new Utils.VoidParam("device_delete_on_unlink_fail"), new Utils.VoidParam("device_delete_on_unlink_success"), new Utils.VoidParam("device_link_fail"), new Utils.VoidParam("device_link_success"), new Utils.VoidParam("device_management_disabled"), new Utils.VoidParam("device_management_enabled"), new Utils.VoidParam("device_sync_backup_status_changed"), new Utils.VoidParam("device_unlink"), new Utils.VoidParam("dropbox_passwords_exported"), new Utils.VoidParam("dropbox_passwords_new_device_enrolled"), new Utils.VoidParam("emm_refresh_auth_token"), new Utils.VoidParam("external_drive_backup_eligibility_status_checked"), new Utils.VoidParam("external_drive_backup_status_changed"), new Utils.VoidParam("account_capture_change_availability"), new Utils.VoidParam("account_capture_migrate_account"), new Utils.VoidParam("account_capture_notification_emails_sent"), new Utils.VoidParam("account_capture_relinquish_account"), new Utils.VoidParam("disabled_domain_invites"), new Utils.VoidParam("domain_invites_approve_request_to_join_team"), new Utils.VoidParam("domain_invites_decline_request_to_join_team"), new Utils.VoidParam("domain_invites_email_existing_users"), new Utils.VoidParam("domain_invites_request_to_join_team"), new Utils.VoidParam("domain_invites_set_invite_new_user_pref_to_no"), new Utils.VoidParam("domain_invites_set_invite_new_user_pref_to_yes"), new Utils.VoidParam("domain_verification_add_domain_fail"), new Utils.VoidParam("domain_verification_add_domain_success"), new Utils.VoidParam("domain_verification_remove_domain"), new Utils.VoidParam("enabled_domain_invites"), new Utils.VoidParam("apply_naming_convention"), new Utils.VoidParam("create_folder"), new Utils.VoidParam("file_add"), new Utils.VoidParam("file_copy"), new Utils.VoidParam("file_delete"), new Utils.VoidParam("file_download"), new Utils.VoidParam("file_edit"), new Utils.VoidParam("file_get_copy_reference"), new Utils.VoidParam("file_locking_lock_status_changed"), new Utils.VoidParam("file_move"), new Utils.VoidParam("file_permanently_delete"), new Utils.VoidParam("file_preview"), new Utils.VoidParam("file_rename"), new Utils.VoidParam("file_restore"), new Utils.VoidParam("file_revert"), new Utils.VoidParam("file_rollback_changes"), new Utils.VoidParam("file_save_copy_reference"), new Utils.VoidParam("folder_overview_description_changed"), new Utils.VoidParam("folder_overview_item_pinned"), new Utils.VoidParam("folder_overview_item_unpinned"), new Utils.VoidParam("object_label_added"), new Utils.VoidParam("object_label_removed"), new Utils.VoidParam("object_label_updated_value"), new Utils.VoidParam("organize_folder_with_tidy"), new Utils.VoidParam("rewind_folder"), new Utils.VoidParam("undo_naming_convention"), new Utils.VoidParam("undo_organize_folder_with_tidy"), new Utils.VoidParam("user_tags_added"), new Utils.VoidParam("user_tags_removed"), new Utils.VoidParam("email_ingest_receive_file"), new Utils.VoidParam("file_request_change"), new Utils.VoidParam("file_request_close"), new Utils.VoidParam("file_request_create"), new Utils.VoidParam("file_request_delete"), new Utils.VoidParam("file_request_receive_file"), new Utils.VoidParam("group_add_external_id"), new Utils.VoidParam("group_add_member"), new Utils.VoidParam("group_change_external_id"), new Utils.VoidParam("group_change_management_type"), new Utils.VoidParam("group_change_member_role"), new Utils.VoidParam("group_create"), new Utils.VoidParam("group_delete"), new Utils.VoidParam("group_description_updated"), new Utils.VoidParam("group_join_policy_updated"), new Utils.VoidParam("group_moved"), new Utils.VoidParam("group_remove_external_id"), new Utils.VoidParam("group_remove_member"), new Utils.VoidParam("group_rename"), new Utils.VoidParam("account_lock_or_unlocked"), new Utils.VoidParam("emm_error"), new Utils.VoidParam("guest_admin_signed_in_via_trusted_teams"), new Utils.VoidParam("guest_admin_signed_out_via_trusted_teams"), new Utils.VoidParam("login_fail"), new Utils.VoidParam("login_success"), new Utils.VoidParam("logout"), new Utils.VoidParam("reseller_support_session_end"), new Utils.VoidParam("reseller_support_session_start"), new Utils.VoidParam("sign_in_as_session_end"), new Utils.VoidParam("sign_in_as_session_start"), new Utils.VoidParam("sso_error"), new Utils.VoidParam("create_team_invite_link"), new Utils.VoidParam("delete_team_invite_link"), new Utils.VoidParam("member_add_external_id"), new Utils.VoidParam("member_add_name"), new Utils.VoidParam("member_change_admin_role"), new Utils.VoidParam("member_change_email"), new Utils.VoidParam("member_change_external_id"), new Utils.VoidParam("member_change_membership_type"), new Utils.VoidParam("member_change_name"), new Utils.VoidParam("member_change_reseller_role"), new Utils.VoidParam("member_change_status"), new Utils.VoidParam("member_delete_manual_contacts"), new Utils.VoidParam("member_delete_profile_photo"), new Utils.VoidParam("member_permanently_delete_account_contents"), new Utils.VoidParam("member_remove_external_id"), new Utils.VoidParam("member_set_profile_photo"), new Utils.VoidParam("member_space_limits_add_custom_quota"), new Utils.VoidParam("member_space_limits_change_custom_quota"), new Utils.VoidParam("member_space_limits_change_status"), new Utils.VoidParam("member_space_limits_remove_custom_quota"), new Utils.VoidParam("member_suggest"), new Utils.VoidParam("member_transfer_account_contents"), new Utils.VoidParam("pending_secondary_email_added"), new Utils.VoidParam("secondary_email_deleted"), new Utils.VoidParam("secondary_email_verified"), new Utils.VoidParam("secondary_mails_policy_changed"), new Utils.VoidParam("binder_add_page"), new Utils.VoidParam("binder_add_section"), new Utils.VoidParam("binder_remove_page"), new Utils.VoidParam("binder_remove_section"), new Utils.VoidParam("binder_rename_page"), new Utils.VoidParam("binder_rename_section"), new Utils.VoidParam("binder_reorder_page"), new Utils.VoidParam("binder_reorder_section"), new Utils.VoidParam("paper_content_add_member"), new Utils.VoidParam("paper_content_add_to_folder"), new Utils.VoidParam("paper_content_archive"), new Utils.VoidParam("paper_content_create"), new Utils.VoidParam("paper_content_permanently_delete"), new Utils.VoidParam("paper_content_remove_from_folder"), new Utils.VoidParam("paper_content_remove_member"), new Utils.VoidParam("paper_content_rename"), new Utils.VoidParam("paper_content_restore"), new Utils.VoidParam("paper_doc_add_comment"), new Utils.VoidParam("paper_doc_change_member_role"), new Utils.VoidParam("paper_doc_change_sharing_policy"), new Utils.VoidParam("paper_doc_change_subscription"), new Utils.VoidParam("paper_doc_deleted"), new Utils.VoidParam("paper_doc_delete_comment"), new Utils.VoidParam("paper_doc_download"), new Utils.VoidParam("paper_doc_edit"), new Utils.VoidParam("paper_doc_edit_comment"), new Utils.VoidParam("paper_doc_followed"), new Utils.VoidParam("paper_doc_mention"), new Utils.VoidParam("paper_doc_ownership_changed"), new Utils.VoidParam("paper_doc_request_access"), new Utils.VoidParam("paper_doc_resolve_comment"), new Utils.VoidParam("paper_doc_revert"), new Utils.VoidParam("paper_doc_slack_share"), new Utils.VoidParam("paper_doc_team_invite"), new Utils.VoidParam("paper_doc_trashed"), new Utils.VoidParam("paper_doc_unresolve_comment"), new Utils.VoidParam("paper_doc_untrashed"), new Utils.VoidParam("paper_doc_view"), new Utils.VoidParam("paper_external_view_allow"), new Utils.VoidParam("paper_external_view_default_team"), new Utils.VoidParam("paper_external_view_forbid"), new Utils.VoidParam("paper_folder_change_subscription"), new Utils.VoidParam("paper_folder_deleted"), new Utils.VoidParam("paper_folder_followed"), new Utils.VoidParam("paper_folder_team_invite"), new Utils.VoidParam("paper_published_link_change_permission"), new Utils.VoidParam("paper_published_link_create"), new Utils.VoidParam("paper_published_link_disabled"), new Utils.VoidParam("paper_published_link_view"), new Utils.VoidParam("password_change"), new Utils.VoidParam("password_reset"), new Utils.VoidParam("password_reset_all"), new Utils.VoidParam("classification_create_report"), new Utils.VoidParam("classification_create_report_fail"), new Utils.VoidParam("emm_create_exceptions_report"), new Utils.VoidParam("emm_create_usage_report"), new Utils.VoidParam("export_members_report"), new Utils.VoidParam("export_members_report_fail"), new Utils.VoidParam("external_sharing_create_report"), new Utils.VoidParam("external_sharing_report_failed"), new Utils.VoidParam("no_expiration_link_gen_create_report"), new Utils.VoidParam("no_expiration_link_gen_report_failed"), new Utils.VoidParam("no_password_link_gen_create_report"), new Utils.VoidParam("no_password_link_gen_report_failed"), new Utils.VoidParam("no_password_link_view_create_report"), new Utils.VoidParam("no_password_link_view_report_failed"), new Utils.VoidParam("outdated_link_view_create_report"), new Utils.VoidParam("outdated_link_view_report_failed"), new Utils.VoidParam("paper_admin_export_start"), new Utils.VoidParam("smart_sync_create_admin_privilege_report"), new Utils.VoidParam("team_activity_create_report"), new Utils.VoidParam("team_activity_create_report_fail"), new Utils.VoidParam("collection_share"), new Utils.VoidParam("file_transfers_file_add"), new Utils.VoidParam("file_transfers_transfer_delete"), new Utils.VoidParam("file_transfers_transfer_download"), new Utils.VoidParam("file_transfers_transfer_send"), new Utils.VoidParam("file_transfers_transfer_view"), new Utils.VoidParam("note_acl_invite_only"), new Utils.VoidParam("note_acl_link"), new Utils.VoidParam("note_acl_team_link"), new Utils.VoidParam("note_shared"), new Utils.VoidParam("note_share_receive"), new Utils.VoidParam("open_note_shared"), new Utils.VoidParam("sf_add_group"), new Utils.VoidParam("sf_allow_non_members_to_view_shared_links"), new Utils.VoidParam("sf_external_invite_warn"), new Utils.VoidParam("sf_fb_invite"), new Utils.VoidParam("sf_fb_invite_change_role"), new Utils.VoidParam("sf_fb_uninvite"), new Utils.VoidParam("sf_invite_group"), new Utils.VoidParam("sf_team_grant_access"), new Utils.VoidParam("sf_team_invite"), new Utils.VoidParam("sf_team_invite_change_role"), new Utils.VoidParam("sf_team_join"), new Utils.VoidParam("sf_team_join_from_oob_link"), new Utils.VoidParam("sf_team_uninvite"), new Utils.VoidParam("shared_content_add_invitees"), new Utils.VoidParam("shared_content_add_link_expiry"), new Utils.VoidParam("shared_content_add_link_password"), new Utils.VoidParam("shared_content_add_member"), new Utils.VoidParam("shared_content_change_downloads_policy"), new Utils.VoidParam("shared_content_change_invitee_role"), new Utils.VoidParam("shared_content_change_link_audience"), new Utils.VoidParam("shared_content_change_link_expiry"), new Utils.VoidParam("shared_content_change_link_password"), new Utils.VoidParam("shared_content_change_member_role"), new Utils.VoidParam("shared_content_change_viewer_info_policy"), new Utils.VoidParam("shared_content_claim_invitation"), new Utils.VoidParam("shared_content_copy"), new Utils.VoidParam("shared_content_download"), new Utils.VoidParam("shared_content_relinquish_membership"), new Utils.VoidParam("shared_content_remove_invitees"), new Utils.VoidParam("shared_content_remove_link_expiry"), new Utils.VoidParam("shared_content_remove_link_password"), new Utils.VoidParam("shared_content_remove_member"), new Utils.VoidParam("shared_content_request_access"), new Utils.VoidParam("shared_content_restore_invitees"), new Utils.VoidParam("shared_content_restore_member"), new Utils.VoidParam("shared_content_unshare"), new Utils.VoidParam("shared_content_view"), new Utils.VoidParam("shared_folder_change_link_policy"), new Utils.VoidParam("shared_folder_change_members_inheritance_policy"), new Utils.VoidParam("shared_folder_change_members_management_policy"), new Utils.VoidParam("shared_folder_change_members_policy"), new Utils.VoidParam("shared_folder_create"), new Utils.VoidParam("shared_folder_decline_invitation"), new Utils.VoidParam("shared_folder_mount"), new Utils.VoidParam("shared_folder_nest"), new Utils.VoidParam("shared_folder_transfer_ownership"), new Utils.VoidParam("shared_folder_unmount"), new Utils.VoidParam("shared_link_add_expiry"), new Utils.VoidParam("shared_link_change_expiry"), new Utils.VoidParam("shared_link_change_visibility"), new Utils.VoidParam("shared_link_copy"), new Utils.VoidParam("shared_link_create"), new Utils.VoidParam("shared_link_disable"), new Utils.VoidParam("shared_link_download"), new Utils.VoidParam("shared_link_remove_expiry"), new Utils.VoidParam("shared_link_settings_add_expiration"), new Utils.VoidParam("shared_link_settings_add_password"), new Utils.VoidParam("shared_link_settings_allow_download_disabled"), new Utils.VoidParam("shared_link_settings_allow_download_enabled"), new Utils.VoidParam("shared_link_settings_change_audience"), new Utils.VoidParam("shared_link_settings_change_expiration"), new Utils.VoidParam("shared_link_settings_change_password"), new Utils.VoidParam("shared_link_settings_remove_expiration"), new Utils.VoidParam("shared_link_settings_remove_password"), new Utils.VoidParam("shared_link_share"), new Utils.VoidParam("shared_link_view"), new Utils.VoidParam("shared_note_opened"), new Utils.VoidParam("shmodel_disable_downloads"), new Utils.VoidParam("shmodel_enable_downloads"), new Utils.VoidParam("shmodel_group_share"), new Utils.VoidParam("showcase_access_granted"), new Utils.VoidParam("showcase_add_member"), new Utils.VoidParam("showcase_archived"), new Utils.VoidParam("showcase_created"), new Utils.VoidParam("showcase_delete_comment"), new Utils.VoidParam("showcase_edited"), new Utils.VoidParam("showcase_edit_comment"), new Utils.VoidParam("showcase_file_added"), new Utils.VoidParam("showcase_file_download"), new Utils.VoidParam("showcase_file_removed"), new Utils.VoidParam("showcase_file_view"), new Utils.VoidParam("showcase_permanently_deleted"), new Utils.VoidParam("showcase_post_comment"), new Utils.VoidParam("showcase_remove_member"), new Utils.VoidParam("showcase_renamed"), new Utils.VoidParam("showcase_request_access"), new Utils.VoidParam("showcase_resolve_comment"), new Utils.VoidParam("showcase_restored"), new Utils.VoidParam("showcase_trashed"), new Utils.VoidParam("showcase_trashed_deprecated"), new Utils.VoidParam("showcase_unresolve_comment"), new Utils.VoidParam("showcase_untrashed"), new Utils.VoidParam("showcase_untrashed_deprecated"), new Utils.VoidParam("showcase_view"), new Utils.VoidParam("sso_add_cert"), new Utils.VoidParam("sso_add_login_url"), new Utils.VoidParam("sso_add_logout_url"), new Utils.VoidParam("sso_change_cert"), new Utils.VoidParam("sso_change_login_url"), new Utils.VoidParam("sso_change_logout_url"), new Utils.VoidParam("sso_change_saml_identity_mode"), new Utils.VoidParam("sso_remove_cert"), new Utils.VoidParam("sso_remove_login_url"), new Utils.VoidParam("sso_remove_logout_url"), new Utils.VoidParam("team_folder_change_status"), new Utils.VoidParam("team_folder_create"), new Utils.VoidParam("team_folder_downgrade"), new Utils.VoidParam("team_folder_permanently_delete"), new Utils.VoidParam("team_folder_rename"), new Utils.VoidParam("team_selective_sync_settings_changed"), new Utils.VoidParam("account_capture_change_policy"), new Utils.VoidParam("admin_email_reminders_changed"), new Utils.VoidParam("allow_download_disabled"), new Utils.VoidParam("allow_download_enabled"), new Utils.VoidParam("app_permissions_changed"), new Utils.VoidParam("camera_uploads_policy_changed"), new Utils.VoidParam("capture_transcript_policy_changed"), new Utils.VoidParam("classification_change_policy"), new Utils.VoidParam("computer_backup_policy_changed"), new Utils.VoidParam("content_administration_policy_changed"), new Utils.VoidParam("data_placement_restriction_change_policy"), new Utils.VoidParam("data_placement_restriction_satisfy_policy"), new Utils.VoidParam("device_approvals_add_exception"), new Utils.VoidParam("device_approvals_change_desktop_policy"), new Utils.VoidParam("device_approvals_change_mobile_policy"), new Utils.VoidParam("device_approvals_change_overage_action"), new Utils.VoidParam("device_approvals_change_unlink_action"), new Utils.VoidParam("device_approvals_remove_exception"), new Utils.VoidParam("directory_restrictions_add_members"), new Utils.VoidParam("directory_restrictions_remove_members"), new Utils.VoidParam("dropbox_passwords_policy_changed"), new Utils.VoidParam("email_ingest_policy_changed"), new Utils.VoidParam("emm_add_exception"), new Utils.VoidParam("emm_change_policy"), new Utils.VoidParam("emm_remove_exception"), new Utils.VoidParam("extended_version_history_change_policy"), new Utils.VoidParam("external_drive_backup_policy_changed"), new Utils.VoidParam("file_comments_change_policy"), new Utils.VoidParam("file_locking_policy_changed"), new Utils.VoidParam("file_provider_migration_policy_changed"), new Utils.VoidParam("file_requests_change_policy"), new Utils.VoidParam("file_requests_emails_enabled"), new Utils.VoidParam("file_requests_emails_restricted_to_team_only"), new Utils.VoidParam("file_transfers_policy_changed"), new Utils.VoidParam("folder_link_restriction_policy_changed"), new Utils.VoidParam("google_sso_change_policy"), new Utils.VoidParam("group_user_management_change_policy"), new Utils.VoidParam("integration_policy_changed"), new Utils.VoidParam("invite_acceptance_email_policy_changed"), new Utils.VoidParam("member_requests_change_policy"), new Utils.VoidParam("member_send_invite_policy_changed"), new Utils.VoidParam("member_space_limits_add_exception"), new Utils.VoidParam("member_space_limits_change_caps_type_policy"), new Utils.VoidParam("member_space_limits_change_policy"), new Utils.VoidParam("member_space_limits_remove_exception"), new Utils.VoidParam("member_suggestions_change_policy"), new Utils.VoidParam("microsoft_office_addin_change_policy"), new Utils.VoidParam("network_control_change_policy"), new Utils.VoidParam("paper_change_deployment_policy"), new Utils.VoidParam("paper_change_member_link_policy"), new Utils.VoidParam("paper_change_member_policy"), new Utils.VoidParam("paper_change_policy"), new Utils.VoidParam("paper_default_folder_policy_changed"), new Utils.VoidParam("paper_desktop_policy_changed"), new Utils.VoidParam("paper_enabled_users_group_addition"), new Utils.VoidParam("paper_enabled_users_group_removal"), new Utils.VoidParam("password_strength_requirements_change_policy"), new Utils.VoidParam("permanent_delete_change_policy"), new Utils.VoidParam("reseller_support_change_policy"), new Utils.VoidParam("rewind_policy_changed"), new Utils.VoidParam("send_for_signature_policy_changed"), new Utils.VoidParam("sharing_change_folder_join_policy"), new Utils.VoidParam("sharing_change_link_allow_change_expiration_policy"), new Utils.VoidParam("sharing_change_link_default_expiration_policy"), new Utils.VoidParam("sharing_change_link_enforce_password_policy"), new Utils.VoidParam("sharing_change_link_policy"), new Utils.VoidParam("sharing_change_member_policy"), new Utils.VoidParam("showcase_change_download_policy"), new Utils.VoidParam("showcase_change_enabled_policy"), new Utils.VoidParam("showcase_change_external_sharing_policy"), new Utils.VoidParam("smarter_smart_sync_policy_changed"), new Utils.VoidParam("smart_sync_change_policy"), new Utils.VoidParam("smart_sync_not_opt_out"), new Utils.VoidParam("smart_sync_opt_out"), new Utils.VoidParam("sso_change_policy"), new Utils.VoidParam("team_branding_policy_changed"), new Utils.VoidParam("team_extensions_policy_changed"), new Utils.VoidParam("team_selective_sync_policy_changed"), new Utils.VoidParam("team_sharing_whitelist_subjects_changed"), new Utils.VoidParam("tfa_add_exception"), new Utils.VoidParam("tfa_change_policy"), new Utils.VoidParam("tfa_remove_exception"), new Utils.VoidParam("two_account_change_policy"), new Utils.VoidParam("viewer_info_policy_changed"), new Utils.VoidParam("watermarking_policy_changed"), new Utils.VoidParam("web_sessions_change_active_session_limit"), new Utils.VoidParam("web_sessions_change_fixed_length_policy"), new Utils.VoidParam("web_sessions_change_idle_length_policy"), new Utils.VoidParam("data_residency_migration_request_successful"), new Utils.VoidParam("data_residency_migration_request_unsuccessful"), new Utils.VoidParam("team_merge_from"), new Utils.VoidParam("team_merge_to"), new Utils.VoidParam("team_profile_add_background"), new Utils.VoidParam("team_profile_add_logo"), new Utils.VoidParam("team_profile_change_background"), new Utils.VoidParam("team_profile_change_default_language"), new Utils.VoidParam("team_profile_change_logo"), new Utils.VoidParam("team_profile_change_name"), new Utils.VoidParam("team_profile_remove_background"), new Utils.VoidParam("team_profile_remove_logo"), new Utils.VoidParam("tfa_add_backup_phone"), new Utils.VoidParam("tfa_add_security_key"), new Utils.VoidParam("tfa_change_backup_phone"), new Utils.VoidParam("tfa_change_status"), new Utils.VoidParam("tfa_remove_backup_phone"), new Utils.VoidParam("tfa_remove_security_key"), new Utils.VoidParam("tfa_reset"), new Utils.VoidParam("changed_enterprise_admin_role"), new Utils.VoidParam("changed_enterprise_connected_team_status"), new Utils.VoidParam("ended_enterprise_admin_session"), new Utils.VoidParam("ended_enterprise_admin_session_deprecated"), new Utils.VoidParam("enterprise_settings_locking"), new Utils.VoidParam("guest_admin_change_status"), new Utils.VoidParam("started_enterprise_admin_session"), new Utils.VoidParam("team_merge_request_accepted"), new Utils.VoidParam("team_merge_request_accepted_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_accepted_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_auto_canceled"), new Utils.VoidParam("team_merge_request_canceled"), new Utils.VoidParam("team_merge_request_canceled_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_canceled_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_expired"), new Utils.VoidParam("team_merge_request_expired_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_expired_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_rejected_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_rejected_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_reminder"), new Utils.VoidParam("team_merge_request_reminder_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_reminder_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_revoked"), new Utils.VoidParam("team_merge_request_sent_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_sent_shown_to_secondary_team")])
+        new Utils.UnionParam("category", true, [new Utils.VoidParam("admin_alerting"), new Utils.VoidParam("apps"), new Utils.VoidParam("comments"), new Utils.VoidParam("dash"), new Utils.VoidParam("data_governance"), new Utils.VoidParam("devices"), new Utils.VoidParam("domains"), new Utils.VoidParam("encryption"), new Utils.VoidParam("file_operations"), new Utils.VoidParam("file_requests"), new Utils.VoidParam("groups"), new Utils.VoidParam("logins"), new Utils.VoidParam("members"), new Utils.VoidParam("paper"), new Utils.VoidParam("passwords"), new Utils.VoidParam("protect"), new Utils.VoidParam("reports"), new Utils.VoidParam("sharing"), new Utils.VoidParam("showcase"), new Utils.VoidParam("signatures"), new Utils.VoidParam("sso"), new Utils.VoidParam("team_folders"), new Utils.VoidParam("team_policies"), new Utils.VoidParam("team_profile"), new Utils.VoidParam("tfa"), new Utils.VoidParam("trusted_teams")]),
+        new Utils.UnionParam("event_type", true, [new Utils.VoidParam("admin_alerting_alert_state_changed"), new Utils.VoidParam("admin_alerting_changed_alert_config"), new Utils.VoidParam("admin_alerting_triggered_alert"), new Utils.VoidParam("ransomware_restore_process_completed"), new Utils.VoidParam("ransomware_restore_process_started"), new Utils.VoidParam("app_blocked_by_permissions"), new Utils.VoidParam("app_link_team"), new Utils.VoidParam("app_link_user"), new Utils.VoidParam("app_unlink_team"), new Utils.VoidParam("app_unlink_user"), new Utils.VoidParam("integration_connected"), new Utils.VoidParam("integration_disconnected"), new Utils.VoidParam("file_add_comment"), new Utils.VoidParam("file_change_comment_subscription"), new Utils.VoidParam("file_delete_comment"), new Utils.VoidParam("file_edit_comment"), new Utils.VoidParam("file_like_comment"), new Utils.VoidParam("file_resolve_comment"), new Utils.VoidParam("file_unlike_comment"), new Utils.VoidParam("file_unresolve_comment"), new Utils.VoidParam("dash_added_comment_to_stack"), new Utils.VoidParam("dash_added_connector"), new Utils.VoidParam("dash_added_link_to_stack"), new Utils.VoidParam("dash_added_team_email_domain_allowlist"), new Utils.VoidParam("dash_admin_added_org_wide_connector"), new Utils.VoidParam("dash_admin_disabled_connector"), new Utils.VoidParam("dash_admin_enabled_connector"), new Utils.VoidParam("dash_admin_removed_org_wide_connector"), new Utils.VoidParam("dash_archived_stack"), new Utils.VoidParam("dash_changed_audience_of_shared_link_to_stack"), new Utils.VoidParam("dash_cloned_stack"), new Utils.VoidParam("dash_connector_tools_call"), new Utils.VoidParam("dash_created_stack"), new Utils.VoidParam("dash_deleted_comment_from_stack"), new Utils.VoidParam("dash_deleted_stack"), new Utils.VoidParam("dash_edited_comment_in_stack"), new Utils.VoidParam("dash_external_user_opened_stack"), new Utils.VoidParam("dash_first_launched_desktop"), new Utils.VoidParam("dash_first_launched_extension"), new Utils.VoidParam("dash_first_launched_web_start_page"), new Utils.VoidParam("dash_opened_shared_link_to_stack"), new Utils.VoidParam("dash_opened_stack"), new Utils.VoidParam("dash_preview_opt_out_status_changed"), new Utils.VoidParam("dash_removed_connector"), new Utils.VoidParam("dash_removed_link_from_stack"), new Utils.VoidParam("dash_removed_shared_link_to_stack"), new Utils.VoidParam("dash_removed_team_email_domain_allowlist"), new Utils.VoidParam("dash_renamed_stack"), new Utils.VoidParam("dash_shared_link_to_stack"), new Utils.VoidParam("dash_unarchived_stack"), new Utils.VoidParam("dash_viewed_company_stack"), new Utils.VoidParam("dash_viewed_external_ai_activity_report"), new Utils.VoidParam("governance_policy_add_folders"), new Utils.VoidParam("governance_policy_add_folder_failed"), new Utils.VoidParam("governance_policy_content_disposed"), new Utils.VoidParam("governance_policy_create"), new Utils.VoidParam("governance_policy_delete"), new Utils.VoidParam("governance_policy_edit_details"), new Utils.VoidParam("governance_policy_edit_duration"), new Utils.VoidParam("governance_policy_export_created"), new Utils.VoidParam("governance_policy_export_removed"), new Utils.VoidParam("governance_policy_remove_folders"), new Utils.VoidParam("governance_policy_report_created"), new Utils.VoidParam("governance_policy_zip_part_downloaded"), new Utils.VoidParam("legal_holds_activate_a_hold"), new Utils.VoidParam("legal_holds_add_members"), new Utils.VoidParam("legal_holds_change_hold_details"), new Utils.VoidParam("legal_holds_change_hold_name"), new Utils.VoidParam("legal_holds_export_a_hold"), new Utils.VoidParam("legal_holds_export_cancelled"), new Utils.VoidParam("legal_holds_export_downloaded"), new Utils.VoidParam("legal_holds_export_removed"), new Utils.VoidParam("legal_holds_release_a_hold"), new Utils.VoidParam("legal_holds_remove_members"), new Utils.VoidParam("legal_holds_report_a_hold"), new Utils.VoidParam("device_change_ip_desktop"), new Utils.VoidParam("device_change_ip_mobile"), new Utils.VoidParam("device_change_ip_web"), new Utils.VoidParam("device_delete_on_unlink_fail"), new Utils.VoidParam("device_delete_on_unlink_success"), new Utils.VoidParam("device_link_fail"), new Utils.VoidParam("device_link_success"), new Utils.VoidParam("device_management_disabled"), new Utils.VoidParam("device_management_enabled"), new Utils.VoidParam("device_sync_backup_status_changed"), new Utils.VoidParam("device_unlink"), new Utils.VoidParam("dropbox_passwords_exported"), new Utils.VoidParam("dropbox_passwords_new_device_enrolled"), new Utils.VoidParam("emm_refresh_auth_token"), new Utils.VoidParam("external_drive_backup_eligibility_status_checked"), new Utils.VoidParam("external_drive_backup_status_changed"), new Utils.VoidParam("account_capture_change_availability"), new Utils.VoidParam("account_capture_migrate_account"), new Utils.VoidParam("account_capture_notification_emails_sent"), new Utils.VoidParam("account_capture_relinquish_account"), new Utils.VoidParam("disabled_domain_invites"), new Utils.VoidParam("domain_invites_approve_request_to_join_team"), new Utils.VoidParam("domain_invites_decline_request_to_join_team"), new Utils.VoidParam("domain_invites_email_existing_users"), new Utils.VoidParam("domain_invites_request_to_join_team"), new Utils.VoidParam("domain_invites_set_invite_new_user_pref_to_no"), new Utils.VoidParam("domain_invites_set_invite_new_user_pref_to_yes"), new Utils.VoidParam("domain_verification_add_domain_fail"), new Utils.VoidParam("domain_verification_add_domain_success"), new Utils.VoidParam("domain_verification_remove_domain"), new Utils.VoidParam("enabled_domain_invites"), new Utils.VoidParam("encrypted_folder_cancel_team_key_rotation"), new Utils.VoidParam("encrypted_folder_enroll_backup_key"), new Utils.VoidParam("encrypted_folder_enroll_client"), new Utils.VoidParam("encrypted_folder_enroll_team"), new Utils.VoidParam("encrypted_folder_finish_team_unenrollment"), new Utils.VoidParam("encrypted_folder_init_team_key_rotation"), new Utils.VoidParam("encrypted_folder_init_team_unenrollment"), new Utils.VoidParam("encrypted_folder_remove_backup_key"), new Utils.VoidParam("encrypted_folder_rotate_team_key"), new Utils.VoidParam("encrypted_folder_unenroll_client"), new Utils.VoidParam("team_encryption_key_activate_key"), new Utils.VoidParam("team_encryption_key_cancel_key_deletion"), new Utils.VoidParam("team_encryption_key_create_key"), new Utils.VoidParam("team_encryption_key_deactivate_key"), new Utils.VoidParam("team_encryption_key_delete_key"), new Utils.VoidParam("team_encryption_key_disable_key"), new Utils.VoidParam("team_encryption_key_enable_key"), new Utils.VoidParam("team_encryption_key_rotate_key"), new Utils.VoidParam("team_encryption_key_schedule_key_deletion"), new Utils.VoidParam("apply_naming_convention"), new Utils.VoidParam("create_folder"), new Utils.VoidParam("file_add"), new Utils.VoidParam("file_add_from_automation"), new Utils.VoidParam("file_copy"), new Utils.VoidParam("file_delete"), new Utils.VoidParam("file_download"), new Utils.VoidParam("file_edit"), new Utils.VoidParam("file_get_copy_reference"), new Utils.VoidParam("file_locking_lock_status_changed"), new Utils.VoidParam("file_move"), new Utils.VoidParam("file_permanently_delete"), new Utils.VoidParam("file_preview"), new Utils.VoidParam("file_rename"), new Utils.VoidParam("file_restore"), new Utils.VoidParam("file_revert"), new Utils.VoidParam("file_rollback_changes"), new Utils.VoidParam("file_save_copy_reference"), new Utils.VoidParam("folder_overview_description_changed"), new Utils.VoidParam("folder_overview_item_pinned"), new Utils.VoidParam("folder_overview_item_unpinned"), new Utils.VoidParam("media_hub_file_downloaded"), new Utils.VoidParam("object_label_added"), new Utils.VoidParam("object_label_removed"), new Utils.VoidParam("object_label_updated_value"), new Utils.VoidParam("organize_folder_with_tidy"), new Utils.VoidParam("replay_file_delete"), new Utils.VoidParam("replay_file_downloaded"), new Utils.VoidParam("replay_team_project_created"), new Utils.VoidParam("rewind_folder"), new Utils.VoidParam("undo_naming_convention"), new Utils.VoidParam("undo_organize_folder_with_tidy"), new Utils.VoidParam("user_tags_added"), new Utils.VoidParam("user_tags_removed"), new Utils.VoidParam("email_ingest_receive_file"), new Utils.VoidParam("file_request_auto_close"), new Utils.VoidParam("file_request_change"), new Utils.VoidParam("file_request_close"), new Utils.VoidParam("file_request_create"), new Utils.VoidParam("file_request_delete"), new Utils.VoidParam("file_request_receive_file"), new Utils.VoidParam("group_add_external_id"), new Utils.VoidParam("group_add_member"), new Utils.VoidParam("group_change_external_id"), new Utils.VoidParam("group_change_management_type"), new Utils.VoidParam("group_change_member_role"), new Utils.VoidParam("group_create"), new Utils.VoidParam("group_delete"), new Utils.VoidParam("group_description_updated"), new Utils.VoidParam("group_external_sharing_setting_override_changed"), new Utils.VoidParam("group_join_policy_updated"), new Utils.VoidParam("group_moved"), new Utils.VoidParam("group_remove_external_id"), new Utils.VoidParam("group_remove_member"), new Utils.VoidParam("group_rename"), new Utils.VoidParam("account_lock_or_unlocked"), new Utils.VoidParam("emm_error"), new Utils.VoidParam("guest_admin_signed_in_via_trusted_teams"), new Utils.VoidParam("guest_admin_signed_out_via_trusted_teams"), new Utils.VoidParam("login_fail"), new Utils.VoidParam("login_success"), new Utils.VoidParam("logout"), new Utils.VoidParam("reseller_support_session_end"), new Utils.VoidParam("reseller_support_session_start"), new Utils.VoidParam("sign_in_as_session_end"), new Utils.VoidParam("sign_in_as_session_start"), new Utils.VoidParam("sso_error"), new Utils.VoidParam("addon_assigned"), new Utils.VoidParam("addon_removed"), new Utils.VoidParam("backup_admin_invitation_sent"), new Utils.VoidParam("backup_invitation_opened"), new Utils.VoidParam("create_team_invite_link"), new Utils.VoidParam("delete_team_invite_link"), new Utils.VoidParam("member_add_external_id"), new Utils.VoidParam("member_add_name"), new Utils.VoidParam("member_change_admin_role"), new Utils.VoidParam("member_change_email"), new Utils.VoidParam("member_change_external_id"), new Utils.VoidParam("member_change_membership_type"), new Utils.VoidParam("member_change_name"), new Utils.VoidParam("member_change_reseller_role"), new Utils.VoidParam("member_change_status"), new Utils.VoidParam("member_delete_manual_contacts"), new Utils.VoidParam("member_delete_profile_photo"), new Utils.VoidParam("member_permanently_delete_account_contents"), new Utils.VoidParam("member_remove_external_id"), new Utils.VoidParam("member_set_profile_photo"), new Utils.VoidParam("member_space_limits_add_custom_quota"), new Utils.VoidParam("member_space_limits_change_custom_quota"), new Utils.VoidParam("member_space_limits_change_status"), new Utils.VoidParam("member_space_limits_remove_custom_quota"), new Utils.VoidParam("member_suggest"), new Utils.VoidParam("member_transfer_account_contents"), new Utils.VoidParam("pending_secondary_email_added"), new Utils.VoidParam("product_assigned_to_member"), new Utils.VoidParam("product_removed_from_member"), new Utils.VoidParam("secondary_email_deleted"), new Utils.VoidParam("secondary_email_verified"), new Utils.VoidParam("secondary_mails_policy_changed"), new Utils.VoidParam("binder_add_page"), new Utils.VoidParam("binder_add_section"), new Utils.VoidParam("binder_remove_page"), new Utils.VoidParam("binder_remove_section"), new Utils.VoidParam("binder_rename_page"), new Utils.VoidParam("binder_rename_section"), new Utils.VoidParam("binder_reorder_page"), new Utils.VoidParam("binder_reorder_section"), new Utils.VoidParam("paper_content_add_member"), new Utils.VoidParam("paper_content_add_to_folder"), new Utils.VoidParam("paper_content_archive"), new Utils.VoidParam("paper_content_create"), new Utils.VoidParam("paper_content_permanently_delete"), new Utils.VoidParam("paper_content_remove_from_folder"), new Utils.VoidParam("paper_content_remove_member"), new Utils.VoidParam("paper_content_rename"), new Utils.VoidParam("paper_content_restore"), new Utils.VoidParam("paper_doc_add_comment"), new Utils.VoidParam("paper_doc_change_member_role"), new Utils.VoidParam("paper_doc_change_sharing_policy"), new Utils.VoidParam("paper_doc_change_subscription"), new Utils.VoidParam("paper_doc_deleted"), new Utils.VoidParam("paper_doc_delete_comment"), new Utils.VoidParam("paper_doc_download"), new Utils.VoidParam("paper_doc_edit"), new Utils.VoidParam("paper_doc_edit_comment"), new Utils.VoidParam("paper_doc_followed"), new Utils.VoidParam("paper_doc_mention"), new Utils.VoidParam("paper_doc_ownership_changed"), new Utils.VoidParam("paper_doc_request_access"), new Utils.VoidParam("paper_doc_resolve_comment"), new Utils.VoidParam("paper_doc_revert"), new Utils.VoidParam("paper_doc_slack_share"), new Utils.VoidParam("paper_doc_team_invite"), new Utils.VoidParam("paper_doc_trashed"), new Utils.VoidParam("paper_doc_unresolve_comment"), new Utils.VoidParam("paper_doc_untrashed"), new Utils.VoidParam("paper_doc_view"), new Utils.VoidParam("paper_external_view_allow"), new Utils.VoidParam("paper_external_view_default_team"), new Utils.VoidParam("paper_external_view_forbid"), new Utils.VoidParam("paper_folder_change_subscription"), new Utils.VoidParam("paper_folder_deleted"), new Utils.VoidParam("paper_folder_followed"), new Utils.VoidParam("paper_folder_team_invite"), new Utils.VoidParam("paper_published_link_change_permission"), new Utils.VoidParam("paper_published_link_create"), new Utils.VoidParam("paper_published_link_disabled"), new Utils.VoidParam("paper_published_link_view"), new Utils.VoidParam("password_change"), new Utils.VoidParam("password_reset"), new Utils.VoidParam("password_reset_all"), new Utils.VoidParam("protect_internal_domains_changed"), new Utils.VoidParam("classification_create_report"), new Utils.VoidParam("classification_create_report_fail"), new Utils.VoidParam("emm_create_exceptions_report"), new Utils.VoidParam("emm_create_usage_report"), new Utils.VoidParam("export_members_report"), new Utils.VoidParam("export_members_report_fail"), new Utils.VoidParam("external_sharing_create_report"), new Utils.VoidParam("external_sharing_report_failed"), new Utils.VoidParam("member_access_details_create_report"), new Utils.VoidParam("member_access_details_create_report_failed"), new Utils.VoidParam("no_expiration_link_gen_create_report"), new Utils.VoidParam("no_expiration_link_gen_report_failed"), new Utils.VoidParam("no_password_link_gen_create_report"), new Utils.VoidParam("no_password_link_gen_report_failed"), new Utils.VoidParam("no_password_link_view_create_report"), new Utils.VoidParam("no_password_link_view_report_failed"), new Utils.VoidParam("outdated_link_view_create_report"), new Utils.VoidParam("outdated_link_view_report_failed"), new Utils.VoidParam("paper_admin_export_start"), new Utils.VoidParam("ransomware_alert_create_report"), new Utils.VoidParam("ransomware_alert_create_report_failed"), new Utils.VoidParam("shared_folders_create_report"), new Utils.VoidParam("shared_folders_create_report_failed"), new Utils.VoidParam("smart_sync_create_admin_privilege_report"), new Utils.VoidParam("team_activity_create_report"), new Utils.VoidParam("team_activity_create_report_fail"), new Utils.VoidParam("team_folders_create_report"), new Utils.VoidParam("team_folders_create_report_failed"), new Utils.VoidParam("team_storage_create_report"), new Utils.VoidParam("team_storage_create_report_failed"), new Utils.VoidParam("collection_share"), new Utils.VoidParam("file_transfers_file_add"), new Utils.VoidParam("file_transfers_transfer_delete"), new Utils.VoidParam("file_transfers_transfer_download"), new Utils.VoidParam("file_transfers_transfer_send"), new Utils.VoidParam("file_transfers_transfer_view"), new Utils.VoidParam("media_hub_project_team_add"), new Utils.VoidParam("media_hub_project_team_delete"), new Utils.VoidParam("media_hub_project_team_role_changed"), new Utils.VoidParam("media_hub_shared_link_audience_changed"), new Utils.VoidParam("media_hub_shared_link_created"), new Utils.VoidParam("media_hub_shared_link_download_setting_changed"), new Utils.VoidParam("media_hub_shared_link_revoked"), new Utils.VoidParam("note_acl_invite_only"), new Utils.VoidParam("note_acl_link"), new Utils.VoidParam("note_acl_team_link"), new Utils.VoidParam("note_shared"), new Utils.VoidParam("note_share_receive"), new Utils.VoidParam("open_note_shared"), new Utils.VoidParam("replay_file_shared_link_created"), new Utils.VoidParam("replay_file_shared_link_modified"), new Utils.VoidParam("replay_project_team_add"), new Utils.VoidParam("replay_project_team_delete"), new Utils.VoidParam("send_and_track_file_added"), new Utils.VoidParam("send_and_track_file_renamed"), new Utils.VoidParam("send_and_track_file_updated"), new Utils.VoidParam("send_and_track_link_created"), new Utils.VoidParam("send_and_track_link_deleted"), new Utils.VoidParam("send_and_track_link_updated"), new Utils.VoidParam("send_and_track_link_viewed"), new Utils.VoidParam("send_and_track_removed_file_and_associated_links"), new Utils.VoidParam("sf_add_group"), new Utils.VoidParam("sf_allow_non_members_to_view_shared_links"), new Utils.VoidParam("sf_external_invite_warn"), new Utils.VoidParam("sf_fb_invite"), new Utils.VoidParam("sf_fb_invite_change_role"), new Utils.VoidParam("sf_fb_uninvite"), new Utils.VoidParam("sf_invite_group"), new Utils.VoidParam("sf_team_grant_access"), new Utils.VoidParam("sf_team_invite"), new Utils.VoidParam("sf_team_invite_change_role"), new Utils.VoidParam("sf_team_join"), new Utils.VoidParam("sf_team_join_from_oob_link"), new Utils.VoidParam("sf_team_uninvite"), new Utils.VoidParam("shared_content_add_invitees"), new Utils.VoidParam("shared_content_add_link_expiry"), new Utils.VoidParam("shared_content_add_link_password"), new Utils.VoidParam("shared_content_add_member"), new Utils.VoidParam("shared_content_change_downloads_policy"), new Utils.VoidParam("shared_content_change_invitee_role"), new Utils.VoidParam("shared_content_change_link_audience"), new Utils.VoidParam("shared_content_change_link_expiry"), new Utils.VoidParam("shared_content_change_link_password"), new Utils.VoidParam("shared_content_change_member_role"), new Utils.VoidParam("shared_content_change_viewer_info_policy"), new Utils.VoidParam("shared_content_claim_invitation"), new Utils.VoidParam("shared_content_copy"), new Utils.VoidParam("shared_content_download"), new Utils.VoidParam("shared_content_relinquish_membership"), new Utils.VoidParam("shared_content_remove_invitees"), new Utils.VoidParam("shared_content_remove_link_expiry"), new Utils.VoidParam("shared_content_remove_link_password"), new Utils.VoidParam("shared_content_remove_member"), new Utils.VoidParam("shared_content_request_access"), new Utils.VoidParam("shared_content_restore_invitees"), new Utils.VoidParam("shared_content_restore_member"), new Utils.VoidParam("shared_content_unshare"), new Utils.VoidParam("shared_content_view"), new Utils.VoidParam("shared_folder_change_link_policy"), new Utils.VoidParam("shared_folder_change_members_inheritance_policy"), new Utils.VoidParam("shared_folder_change_members_management_policy"), new Utils.VoidParam("shared_folder_change_members_policy"), new Utils.VoidParam("shared_folder_create"), new Utils.VoidParam("shared_folder_decline_invitation"), new Utils.VoidParam("shared_folder_mount"), new Utils.VoidParam("shared_folder_nest"), new Utils.VoidParam("shared_folder_transfer_ownership"), new Utils.VoidParam("shared_folder_unmount"), new Utils.VoidParam("shared_link_add_expiry"), new Utils.VoidParam("shared_link_change_expiry"), new Utils.VoidParam("shared_link_change_visibility"), new Utils.VoidParam("shared_link_copy"), new Utils.VoidParam("shared_link_create"), new Utils.VoidParam("shared_link_disable"), new Utils.VoidParam("shared_link_download"), new Utils.VoidParam("shared_link_remove_expiry"), new Utils.VoidParam("shared_link_remove_visitor"), new Utils.VoidParam("shared_link_settings_add_expiration"), new Utils.VoidParam("shared_link_settings_add_password"), new Utils.VoidParam("shared_link_settings_allow_download_disabled"), new Utils.VoidParam("shared_link_settings_allow_download_enabled"), new Utils.VoidParam("shared_link_settings_change_audience"), new Utils.VoidParam("shared_link_settings_change_expiration"), new Utils.VoidParam("shared_link_settings_change_password"), new Utils.VoidParam("shared_link_settings_remove_expiration"), new Utils.VoidParam("shared_link_settings_remove_password"), new Utils.VoidParam("shared_link_share"), new Utils.VoidParam("shared_link_view"), new Utils.VoidParam("shared_note_opened"), new Utils.VoidParam("shmodel_disable_downloads"), new Utils.VoidParam("shmodel_enable_downloads"), new Utils.VoidParam("shmodel_group_share"), new Utils.VoidParam("showcase_access_granted"), new Utils.VoidParam("showcase_add_member"), new Utils.VoidParam("showcase_archived"), new Utils.VoidParam("showcase_created"), new Utils.VoidParam("showcase_delete_comment"), new Utils.VoidParam("showcase_edited"), new Utils.VoidParam("showcase_edit_comment"), new Utils.VoidParam("showcase_file_added"), new Utils.VoidParam("showcase_file_download"), new Utils.VoidParam("showcase_file_removed"), new Utils.VoidParam("showcase_file_view"), new Utils.VoidParam("showcase_permanently_deleted"), new Utils.VoidParam("showcase_post_comment"), new Utils.VoidParam("showcase_remove_member"), new Utils.VoidParam("showcase_renamed"), new Utils.VoidParam("showcase_request_access"), new Utils.VoidParam("showcase_resolve_comment"), new Utils.VoidParam("showcase_restored"), new Utils.VoidParam("showcase_trashed"), new Utils.VoidParam("showcase_trashed_deprecated"), new Utils.VoidParam("showcase_unresolve_comment"), new Utils.VoidParam("showcase_untrashed"), new Utils.VoidParam("showcase_untrashed_deprecated"), new Utils.VoidParam("showcase_view"), new Utils.VoidParam("sign_signature_request_canceled"), new Utils.VoidParam("sign_signature_request_completed"), new Utils.VoidParam("sign_signature_request_declined"), new Utils.VoidParam("sign_signature_request_opened"), new Utils.VoidParam("sign_signature_request_reminder_sent"), new Utils.VoidParam("sign_signature_request_sent"), new Utils.VoidParam("sign_template_created"), new Utils.VoidParam("sign_template_shared"), new Utils.VoidParam("risc_security_event"), new Utils.VoidParam("sso_add_cert"), new Utils.VoidParam("sso_add_login_url"), new Utils.VoidParam("sso_add_logout_url"), new Utils.VoidParam("sso_change_cert"), new Utils.VoidParam("sso_change_login_url"), new Utils.VoidParam("sso_change_logout_url"), new Utils.VoidParam("sso_change_saml_identity_mode"), new Utils.VoidParam("sso_remove_cert"), new Utils.VoidParam("sso_remove_login_url"), new Utils.VoidParam("sso_remove_logout_url"), new Utils.VoidParam("team_folder_change_status"), new Utils.VoidParam("team_folder_create"), new Utils.VoidParam("team_folder_downgrade"), new Utils.VoidParam("team_folder_permanently_delete"), new Utils.VoidParam("team_folder_rename"), new Utils.VoidParam("team_folder_space_limits_change_caps_type"), new Utils.VoidParam("team_folder_space_limits_change_limit"), new Utils.VoidParam("team_folder_space_limits_change_notification_target"), new Utils.VoidParam("team_selective_sync_settings_changed"), new Utils.VoidParam("account_capture_change_policy"), new Utils.VoidParam("admin_email_reminders_changed"), new Utils.VoidParam("ai_third_party_sharing_dropbox_base_policy_changed"), new Utils.VoidParam("allow_download_disabled"), new Utils.VoidParam("allow_download_enabled"), new Utils.VoidParam("apple_login_change_policy"), new Utils.VoidParam("app_permissions_changed"), new Utils.VoidParam("camera_uploads_policy_changed"), new Utils.VoidParam("capture_team_space_policy_changed"), new Utils.VoidParam("capture_transcript_policy_changed"), new Utils.VoidParam("classification_change_policy"), new Utils.VoidParam("computer_backup_policy_changed"), new Utils.VoidParam("content_administration_policy_changed"), new Utils.VoidParam("content_deletion_protection_change_policy"), new Utils.VoidParam("dash_external_sharing_policy_changed"), new Utils.VoidParam("data_placement_restriction_change_policy"), new Utils.VoidParam("data_placement_restriction_satisfy_policy"), new Utils.VoidParam("device_approvals_add_exception"), new Utils.VoidParam("device_approvals_change_desktop_policy"), new Utils.VoidParam("device_approvals_change_mobile_policy"), new Utils.VoidParam("device_approvals_change_overage_action"), new Utils.VoidParam("device_approvals_change_unlink_action"), new Utils.VoidParam("device_approvals_remove_exception"), new Utils.VoidParam("directory_restrictions_add_members"), new Utils.VoidParam("directory_restrictions_remove_members"), new Utils.VoidParam("dropbox_passwords_policy_changed"), new Utils.VoidParam("email_ingest_policy_changed"), new Utils.VoidParam("emm_add_exception"), new Utils.VoidParam("emm_change_policy"), new Utils.VoidParam("emm_remove_exception"), new Utils.VoidParam("extended_version_history_change_policy"), new Utils.VoidParam("external_drive_backup_policy_changed"), new Utils.VoidParam("file_comments_change_policy"), new Utils.VoidParam("file_locking_policy_changed"), new Utils.VoidParam("file_provider_migration_policy_changed"), new Utils.VoidParam("file_requests_change_policy"), new Utils.VoidParam("file_requests_emails_enabled"), new Utils.VoidParam("file_requests_emails_restricted_to_team_only"), new Utils.VoidParam("file_transfers_policy_changed"), new Utils.VoidParam("flexible_file_names_policy_changed"), new Utils.VoidParam("folder_link_restriction_policy_changed"), new Utils.VoidParam("google_sso_change_policy"), new Utils.VoidParam("group_user_management_change_policy"), new Utils.VoidParam("integration_policy_changed"), new Utils.VoidParam("invite_acceptance_email_policy_changed"), new Utils.VoidParam("media_hub_adding_people_policy_changed"), new Utils.VoidParam("media_hub_download_policy_changed"), new Utils.VoidParam("media_hub_link_sharing_policy_changed"), new Utils.VoidParam("member_requests_change_policy"), new Utils.VoidParam("member_send_invite_policy_changed"), new Utils.VoidParam("member_space_limits_add_exception"), new Utils.VoidParam("member_space_limits_change_caps_type_policy"), new Utils.VoidParam("member_space_limits_change_policy"), new Utils.VoidParam("member_space_limits_remove_exception"), new Utils.VoidParam("member_suggestions_change_policy"), new Utils.VoidParam("microsoft_login_change_policy"), new Utils.VoidParam("microsoft_office_addin_change_policy"), new Utils.VoidParam("multi_team_identity_policy_changed"), new Utils.VoidParam("network_control_change_policy"), new Utils.VoidParam("paper_change_deployment_policy"), new Utils.VoidParam("paper_change_member_link_policy"), new Utils.VoidParam("paper_change_member_policy"), new Utils.VoidParam("paper_change_policy"), new Utils.VoidParam("paper_default_folder_policy_changed"), new Utils.VoidParam("paper_desktop_policy_changed"), new Utils.VoidParam("paper_enabled_users_group_addition"), new Utils.VoidParam("paper_enabled_users_group_removal"), new Utils.VoidParam("passkey_login_policy_changed"), new Utils.VoidParam("password_strength_requirements_change_policy"), new Utils.VoidParam("permanent_delete_change_policy"), new Utils.VoidParam("previews_ai_policy_changed"), new Utils.VoidParam("replay_adding_people_policy_changed"), new Utils.VoidParam("replay_sharing_policy_changed"), new Utils.VoidParam("reseller_support_change_policy"), new Utils.VoidParam("rewind_policy_changed"), new Utils.VoidParam("send_and_track_policy_changed"), new Utils.VoidParam("send_external_sharing_policy_changed"), new Utils.VoidParam("send_for_signature_policy_changed"), new Utils.VoidParam("shared_link_default_permissions_policy_changed"), new Utils.VoidParam("sharing_change_folder_join_policy"), new Utils.VoidParam("sharing_change_link_allow_change_expiration_policy"), new Utils.VoidParam("sharing_change_link_default_expiration_policy"), new Utils.VoidParam("sharing_change_link_enforce_password_policy"), new Utils.VoidParam("sharing_change_link_policy"), new Utils.VoidParam("sharing_change_member_policy"), new Utils.VoidParam("showcase_change_download_policy"), new Utils.VoidParam("showcase_change_enabled_policy"), new Utils.VoidParam("showcase_change_external_sharing_policy"), new Utils.VoidParam("sign_external_sharing_policy_changed"), new Utils.VoidParam("sign_template_creation_permission_changed"), new Utils.VoidParam("smarter_smart_sync_policy_changed"), new Utils.VoidParam("smart_sync_change_policy"), new Utils.VoidParam("smart_sync_not_opt_out"), new Utils.VoidParam("smart_sync_opt_out"), new Utils.VoidParam("sso_change_policy"), new Utils.VoidParam("stack_cross_team_access_policy_changed"), new Utils.VoidParam("team_branding_policy_changed"), new Utils.VoidParam("team_extensions_policy_changed"), new Utils.VoidParam("team_member_storage_request_policy_changed"), new Utils.VoidParam("team_selective_sync_policy_changed"), new Utils.VoidParam("team_sharing_whitelist_subjects_changed"), new Utils.VoidParam("tfa_add_exception"), new Utils.VoidParam("tfa_change_policy"), new Utils.VoidParam("tfa_remove_exception"), new Utils.VoidParam("top_level_content_policy_changed"), new Utils.VoidParam("two_account_change_policy"), new Utils.VoidParam("viewer_info_policy_changed"), new Utils.VoidParam("watermarking_policy_changed"), new Utils.VoidParam("web_sessions_change_active_session_limit"), new Utils.VoidParam("web_sessions_change_fixed_length_policy"), new Utils.VoidParam("web_sessions_change_idle_length_policy"), new Utils.VoidParam("data_residency_migration_request_successful"), new Utils.VoidParam("data_residency_migration_request_unsuccessful"), new Utils.VoidParam("team_merge_from"), new Utils.VoidParam("team_merge_to"), new Utils.VoidParam("team_profile_add_background"), new Utils.VoidParam("team_profile_add_logo"), new Utils.VoidParam("team_profile_change_background"), new Utils.VoidParam("team_profile_change_default_language"), new Utils.VoidParam("team_profile_change_logo"), new Utils.VoidParam("team_profile_change_name"), new Utils.VoidParam("team_profile_remove_background"), new Utils.VoidParam("team_profile_remove_logo"), new Utils.VoidParam("passkey_add"), new Utils.VoidParam("passkey_remove"), new Utils.VoidParam("tfa_add_backup_phone"), new Utils.VoidParam("tfa_add_security_key"), new Utils.VoidParam("tfa_change_backup_phone"), new Utils.VoidParam("tfa_change_status"), new Utils.VoidParam("tfa_remove_backup_phone"), new Utils.VoidParam("tfa_remove_security_key"), new Utils.VoidParam("tfa_reset"), new Utils.VoidParam("changed_enterprise_admin_role"), new Utils.VoidParam("changed_enterprise_connected_team_status"), new Utils.VoidParam("ended_enterprise_admin_session"), new Utils.VoidParam("ended_enterprise_admin_session_deprecated"), new Utils.VoidParam("enterprise_settings_locking"), new Utils.VoidParam("guest_admin_change_status"), new Utils.VoidParam("started_enterprise_admin_session"), new Utils.VoidParam("team_merge_request_accepted"), new Utils.VoidParam("team_merge_request_accepted_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_accepted_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_auto_canceled"), new Utils.VoidParam("team_merge_request_canceled"), new Utils.VoidParam("team_merge_request_canceled_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_canceled_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_expired"), new Utils.VoidParam("team_merge_request_expired_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_expired_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_rejected_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_rejected_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_reminder"), new Utils.VoidParam("team_merge_request_reminder_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_reminder_shown_to_secondary_team"), new Utils.VoidParam("team_merge_request_revoked"), new Utils.VoidParam("team_merge_request_sent_shown_to_primary_team"), new Utils.VoidParam("team_merge_request_sent_shown_to_secondary_team")])
     );
     const team_log_get_events_continue_endpt = new Utils.Endpoint("team_log", "get_events/continue",
         {
@@ -2926,7 +3120,7 @@ namespace Endpoints {
             scope: "account_info.read",
             is_cloud_doc_auth: "False",
         },
-        new Utils.ListParam("features", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("paper_as_files"), new Utils.VoidParam("file_locking")]))
+        new Utils.ListParam("features", false, (index: string): Utils.Parameter => new Utils.UnionParam(index, false, [new Utils.VoidParam("paper_as_files"), new Utils.VoidParam("file_locking"), new Utils.VoidParam("team_shared_dropbox"), new Utils.VoidParam("distinct_member_home")]))
     );
     const users_get_account_endpt = new Utils.Endpoint("users", "get_account",
         {
@@ -2979,8 +3173,9 @@ namespace Endpoints {
         }
     );
 
-    export const endpointList: Utils.Endpoint[] = [account_set_profile_photo_endpt,
-                                                   auth_token_from_oauth1_endpt,
+    export const endpointList: Utils.Endpoint[] = [account_delete_profile_photo_endpt,
+                                                   account_get_photo_endpt,
+                                                   account_set_profile_photo_endpt,
                                                    auth_token_revoke_endpt,
                                                    check_app_endpt,
                                                    check_user_endpt,
@@ -3056,12 +3251,20 @@ namespace Endpoints {
                                                    files_unlock_file_batch_endpt,
                                                    files_upload_endpt,
                                                    files_upload_session_append_v2_endpt,
+                                                   files_upload_session_append_batch_endpt,
                                                    files_upload_session_finish_endpt,
                                                    files_upload_session_finish_batch_v2_endpt,
                                                    files_upload_session_finish_batch_check_endpt,
                                                    files_upload_session_start_endpt,
                                                    files_upload_session_start_batch_endpt,
                                                    openid_userinfo_endpt,
+                                                   paper_docs_get_metadata_endpt,
+                                                   riviera_get_markdown_async_endpt,
+                                                   riviera_get_markdown_async_check_endpt,
+                                                   riviera_get_metadata_async_endpt,
+                                                   riviera_get_metadata_async_check_endpt,
+                                                   riviera_get_transcript_async_endpt,
+                                                   riviera_get_transcript_async_check_endpt,
                                                    sharing_add_file_member_endpt,
                                                    sharing_add_folder_member_endpt,
                                                    sharing_check_job_status_endpt,
@@ -3087,6 +3290,7 @@ namespace Endpoints {
                                                    sharing_list_shared_links_endpt,
                                                    sharing_modify_shared_link_settings_endpt,
                                                    sharing_mount_folder_endpt,
+                                                   sharing_relinquish_access_endpt,
                                                    sharing_relinquish_file_membership_endpt,
                                                    sharing_relinquish_folder_membership_endpt,
                                                    sharing_remove_file_member_2_endpt,
@@ -3099,6 +3303,7 @@ namespace Endpoints {
                                                    sharing_unshare_file_endpt,
                                                    sharing_unshare_folder_endpt,
                                                    sharing_update_file_member_endpt,
+                                                   sharing_update_file_policy_endpt,
                                                    sharing_update_folder_member_endpt,
                                                    sharing_update_folder_policy_endpt,
                                                    team_devices_list_member_devices_endpt,
@@ -3141,6 +3346,7 @@ namespace Endpoints {
                                                    team_members_add_v2_endpt,
                                                    team_members_add_job_status_get_endpt,
                                                    team_members_add_job_status_get_v2_endpt,
+                                                   team_members_delete_former_member_files_endpt,
                                                    team_members_delete_profile_photo_endpt,
                                                    team_members_delete_profile_photo_v2_endpt,
                                                    team_members_get_available_team_member_roles_endpt,
@@ -3182,6 +3388,7 @@ namespace Endpoints {
                                                    team_team_folder_list_continue_endpt,
                                                    team_team_folder_permanently_delete_endpt,
                                                    team_team_folder_rename_endpt,
+                                                   team_team_folder_restore_endpt,
                                                    team_team_folder_update_sync_settings_endpt,
                                                    team_token_get_authenticated_admin_endpt,
                                                    team_log_get_events_endpt,
