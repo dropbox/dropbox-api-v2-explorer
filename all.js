@@ -25899,6 +25899,38 @@
           new TextParam("doc_id", true),
           new TextParam("file_id", true)
         );
+        const riviera_get_keyframes_async_endpt = new Endpoint(
+          "riviera",
+          "get_keyframes_async",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("file_id_or_url", true, [new TextParam("file_id", false), new TextParam("url", false), new TextParam("path", false)]),
+          new FloatParam("scene_change_threshold", true),
+          new BoolParam("include_images", true)
+        );
+        const riviera_get_keyframes_async_check_endpt = new Endpoint(
+          "riviera",
+          "get_keyframes_async/check",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("async_job_id", false)
+        );
         const riviera_get_markdown_async_endpt = new Endpoint(
           "riviera",
           "get_markdown_async",
@@ -28292,6 +28324,8 @@
           files_upload_session_start_batch_endpt,
           openid_userinfo_endpt,
           paper_docs_get_metadata_endpt,
+          riviera_get_keyframes_async_endpt,
+          riviera_get_keyframes_async_check_endpt,
           riviera_get_markdown_async_endpt,
           riviera_get_markdown_async_check_endpt,
           riviera_get_metadata_async_endpt,
