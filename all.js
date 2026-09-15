@@ -25352,7 +25352,8 @@
           new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]),
           new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]),
           new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]),
-          new BoolParam("exclude_media_info", true)
+          new BoolParam("exclude_media_info", true),
+          new BoolParam("preserve_transparency", true)
         );
         const files_get_thumbnail_batch_endpt = new Endpoint(
           "files",
