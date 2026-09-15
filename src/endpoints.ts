@@ -751,7 +751,8 @@ namespace Endpoints {
         new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]),
         new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]),
         new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]),
-        new Utils.BoolParam("exclude_media_info", true)
+        new Utils.BoolParam("exclude_media_info", true),
+        new Utils.BoolParam("preserve_transparency", true)
     );
     const files_get_thumbnail_batch_endpt = new Utils.Endpoint("files", "get_thumbnail_batch",
         {
