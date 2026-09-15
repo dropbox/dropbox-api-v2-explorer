@@ -730,9 +730,8 @@ namespace Endpoints {
         },
         new Utils.TextParam("path", false),
         new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]),
-        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]),
+        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]),
         new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]),
-        new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]),
         new Utils.BoolParam("exclude_media_info", true)
     );
     const files_get_thumbnail_v2_endpt = new Utils.Endpoint("files", "get_thumbnail_v2",
@@ -748,9 +747,8 @@ namespace Endpoints {
         },
         new Utils.UnionParam("resource", false, [new Utils.TextParam("path", false), new Utils.StructParam("link", false, [new Utils.TextParam("url", false), new Utils.TextParam("path", true), new Utils.TextParam("password", true)])]),
         new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]),
-        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]),
+        new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]),
         new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]),
-        new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]),
         new Utils.BoolParam("exclude_media_info", true),
         new Utils.BoolParam("preserve_transparency", true)
     );
@@ -765,7 +763,7 @@ namespace Endpoints {
             scope: "files.content.read",
             is_cloud_doc_auth: "False",
         },
-        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536"), new Utils.VoidParam("w3200h2400")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]), new Utils.UnionParam("quality", true, [new Utils.VoidParam("quality_80"), new Utils.VoidParam("quality_90")]), new Utils.BoolParam("exclude_media_info", true)]))
+        new Utils.ListParam("entries", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.TextParam("path", false), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")]), new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]), new Utils.BoolParam("exclude_media_info", true)]))
     );
     const files_list_folder_endpt = new Utils.Endpoint("files", "list_folder",
         {
@@ -1414,8 +1412,7 @@ namespace Endpoints {
         new Utils.TextParam("custom_message", true),
         new Utils.BoolParam("quiet", true),
         new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")]),
-        new Utils.BoolParam("add_message_as_comment", true),
-        new Utils.TextParam("fp_sealed_result", true)
+        new Utils.BoolParam("add_message_as_comment", true)
     );
     const sharing_add_folder_member_endpt = new Utils.Endpoint("sharing", "add_folder_member",
         {
@@ -1431,8 +1428,7 @@ namespace Endpoints {
         new Utils.TextParam("shared_folder_id", false),
         new Utils.ListParam("members", false, (index: string): Utils.Parameter => new Utils.StructParam(index, false, [new Utils.UnionParam("member", false, [new Utils.TextParam("dropbox_id", false), new Utils.TextParam("email", false)]), new Utils.UnionParam("access_level", true, [new Utils.VoidParam("owner"), new Utils.VoidParam("editor"), new Utils.VoidParam("viewer"), new Utils.VoidParam("viewer_no_comment"), new Utils.VoidParam("traverse"), new Utils.VoidParam("no_access")])])),
         new Utils.BoolParam("quiet", true),
-        new Utils.TextParam("custom_message", true),
-        new Utils.TextParam("fp_sealed_result", true)
+        new Utils.TextParam("custom_message", true)
     );
     const sharing_check_job_status_endpt = new Utils.Endpoint("sharing", "check_job_status",
         {
