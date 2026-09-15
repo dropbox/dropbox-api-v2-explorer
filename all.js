@@ -25329,9 +25329,8 @@
           },
           new TextParam("path", false),
           new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]),
-          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]),
+          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]),
           new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]),
-          new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]),
           new BoolParam("exclude_media_info", true)
         );
         const files_get_thumbnail_v2_endpt = new Endpoint(
@@ -25349,9 +25348,8 @@
           },
           new UnionParam("resource", false, [new TextParam("path", false), new StructParam("link", false, [new TextParam("url", false), new TextParam("path", true), new TextParam("password", true)])]),
           new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]),
-          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]),
+          new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]),
           new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]),
-          new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]),
           new BoolParam("exclude_media_info", true),
           new BoolParam("preserve_transparency", true)
         );
@@ -25368,7 +25366,7 @@
             scope: "files.content.read",
             is_cloud_doc_auth: "False"
           },
-          new ListParam("entries", false, (index) => new StructParam(index, false, [new TextParam("path", false), new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]), new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536"), new VoidParam("w3200h2400")]), new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]), new UnionParam("quality", true, [new VoidParam("quality_80"), new VoidParam("quality_90")]), new BoolParam("exclude_media_info", true)]))
+          new ListParam("entries", false, (index) => new StructParam(index, false, [new TextParam("path", false), new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")]), new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]), new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]), new BoolParam("exclude_media_info", true)]))
         );
         const files_list_folder_endpt = new Endpoint(
           "files",
@@ -26105,8 +26103,7 @@
           new TextParam("custom_message", true),
           new BoolParam("quiet", true),
           new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")]),
-          new BoolParam("add_message_as_comment", true),
-          new TextParam("fp_sealed_result", true)
+          new BoolParam("add_message_as_comment", true)
         );
         const sharing_add_folder_member_endpt = new Endpoint(
           "sharing",
@@ -26124,8 +26121,7 @@
           new TextParam("shared_folder_id", false),
           new ListParam("members", false, (index) => new StructParam(index, false, [new UnionParam("member", false, [new TextParam("dropbox_id", false), new TextParam("email", false)]), new UnionParam("access_level", true, [new VoidParam("owner"), new VoidParam("editor"), new VoidParam("viewer"), new VoidParam("viewer_no_comment"), new VoidParam("traverse"), new VoidParam("no_access")])])),
           new BoolParam("quiet", true),
-          new TextParam("custom_message", true),
-          new TextParam("fp_sealed_result", true)
+          new TextParam("custom_message", true)
         );
         const sharing_check_job_status_endpt = new Endpoint(
           "sharing",
