@@ -25898,6 +25898,21 @@
           new TextParam("doc_id", true),
           new TextParam("file_id", true)
         );
+        const riviera_download_transform_output_endpt = new Endpoint(
+          "riviera",
+          "download_transform_output",
+          {
+            auth: "app, user",
+            host: "content",
+            style: "download",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("output_handle", false)
+        );
         const riviera_get_keyframes_async_endpt = new Endpoint(
           "riviera",
           "get_keyframes_async",
@@ -26073,6 +26088,40 @@
         const riviera_get_transcript_async_check_endpt = new Endpoint(
           "riviera",
           "get_transcript_async/check",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("async_job_id", false)
+        );
+        const riviera_get_transform_async_endpt = new Endpoint(
+          "riviera",
+          "get_transform_async",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("transform_type", false, [new VoidParam("pdf"), new VoidParam("html"), new VoidParam("image"), new VoidParam("thumbnail"), new VoidParam("image_pdf"), new VoidParam("video_frame")]),
+          new UnionParam("file_id_or_url", true, [new TextParam("file_id", false), new TextParam("url", false), new TextParam("path", false)]),
+          new StructParam("thumbnail", true, [new UnionParam("size", true, [new VoidParam("w32h32"), new VoidParam("w64h64"), new VoidParam("w128h128"), new VoidParam("w256h256"), new VoidParam("w480h320"), new VoidParam("w640h480"), new VoidParam("w960h640"), new VoidParam("w1024h768"), new VoidParam("w2048h1536")]), new UnionParam("mode", true, [new VoidParam("strict"), new VoidParam("bestfit"), new VoidParam("fitone_bestfit"), new VoidParam("original")]), new UnionParam("format", true, [new VoidParam("jpeg"), new VoidParam("png"), new VoidParam("webp")])]),
+          new StructParam("image", true, [new IntParam("page_number", true), new IntParam("scale_percent", true)]),
+          new StructParam("video_frame", true, [new FloatParam("offset_in_seconds", true), new IntParam("scale_percent", true)])
+        );
+        const riviera_get_transform_async_check_endpt = new Endpoint(
+          "riviera",
+          "get_transform_async/check",
           {
             auth: "app, user",
             host: "api",
@@ -28321,6 +28370,7 @@
           files_upload_session_start_batch_endpt,
           openid_userinfo_endpt,
           paper_docs_get_metadata_endpt,
+          riviera_download_transform_output_endpt,
           riviera_get_keyframes_async_endpt,
           riviera_get_keyframes_async_check_endpt,
           riviera_get_markdown_async_endpt,
@@ -28333,6 +28383,8 @@
           riviera_get_text_async_check_endpt,
           riviera_get_transcript_async_endpt,
           riviera_get_transcript_async_check_endpt,
+          riviera_get_transform_async_endpt,
+          riviera_get_transform_async_check_endpt,
           sharing_add_file_member_endpt,
           sharing_add_folder_member_endpt,
           sharing_check_job_status_endpt,
