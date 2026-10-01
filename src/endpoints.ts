@@ -1233,6 +1233,19 @@ namespace Endpoints {
         new Utils.TextParam("doc_id", true),
         new Utils.TextParam("file_id", true)
     );
+    const riviera_download_transform_output_endpt = new Utils.Endpoint("riviera", "download_transform_output",
+        {
+            auth: "app, user",
+            host: "content",
+            style: "download",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("output_handle", false)
+    );
     const riviera_get_keyframes_async_endpt = new Utils.Endpoint("riviera", "get_keyframes_async",
         {
             auth: "app, user",
@@ -1384,6 +1397,36 @@ namespace Endpoints {
         new Utils.TextParam("audio_language", true)
     );
     const riviera_get_transcript_async_check_endpt = new Utils.Endpoint("riviera", "get_transcript_async/check",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("async_job_id", false)
+    );
+    const riviera_get_transform_async_endpt = new Utils.Endpoint("riviera", "get_transform_async",
+        {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.UnionParam("transform_type", false, [new Utils.VoidParam("pdf"), new Utils.VoidParam("html"), new Utils.VoidParam("image"), new Utils.VoidParam("thumbnail"), new Utils.VoidParam("image_pdf"), new Utils.VoidParam("video_frame")]),
+        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)]),
+        new Utils.StructParam("thumbnail", true, [new Utils.UnionParam("size", true, [new Utils.VoidParam("w32h32"), new Utils.VoidParam("w64h64"), new Utils.VoidParam("w128h128"), new Utils.VoidParam("w256h256"), new Utils.VoidParam("w480h320"), new Utils.VoidParam("w640h480"), new Utils.VoidParam("w960h640"), new Utils.VoidParam("w1024h768"), new Utils.VoidParam("w2048h1536")]), new Utils.UnionParam("mode", true, [new Utils.VoidParam("strict"), new Utils.VoidParam("bestfit"), new Utils.VoidParam("fitone_bestfit"), new Utils.VoidParam("original")]), new Utils.UnionParam("format", true, [new Utils.VoidParam("jpeg"), new Utils.VoidParam("png"), new Utils.VoidParam("webp")])]),
+        new Utils.StructParam("image", true, [new Utils.IntParam("page_number", true), new Utils.IntParam("scale_percent", true)]),
+        new Utils.StructParam("video_frame", true, [new Utils.FloatParam("offset_in_seconds", true), new Utils.IntParam("scale_percent", true)])
+    );
+    const riviera_get_transform_async_check_endpt = new Utils.Endpoint("riviera", "get_transform_async/check",
         {
             auth: "app, user",
             host: "api",
@@ -3362,6 +3405,7 @@ namespace Endpoints {
                                                    files_upload_session_start_batch_endpt,
                                                    openid_userinfo_endpt,
                                                    paper_docs_get_metadata_endpt,
+                                                   riviera_download_transform_output_endpt,
                                                    riviera_get_keyframes_async_endpt,
                                                    riviera_get_keyframes_async_check_endpt,
                                                    riviera_get_markdown_async_endpt,
@@ -3374,6 +3418,8 @@ namespace Endpoints {
                                                    riviera_get_text_async_check_endpt,
                                                    riviera_get_transcript_async_endpt,
                                                    riviera_get_transcript_async_check_endpt,
+                                                   riviera_get_transform_async_endpt,
+                                                   riviera_get_transform_async_check_endpt,
                                                    sharing_add_file_member_endpt,
                                                    sharing_add_folder_member_endpt,
                                                    sharing_check_job_status_endpt,
