@@ -27439,36 +27439,6 @@
           },
           new TextParam("async_job_id", false)
         );
-        const team_members_bulk_suspend_endpt = new Endpoint(
-          "team",
-          "members/bulk_suspend",
-          {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "False",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "members.write",
-            is_cloud_doc_auth: "False"
-          },
-          new ListParam("members", false, (index) => new StructParam(index, false, [new TextParam("client_item_id", false), new StructParam("suspend_arg", false, [new UnionParam("user", false, [new TextParam("team_member_id", false), new TextParam("external_id", false), new TextParam("email", false)]), new BoolParam("wipe_data", true)])]))
-        );
-        const team_members_bulk_suspend_job_status_check_endpt = new Endpoint(
-          "team",
-          "members/bulk_suspend/job_status/check",
-          {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "False",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "members.write",
-            is_cloud_doc_auth: "False"
-          },
-          new TextParam("async_job_id", false)
-        );
         const team_members_delete_former_member_files_endpt = new Endpoint(
           "team",
           "members/delete_former_member_files",
@@ -28496,8 +28466,6 @@
           team_members_add_v2_endpt,
           team_members_add_job_status_get_endpt,
           team_members_add_job_status_get_v2_endpt,
-          team_members_bulk_suspend_endpt,
-          team_members_bulk_suspend_job_status_check_endpt,
           team_members_delete_former_member_files_endpt,
           team_members_delete_profile_photo_endpt,
           team_members_delete_profile_photo_v2_endpt,
