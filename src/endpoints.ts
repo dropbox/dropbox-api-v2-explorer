@@ -3011,60 +3011,6 @@ namespace Endpoints {
         },
         new Utils.TextParam("cursor", false)
     );
-    const team_sharing_allowlist_add_endpt = new Utils.Endpoint("team", "sharing_allowlist/add",
-        {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.write",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.ListParam("domains", true, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
-        new Utils.ListParam("emails", true, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
-    );
-    const team_sharing_allowlist_list_endpt = new Utils.Endpoint("team", "sharing_allowlist/list",
-        {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.IntParam("limit", true)
-    );
-    const team_sharing_allowlist_list_continue_endpt = new Utils.Endpoint("team", "sharing_allowlist/list/continue",
-        {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("cursor", false)
-    );
-    const team_sharing_allowlist_remove_endpt = new Utils.Endpoint("team", "sharing_allowlist/remove",
-        {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.write",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.ListParam("domains", true, (index: string): Utils.Parameter => new Utils.TextParam(index, false)),
-        new Utils.ListParam("emails", true, (index: string): Utils.Parameter => new Utils.TextParam(index, false))
-    );
     const team_team_folder_activate_endpt = new Utils.Endpoint("team", "team_folder/activate",
         {
             auth: "team",
@@ -3532,10 +3478,6 @@ namespace Endpoints {
                                                    team_members_unsuspend_endpt,
                                                    team_namespaces_list_endpt,
                                                    team_namespaces_list_continue_endpt,
-                                                   team_sharing_allowlist_add_endpt,
-                                                   team_sharing_allowlist_list_endpt,
-                                                   team_sharing_allowlist_list_continue_endpt,
-                                                   team_sharing_allowlist_remove_endpt,
                                                    team_team_folder_activate_endpt,
                                                    team_team_folder_archive_endpt,
                                                    team_team_folder_archive_check_endpt,
