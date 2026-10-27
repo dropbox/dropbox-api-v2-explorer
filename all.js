@@ -27930,68 +27930,6 @@
           },
           new TextParam("cursor", false)
         );
-        const team_sharing_allowlist_add_endpt = new Endpoint(
-          "team",
-          "sharing_allowlist/add",
-          {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.write",
-            is_cloud_doc_auth: "False"
-          },
-          new ListParam("domains", true, (index) => new TextParam(index, false)),
-          new ListParam("emails", true, (index) => new TextParam(index, false))
-        );
-        const team_sharing_allowlist_list_endpt = new Endpoint(
-          "team",
-          "sharing_allowlist/list",
-          {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.read",
-            is_cloud_doc_auth: "False"
-          },
-          new IntParam("limit", true)
-        );
-        const team_sharing_allowlist_list_continue_endpt = new Endpoint(
-          "team",
-          "sharing_allowlist/list/continue",
-          {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.read",
-            is_cloud_doc_auth: "False"
-          },
-          new TextParam("cursor", false)
-        );
-        const team_sharing_allowlist_remove_endpt = new Endpoint(
-          "team",
-          "sharing_allowlist/remove",
-          {
-            auth: "team",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "team_info.write",
-            is_cloud_doc_auth: "False"
-          },
-          new ListParam("domains", true, (index) => new TextParam(index, false)),
-          new ListParam("emails", true, (index) => new TextParam(index, false))
-        );
         const team_team_folder_activate_endpt = new Endpoint(
           "team",
           "team_folder/activate",
@@ -28497,10 +28435,6 @@
           team_members_unsuspend_endpt,
           team_namespaces_list_endpt,
           team_namespaces_list_continue_endpt,
-          team_sharing_allowlist_add_endpt,
-          team_sharing_allowlist_list_endpt,
-          team_sharing_allowlist_list_continue_endpt,
-          team_sharing_allowlist_remove_endpt,
           team_team_folder_activate_endpt,
           team_team_folder_archive_endpt,
           team_team_folder_archive_check_endpt,
