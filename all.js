@@ -25913,6 +25913,37 @@
           },
           new TextParam("output_handle", false)
         );
+        const riviera_extract_async_endpt = new Endpoint(
+          "riviera",
+          "extract_async",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new UnionParam("extract_type", false, [new StructParam("markdown", false, [new BoolParam("enable_ocr", true), new BoolParam("embed_images", true)]), new StructParam("text", false, []), new StructParam("ocr", false, []), new StructParam("transcript", false, [new UnionParam("timestamp_level", true, [new VoidParam("sentence"), new VoidParam("word")]), new TextParam("included_special_words", true), new TextParam("audio_language", true)]), new StructParam("keyframes", false, [new FloatParam("scene_change_threshold", true), new BoolParam("include_images", true)])]),
+          new UnionParam("file_id_or_url", true, [new TextParam("file_id", false), new TextParam("url", false), new TextParam("path", false)])
+        );
+        const riviera_extract_async_check_endpt = new Endpoint(
+          "riviera",
+          "extract_async/check",
+          {
+            auth: "app, user",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "files.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("async_job_id", false)
+        );
         const riviera_get_keyframes_async_endpt = new Endpoint(
           "riviera",
           "get_keyframes_async",
@@ -28309,6 +28340,8 @@
           openid_userinfo_endpt,
           paper_docs_get_metadata_endpt,
           riviera_download_transform_output_endpt,
+          riviera_extract_async_endpt,
+          riviera_extract_async_check_endpt,
           riviera_get_keyframes_async_endpt,
           riviera_get_keyframes_async_check_endpt,
           riviera_get_markdown_async_endpt,
