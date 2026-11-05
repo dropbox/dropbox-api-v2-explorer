@@ -41,7 +41,7 @@ jobs:
           python-version: "3.13"
           cache: pip
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
