@@ -3171,6 +3171,35 @@ namespace Endpoints {
         },
         new Utils.TextParam("team_folder_id", false)
     );
+    const team_team_folder_space_limit_get_endpt = new Utils.Endpoint("team", "team_folder/space_limit/get",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "team_data.content.read",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("team_folder_id", false)
+    );
+    const team_team_folder_space_limit_set_endpt = new Utils.Endpoint("team", "team_folder/space_limit/set",
+        {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "team_data.content.write",
+            is_cloud_doc_auth: "False",
+        },
+        new Utils.TextParam("team_folder_id", false),
+        new Utils.IntParam("space_limit_bytes", false),
+        new Utils.UnionParam("caps_type", false, [new Utils.VoidParam("off"), new Utils.VoidParam("soft"), new Utils.VoidParam("hard")]),
+        new Utils.UnionParam("notification_target", false, [new Utils.VoidParam("admins"), new Utils.VoidParam("editors"), new Utils.VoidParam("both"), new Utils.VoidParam("silent")])
+    );
     const team_team_folder_update_sync_settings_endpt = new Utils.Endpoint("team", "team_folder/update_sync_settings",
         {
             auth: "team",
@@ -3517,6 +3546,8 @@ namespace Endpoints {
                                                    team_team_folder_permanently_delete_endpt,
                                                    team_team_folder_rename_endpt,
                                                    team_team_folder_restore_endpt,
+                                                   team_team_folder_space_limit_get_endpt,
+                                                   team_team_folder_space_limit_set_endpt,
                                                    team_team_folder_update_sync_settings_endpt,
                                                    team_token_get_authenticated_admin_endpt,
                                                    team_log_get_events_endpt,
