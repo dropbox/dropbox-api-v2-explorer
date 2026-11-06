@@ -28114,6 +28114,39 @@
           },
           new TextParam("team_folder_id", false)
         );
+        const team_team_folder_space_limit_get_endpt = new Endpoint(
+          "team",
+          "team_folder/space_limit/get",
+          {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "team_data.content.read",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("team_folder_id", false)
+        );
+        const team_team_folder_space_limit_set_endpt = new Endpoint(
+          "team",
+          "team_folder/space_limit/set",
+          {
+            auth: "team",
+            host: "api",
+            style: "rpc",
+            is_preview: "True",
+            allow_app_folder_app: "False",
+            select_admin_mode: "None",
+            scope: "team_data.content.write",
+            is_cloud_doc_auth: "False"
+          },
+          new TextParam("team_folder_id", false),
+          new IntParam("space_limit_bytes", false),
+          new UnionParam("caps_type", false, [new VoidParam("off"), new VoidParam("soft"), new VoidParam("hard")]),
+          new UnionParam("notification_target", false, [new VoidParam("admins"), new VoidParam("editors"), new VoidParam("both"), new VoidParam("silent")])
+        );
         const team_team_folder_update_sync_settings_endpt = new Endpoint(
           "team",
           "team_folder/update_sync_settings",
@@ -28478,6 +28511,8 @@
           team_team_folder_permanently_delete_endpt,
           team_team_folder_rename_endpt,
           team_team_folder_restore_endpt,
+          team_team_folder_space_limit_get_endpt,
+          team_team_folder_space_limit_set_endpt,
           team_team_folder_update_sync_settings_endpt,
           team_token_get_authenticated_admin_endpt,
           team_log_get_events_endpt,
