@@ -1273,62 +1273,6 @@ namespace Endpoints {
         },
         new Utils.TextParam("async_job_id", false)
     );
-    const riviera_get_keyframes_async_endpt = new Utils.Endpoint("riviera", "get_keyframes_async",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)]),
-        new Utils.FloatParam("scene_change_threshold", true),
-        new Utils.BoolParam("include_images", true)
-    );
-    const riviera_get_keyframes_async_check_endpt = new Utils.Endpoint("riviera", "get_keyframes_async/check",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const riviera_get_markdown_async_endpt = new Utils.Endpoint("riviera", "get_markdown_async",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)]),
-        new Utils.BoolParam("enable_ocr", true),
-        new Utils.BoolParam("embed_images", true)
-    );
-    const riviera_get_markdown_async_check_endpt = new Utils.Endpoint("riviera", "get_markdown_async/check",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
     const riviera_get_metadata_async_endpt = new Utils.Endpoint("riviera", "get_metadata_async",
         {
             auth: "app, user",
@@ -1343,87 +1287,6 @@ namespace Endpoints {
         new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)])
     );
     const riviera_get_metadata_async_check_endpt = new Utils.Endpoint("riviera", "get_metadata_async/check",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const riviera_get_ocr_async_endpt = new Utils.Endpoint("riviera", "get_ocr_async",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)])
-    );
-    const riviera_get_ocr_async_check_endpt = new Utils.Endpoint("riviera", "get_ocr_async/check",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const riviera_get_text_async_endpt = new Utils.Endpoint("riviera", "get_text_async",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)])
-    );
-    const riviera_get_text_async_check_endpt = new Utils.Endpoint("riviera", "get_text_async/check",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.TextParam("async_job_id", false)
-    );
-    const riviera_get_transcript_async_endpt = new Utils.Endpoint("riviera", "get_transcript_async",
-        {
-            auth: "app, user",
-            host: "api",
-            style: "rpc",
-            is_preview: "True",
-            allow_app_folder_app: "False",
-            select_admin_mode: "None",
-            scope: "files.content.read",
-            is_cloud_doc_auth: "False",
-        },
-        new Utils.UnionParam("file_id_or_url", true, [new Utils.TextParam("file_id", false), new Utils.TextParam("url", false), new Utils.TextParam("path", false)]),
-        new Utils.UnionParam("timestamp_level", true, [new Utils.VoidParam("sentence"), new Utils.VoidParam("word")]),
-        new Utils.TextParam("included_special_words", true),
-        new Utils.TextParam("audio_language", true)
-    );
-    const riviera_get_transcript_async_check_endpt = new Utils.Endpoint("riviera", "get_transcript_async/check",
         {
             auth: "app, user",
             host: "api",
@@ -3464,18 +3327,8 @@ namespace Endpoints {
                                                    riviera_download_transform_output_endpt,
                                                    riviera_extract_async_endpt,
                                                    riviera_extract_async_check_endpt,
-                                                   riviera_get_keyframes_async_endpt,
-                                                   riviera_get_keyframes_async_check_endpt,
-                                                   riviera_get_markdown_async_endpt,
-                                                   riviera_get_markdown_async_check_endpt,
                                                    riviera_get_metadata_async_endpt,
                                                    riviera_get_metadata_async_check_endpt,
-                                                   riviera_get_ocr_async_endpt,
-                                                   riviera_get_ocr_async_check_endpt,
-                                                   riviera_get_text_async_endpt,
-                                                   riviera_get_text_async_check_endpt,
-                                                   riviera_get_transcript_async_endpt,
-                                                   riviera_get_transcript_async_check_endpt,
                                                    riviera_get_transform_async_endpt,
                                                    riviera_get_transform_async_check_endpt,
                                                    sharing_add_file_member_endpt,
